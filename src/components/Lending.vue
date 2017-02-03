@@ -8,7 +8,7 @@
         <div class="right-nav">
           <ul>
             <li>
-              <router-link to="/start" class="nav-link btn btn-link btn-link-yellow">Login</router-link>
+              <router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Login</router-link>
             </li>
             <li>
               <router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link>
@@ -21,7 +21,7 @@
       <div class="container">
         <p class="title">JS Courses</p>
         <p class="description">Platform, where you can learn variety JS frameworks and libraries, <br> and develop your own courses</p>
-        <router-link to="/start" class="btn btn-lg btn-yellow btn-start">Start learning</router-link>
+        <router-link to="/courses" class="btn btn-lg btn-yellow btn-start">Start learning</router-link>
       </div>
     </main>
     <footer>
@@ -63,7 +63,7 @@
     padding-left: 1rem;
     text-decoration: none;
     /*color: rgba(0, 0, 0, 0.9);*/
-    padding: .5em 1em;
+    padding: 0.3em 1em;
   }
   .nav-link:hover {
     text-decoration: none;

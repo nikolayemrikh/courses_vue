@@ -24,5 +24,3 @@ const app = new Vue({
   },
   router
 }).$mount('#app')
-
-console.log(router.currentRoute)

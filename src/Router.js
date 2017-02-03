@@ -5,8 +5,11 @@ Vue.use(VueRouter)
 import Lending from './components/Lending'
 import Login from './components/Login'
 import Register from './components/Register'
-import Start from './components/Start'
+import Courses from './components/Courses'
+import Tasks from './components/Tasks'
 import Main from './components/Main'
+import EditCourse from './components/EditCourse'
+import EditTask from './components/EditTask'
 
 export default new VueRouter({
   routes: [{
@@ -19,10 +22,27 @@ export default new VueRouter({
     path: '/register',
     component: Register
   }, {
-    path: '/start',
-    component: Start
+    path: '/courses/',
+    component: Courses
   }, {
-    path: '/main',
+    path: '/courses/:courseNumber',
+    component: Tasks,
+    beforeEnter: (to, from, next) => {
+      next({
+        path: '/courses/' + to.params.courseNumber + '/tasks'
+      })
+    }
+  }, {
+    path: '/courses/:courseNumber/tasks',
+    component: Tasks
+  }, {
+    path: '/courses/:courseNumber/tasks/:taskNumber',
     component: Main
+  }, {
+    path: '/edit/courses/:courseNumber',
+    component: EditCourse
+  }, {
+    path: '/edit/courses/:courseNumber/tasks/:taskNumber',
+    component: EditTask
   }]
 })
