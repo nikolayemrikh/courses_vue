@@ -1,0 +1,27 @@
+{
+    "logger": {
+        "level": "debug",
+        "file": "./output.log"
+    },
+    "cookie": {
+        "secret": "its-a-secret",
+        "ttl": 14
+    },
+    "uploads": {
+        "tmpdir": "./uploads",
+        "limit": 10,
+        "cleanup": 60
+    },
+    "mongoose": {
+        "uri": "mongodb://nikolayemrikh:789pp369@ds017070.mlab.com:17070/d3jsdb"
+    },
+    "auth": {
+        "vk": {
+            "authorizationURL": "https://oauth.vk.com/authorize",
+            "clientID": "5824763",
+            "clientSecret": "JsLUk77xUiJf61nwcTEt",
+            "tokenURL": "https://oauth.vk.com/access_token",
+            "callbackURL": "http://d3js-node-redishko.c9users.io/profile/vk/callback"
+        }
+    }
+}

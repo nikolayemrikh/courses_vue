@@ -19,6 +19,46 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 
+///// Добавил
+var projConfig = require('nconf').file('./proj_config.json');
+require('../routes')(app);
+
+var morgan = require('morgan');
+var logger = require('../common/logger');
+app.use(morgan("short", {
+    "stream": logger.stream
+}));
+
+var session = require('express-session');
+
+var db = require('../db');
+var MongoStore = require('connect-mongo')(session);
+var mongoStore = new MongoStore({
+    mongooseConnection: db.mongoose.connection,
+    ttl: projConfig.get("cookie:ttl") * 24 * 60 * 60 // days
+});
+
+var cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+app.use(session({
+    name: 'vue_courses',
+    secret: projConfig.get("cookie:secret"),
+    store: mongoStore,
+    proxy: true,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      session: false,
+      maxAge: projConfig.get("cookie:ttl") * 24 * 60 * 60 * 1000 // days
+    }
+}));
+
+var passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+/////
+
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true

@@ -1,0 +1,53 @@
+2017-02-04T22:00:11.925Z - info: MongoDb is connected
+2017-02-04T22:00:18.600Z - info: ::1 - GET / HTTP/1.0 200 316 - 9379.684 ms
+2017-02-04T22:00:18.714Z - info: ::ffff:10.240.1.31 - GET / HTTP/1.1 200 316 - 285.848 ms
+2017-02-04T22:00:19.473Z - info: ::ffff:10.240.0.181 - GET /app.js HTTP/1.1 200 1434607 - 114.791 ms
+2017-02-04T22:00:19.703Z - info: ::ffff:10.240.0.195 - GET /bootstrapWebpack.js HTTP/1.1 200 1705041 - 114.108 ms
+2017-02-04T22:03:50.989Z - info: MongoDb is connected
+2017-02-04T22:03:58.329Z - info: ::1 - GET / HTTP/1.0 200 316 - 9384.694 ms
+2017-02-04T22:08:32.037Z - info: MongoDb is connected
+2017-02-04T22:08:40.788Z - info: ::1 - GET / HTTP/1.0 200 316 - 11066.866 ms
+2017-02-04T22:09:50.719Z - info: ::ffff:10.240.0.185 - GET /api/task/57dae817134d1959fb5a5f70 HTTP/1.1 200 316 - 113.598 ms
+2017-02-04T22:09:51.485Z - info: ::ffff:10.240.0.225 - GET /app.js HTTP/1.1 200 1434607 - 115.146 ms
+2017-02-04T22:09:51.490Z - info: ::ffff:10.240.1.18 - GET /bootstrapWebpack.js HTTP/1.1 200 1705041 - 119.020 ms
+2017-02-04T22:10:00.142Z - info: ::ffff:10.240.0.195 - GET /__webpack_hmr HTTP/1.1 200 - - 2198.755 ms
+2017-02-04T22:10:10.137Z - info: ::ffff:10.240.0.215 - GET /__webpack_hmr HTTP/1.1 200 - - 113.708 ms
+2017-02-04T22:19:34.894Z - info: ::ffff:10.240.1.67 - GET /api/task/57dae817134d1959fb5a5f70 HTTP/1.1 200 316 - 116.408 ms
+2017-02-04T22:19:35.597Z - info: ::ffff:10.240.0.185 - GET /bootstrapWebpack.js HTTP/1.1 200 1705041 - 118.017 ms
+2017-02-04T22:19:35.604Z - info: ::ffff:10.240.0.224 - GET /app.js HTTP/1.1 200 1434607 - 125.315 ms
+2017-02-04T22:22:42.384Z - error: uncaughtException: Cannot find module '../common/logger' date=Sat Feb 04 2017 22:22:42 GMT+0000 (UTC), pid=189449, uid=1000, gid=1000, cwd=/home/ubuntu/workspace, execPath=/home/ubuntu/.nvm/versions/node/v7.4.0/bin/node, version=v7.4.0, argv=[/home/ubuntu/.nvm/versions/node/v7.4.0/bin/node, /home/ubuntu/workspace/build/dev-server.js], rss=101244928, heapTotal=75837440, heapUsed=44203200, external=18035655, loadavg=[7.162109375, 6.20849609375, 3.732421875], uptime=235442
+Error: Cannot find module '../common/logger'
+    at Function.Module._resolveFilename (module.js:470:15)
+    at Function.Module._load (module.js:418:25)
+    at Module.require (module.js:498:17)
+    at require (internal/module.js:20:19)
+    at Object.<anonymous> (/home/ubuntu/workspace/routes/api/user.js:10:14)
+    at Module._compile (module.js:571:32)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:488:32)
+    at tryModuleLoad (module.js:447:12)
+    at Function.Module._load (module.js:439:3)
+    at Module.require (module.js:498:17)
+    at require (internal/module.js:20:19)
+    at Object.<anonymous> (/home/ubuntu/workspace/routes/api/index.js:6:12)
+    at Module._compile (module.js:571:32)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:488:32)
+    at tryModuleLoad (module.js:447:12)
+    at Function.Module._load (module.js:439:3)
+    at Module.require (module.js:498:17)
+    at require (internal/module.js:20:19)
+    at Object.<anonymous> (/home/ubuntu/workspace/routes/index.js:1:73)
+    at Module._compile (module.js:571:32)
+2017-02-04T22:22:43.205Z - info: MongoDb is connected
+2017-02-04T22:23:14.039Z - info: MongoDb is connected
+2017-02-04T22:23:24.156Z - info: ::1 - GET / HTTP/1.0 200 316 - 12220.436 ms
+2017-02-04T22:23:31.619Z - info: ::ffff:10.240.1.18 - GET /__webpack_hmr HTTP/1.1 200 - - 1810.539 ms
+2017-02-04T22:24:29.012Z - info: ::ffff:10.240.0.195 - GET / HTTP/1.1 200 316 - 114.026 ms
+2017-02-04T22:24:29.794Z - info: ::ffff:10.240.0.224 - GET /app.js HTTP/1.1 200 1434607 - 120.742 ms
+2017-02-04T22:24:29.802Z - info: ::ffff:10.240.1.67 - GET /bootstrapWebpack.js HTTP/1.1 200 1705041 - 126.809 ms
+2017-02-04T22:46:39.172Z - info: MongoDb is connected
+2017-02-04T22:46:47.474Z - info: ::1 - GET / HTTP/1.0 200 316 - 10616.051 ms
+2017-02-04T22:46:47.477Z - info: ::ffff:10.240.0.185 - GET / HTTP/1.1 200 316 - 8028.141 ms
+2017-02-04T22:46:47.858Z - info: ::ffff:10.240.0.185 - GET /bootstrapWebpack.js HTTP/1.1 200 1705041 - 166.258 ms
+2017-02-04T22:46:48.525Z - info: ::ffff:10.240.0.195 - GET /app.js HTTP/1.1 200 1434607 - 114.888 ms
