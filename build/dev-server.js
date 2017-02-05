@@ -21,7 +21,6 @@ var compiler = webpack(webpackConfig)
 
 ///// Добавил
 var projConfig = require('nconf').file('./proj_config.json');
-require('../routes')(app);
 
 var morgan = require('morgan');
 var logger = require('../common/logger');
@@ -29,7 +28,13 @@ app.use(morgan("short", {
     "stream": logger.stream
 }));
 
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var passport = require('passport');
 var session = require('express-session');
+app.use(cookieParser());
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 var db = require('../db');
 var MongoStore = require('connect-mongo')(session);
@@ -38,9 +43,6 @@ var mongoStore = new MongoStore({
     ttl: projConfig.get("cookie:ttl") * 24 * 60 * 60 // days
 });
 
-var cookieParser = require('cookie-parser');
-
-app.use(cookieParser());
 app.use(session({
     name: 'vue_courses',
     secret: projConfig.get("cookie:secret"),
@@ -54,9 +56,10 @@ app.use(session({
     }
 }));
 
-var passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
+require('../routes')(app);
+
 /////
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {

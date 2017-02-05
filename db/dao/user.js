@@ -12,17 +12,18 @@ module.exports = {
                 }
                 if (!user) {
                     return done(null, false, {
-                        message: 'Incorrect username.'
-                    });
-                }
-                if (!user.isActive()) {
-                    return done(null, false, {
-                        message: 'User is inactive.'
+                        incorrect: {
+                            username: true,
+                            password: false
+                        }
                     });
                 }
                 if (!user.validPassword(password)) {
                     return done(null, false, {
-                        message: 'Incorrect password.'
+                        incorrect: {
+                            password: true,
+                            username: false
+                        }
                     });
                 }
                 return done(null, user);

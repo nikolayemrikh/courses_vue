@@ -55,10 +55,11 @@ passport.use('local', new LocalStrategy(profile.auth.local));
 router.post('/', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) return res.status(500).send(err);
-    if (!user) return res.status(404).send(err);
+    if (!user) return res.status(401).send(info);
     req.logIn(user, function(err) {
-      if (err) return res.status(500).send(err);
-      return res.status(200).send(user);
+        console.log(user, err)
+        if (err) return res.status(500).send(err);
+        return res.status(200).json(user);
     });
   })(req, res, next);
 }, router.logUserIP);
@@ -97,7 +98,8 @@ router.delete('/:userId', function(req, res) {
     res.json({});
 });
 // Get user profile by id
-router.get('/:userId', router.isMyself, function(req, res) {
+router.get('/:userId', //router.isMyself, 
+function(req, res) {
     var args = {
         userId: req.params.userId
     };
