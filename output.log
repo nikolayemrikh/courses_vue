@@ -1099,3 +1099,43 @@ Error: passport.initialize() middleware not in use
 2017-02-05T21:21:35.611Z - info: ::ffff:10.240.0.185 - GET /18e92573d8b9fed5f500.hot-update.json HTTP/1.1 200 36 - 113.832 ms
 2017-02-05T21:21:35.634Z - info: ::ffff:10.240.1.45 - GET /18e92573d8b9fed5f500.hot-update.json HTTP/1.1 200 36 - 111.962 ms
 2017-02-05T21:21:36.418Z - info: ::ffff:10.240.0.196 - GET /0.18e92573d8b9fed5f500.hot-update.js HTTP/1.1 200 7133 - 111.009 ms
+2017-02-05T21:24:07.006Z - info: ::ffff:10.240.0.16 - GET /__webpack_hmr HTTP/1.1 200 - - 113.080 ms
+2017-02-06T15:51:26.029Z - info: MongoDb is connected
+2017-02-06T15:51:29.850Z - info: ::1 - GET / HTTP/1.1 200 316 - 5962.372 ms
+2017-02-06T15:51:30.080Z - info: ::1 - GET /bootstrapWebpack.js HTTP/1.1 200 1706092 - 220.267 ms
+2017-02-06T15:51:30.092Z - info: ::1 - GET /app.js HTTP/1.1 200 1859072 - 222.391 ms
+2017-02-06T15:51:31.029Z - info: ::1 - GET /favicon.ico HTTP/1.1 404 24 - 238.114 ms
+2017-02-06T15:51:49.051Z - info: ::1 - POST /api/user HTTP/1.1 200 388 - 456.635 ms
+2017-02-06T15:51:54.907Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 419.696 ms
+2017-02-06T15:51:54.993Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 416.442 ms
+2017-02-06T16:23:03.087Z - info: MongoDb is connected
+2017-02-06T16:23:07.409Z - info: ::1 - GET / HTTP/1.1 304 - - 5718.316 ms
+2017-02-06T16:23:07.916Z - info: ::1 - GET /app.js HTTP/1.1 304 - - 217.515 ms
+2017-02-06T16:23:07.918Z - info: ::1 - GET /bootstrapWebpack.js HTTP/1.1 304 - - 215.644 ms
+2017-02-06T16:41:26.320Z - info: ::1 - GET /__webpack_hmr HTTP/1.1 200 - - 266.243 ms
+2017-02-06T17:24:02.118Z - info: ::1 - GET /__webpack_hmr HTTP/1.1 200 - - 216.588 ms
+2017-02-06T17:24:02.315Z - info: ::1 - GET / HTTP/1.1 200 316 - 246.463 ms
+2017-02-06T17:24:02.595Z - info: ::1 - GET /bootstrapWebpack.js HTTP/1.1 200 1706092 - 227.198 ms
+2017-02-06T17:24:02.610Z - info: ::1 - GET /app.js HTTP/1.1 200 1859072 - 227.830 ms
+2017-02-06T17:24:08.487Z - info: ::1 - POST /api/user HTTP/1.1 200 388 - 461.975 ms
+2017-02-06T17:24:38.590Z - info: MongoDb is connected
+2017-02-06T17:24:45.325Z - info: ::1 - GET / HTTP/1.1 304 - - 5824.023 ms
+2017-02-06T17:24:45.552Z - info: ::1 - GET /bootstrapWebpack.js HTTP/1.1 304 - - 57.953 ms
+2017-02-06T17:24:45.570Z - info: ::1 - GET /app.js HTTP/1.1 304 - - 63.455 ms
+2017-02-06T17:25:13.546Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 22.965 ms
+2017-02-06T17:25:15.078Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 6.644 ms
+2017-02-06T18:02:24.602Z - error: MongoDB connection error: Ran out of retries trying to reconnect to "localhost:27017". Try setting `server.reconnectTries` and `server.reconnectInterval` to something higher.
+2017-02-06T18:06:55.875Z - info: MongoDb is connected
+2017-02-06T18:07:03.493Z - info: ::1 - GET / HTTP/1.1 304 - - 6031.598 ms
+2017-02-06T18:07:03.553Z - info: ::1 - GET /bootstrapWebpack.js HTTP/1.1 304 - - 39.598 ms
+2017-02-06T18:07:03.708Z - info: ::1 - GET /app.js HTTP/1.1 304 - - 23.299 ms
+2017-02-06T18:07:27.590Z - info: ::1 - POST /api/user HTTP/1.1 200 388 - 36.717 ms
+2017-02-06T18:07:31.396Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 5.216 ms
+2017-02-06T18:07:31.484Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 7.329 ms
+2017-02-06T18:07:32.381Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 5.608 ms
+2017-02-06T18:07:32.851Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 10.603 ms
+2017-02-06T18:07:33.200Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 7.021 ms
+2017-02-06T18:07:33.510Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 8.540 ms
+2017-02-06T18:07:33.647Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 6.134 ms
+2017-02-06T18:07:33.763Z - info: ::1 - POST /api/user HTTP/1.1 401 48 - 7.226 ms
+2017-02-06T18:07:36.980Z - info: ::1 - POST /api/user HTTP/1.1 200 388 - 9.586 ms

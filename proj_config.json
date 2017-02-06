@@ -13,7 +13,7 @@
         "cleanup": 60
     },
     "mongoose": {
-        "uri": "mongodb://nikolayemrikh:789pp369@ds017070.mlab.com:17070/d3jsdb"
+      "uri": "mongodb://localhost:27017/vue"
     },
     "auth": {
         "vk": {
