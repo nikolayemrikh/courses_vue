@@ -31,43 +31,87 @@ const user = {
     }
   },
   mutations: {
-    login(state, {
+    logIn(state, {
       err,
       user
     }) {
       if (err) {
         state.info.logged = false
-        state.info.err = JSON.parse(err.response.text)
+        state.info.err = err.response.text
       }
       else {
-        state.user = user;
+        state.model = user;
         state.info.logged = true;
       }
-    }
-  },
-  actions: {
-    async login(context, user) {
-      await request.post('/api/user')
-        .send({
-          username: user.username,
-          password: user.password
-        })
-        .then(
-          (user) => context.commit('login', {
-            null,
-            user
-          }),
-          (err) => context.commit('login', {
-            err,
-            null
-          })
-        )
+    },
+    logOut(state) {
+      state.model = {}
+      state.info.logged = false
+      state.info.err = null
     }
   },
   getters: {
     getInfo(state) {
-      return state.info;
+      return state.info
+    },
+    getModel(state) {
+      return state.model
     }
+  },
+  actions: {
+    async logIn(context, args) {
+      await request.post('/api/user')
+        .send({
+          username: args.username,
+          password: args.password
+        })
+        .then(
+          (res) => {
+            context.commit('logIn', {
+              null,
+              user: JSON.parse(res.text)
+            })
+            // if (!args.redirect)
+              app.$router.push('courses')
+            // else
+            //   app.$router.push(args.redirect)
+          },
+          (err) => context.commit('logIn', {
+            err: JSON.parse(err),
+            null
+          })
+        )
+    },
+    fetch(context) {
+      request.get('/api/user').then(
+        (res) => {
+          context.commit('logIn', {
+            null,
+            user: JSON.parse(res.text)
+          })
+        },
+        (res) => context.commit('logIn', {
+          err: JSON.parse(res.text),
+          null
+        })
+      )
+    },
+    logOut({dispatch, commit, getters, rootGetters}) {
+      console.log(getters.getModel)
+      request.delete('/api/user/' + getters.getModel._id).then(
+        () => {
+          commit('logOut')
+        }
+      )
+    }
+    // logOut(context) {
+    //   console.log(context)
+    //   request.delete('/api/user').query({username: context.getters.getModel()._id}).then(
+    //     () => {
+    //       context.commit('logOut')
+    //     }
+    //   )
+    // }
   }
 }
 
@@ -85,3 +129,8 @@ const app = new Vue({
   router,
   store
 }).$mount('#app')
+
+store.dispatch('user/fetch')
+
+window.app = app
+window.store = store

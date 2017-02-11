@@ -44,5 +44,8 @@ export default new VueRouter({
   }, {
     path: '/edit/courses/:courseNumber/tasks/:taskNumber',
     component: EditTask
+  }, {
+    path: '*',
+    redirect: '/'
   }]
 })

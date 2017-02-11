@@ -8,8 +8,8 @@
             <div v-if="info.err" class="alert alert-danger" role="alert">{{ getIncorrectMessage }}</div>
             <form @submit.prevent="onSubmit">
               <div v-bind:class="[info.err && info.err.incorrect.username ? 'has-error' : '']" class="form-group">
-                <label for="login">Login</label>
-                <input v-model="proxyUsername" type="text" class="form-control" id="login" placeholder="Enter login">
+                <label for="username">Login</label>
+                <input v-model="proxyUsername" type="text" class="form-control" id="username" placeholder="Enter login">
               </div>
               <div v-bind:class="[info.err && info.err.incorrect.password ? 'has-error' : '']" class="form-group">
                 <label for="password">Password</label>
@@ -24,7 +24,7 @@
         <div class="panel panel-default panel-info">
           <div class="panel-body">
             <p>Socials:</p>
-            <a href="/profile/vk"><img class="vk-image" src="../assets/vk-logo.png"></div></a>
+            <a href="/profile/vk"><img class="vk-image" src="../assets/vk-logo.png"></a>
           </div>
         </div>
       </section>
@@ -33,57 +33,58 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { mapGetters } from 'vuex'
-import { mapState } from 'vuex'
-export default {
-  data () {
-    return {
-      username: "",
-      password: ""
-    }
-  },
-  methods: {
-    ...mapActions('user', [
-      'login' //async/await
-    ]),
-    async onSubmit() {
-      this.info.err = null
-      await this.login({
-        username: this.username,
-        password: this.password
-      })
-    }
-  },
-  computed: {
-    ...mapState('user', [
-      'info',
-      'model'
-    ]),
-    getIncorrectMessage() {
-      if (this.info.err && this.info.err.incorrect.username)
-        return "Incorrect username"
-      if (this.info.err && this.info.err.incorrect.password)
-        return "Incorrect password"
-    },
-    proxyUsername: {
-      get() {
-        return this.info.logged ? '' : this.username
-      },
-      set(value) {
-        this.username = value
+  import { mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'
+  import { mapState } from 'vuex'
+  export default {
+    data () {
+      return {
+        username: "",
+        password: ""
       }
     },
-    proxyPassword: {
-      get() {
-        return this.info.logged ? '' : this.password
+    methods: {
+      ...mapActions('user', [
+        'logIn' //async/await
+      ]),
+      async onSubmit() {
+        this.info.err = null
+        await this.logIn({
+          username: this.username,
+          password: this.password,
+          redirect: '/'
+        })
+      }
+    },
+    computed: {
+      ...mapState('user', [
+        'info',
+        'model'
+      ]),
+      getIncorrectMessage() {
+        if (this.info.err && this.info.err.incorrect.username)
+          return "Incorrect username"
+        if (this.info.err && this.info.err.incorrect.password)
+          return "Incorrect password"
       },
-      set(value) {
-        this.password = value
+      proxyUsername: {
+        get() {
+          return this.info.logged ? '' : this.username
+        },
+        set(value) {
+          this.username = value
+        }
+      },
+      proxyPassword: {
+        get() {
+          return this.info.logged ? '' : this.password
+        },
+        set(value) {
+          this.password = value
+        }
       }
     }
   }
-}
 </script>
 
 <style>

@@ -6,23 +6,19 @@
           <div class="navbar-header">
             <router-link to="/" class="navbar-brand">JS Courses</router-link>
           </div>
-          <!-- Залогинен -->
-          <div v-if="loggedIn" class="collapse navbar-collapse">
+          <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li v-bind:class="{ active: isCourses }"><router-link to="/courses">Courses list</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li><router-link to="/">Log out</router-link></li>
-            </ul>
-          </div>
-          <!-- Не залогинен -->
-          <div v-else="loggedIn" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-              <li v-bind:class="{ active: isCourses }"><router-link to="/courses">Courses list</router-link></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li v-if="this.$route.path != '/login'"><router-link to="/login">Log in</router-link></li>
-              <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
+              <template v-if="info.logged">
+                <li><a v-on:click.prevent href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
+                <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
+              </template>
+              <template v-else="info.logged">
+                <li v-if="this.$route.path != '/login'"><router-link to="/login">Log in</router-link></li>
+                <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
+              </template>
             </ul>
           </div>
         </div>
@@ -39,22 +35,29 @@
   </div>
 </template>
 <script>
-  var logged = false;
+  import { mapState } from 'vuex'
+  import { mapActions } from 'vuex'
   export default {
     name: 'App',
     computed: {
+      ...mapState('user', [
+        'info',
+        'model'
+      ]),
       notLending() {
         return this.$route.path != '/'
       },
       isCourses() {
         return this.$route.path == '/courses' || this.$route.path == '/courses/'
       },
-      loggedIn() {
-        return logged;
-      },
       isCoursesOrTasks() {
         return this.$route.path.indexOf('courses') != -1 || this.$route.path.indexOf('tasks') != -1;
       }
+    },
+    methods: {
+      ...mapActions('user', [
+        'logOut'
+      ])
     }
   }
 </script>
@@ -63,7 +66,7 @@
   html {
     font-size: 1rem;
   }
-  
+
   body {
     margin: 0;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
@@ -71,6 +74,6 @@
     font-weight: 400;
     line-height: 1.5;
     color: #292b2c;
-    background-color: #fff;
+    background-color: #ffffff;
   }
 </style>

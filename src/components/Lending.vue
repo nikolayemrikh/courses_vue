@@ -7,12 +7,14 @@
         </div>
         <div class="right-nav">
           <ul>
-            <li>
-              <router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Login</router-link>
-            </li>
-            <li>
-              <router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link>
-            </li>
+            <template v-if="info.logged">
+                <li><a v-on:click.prevent class="nav-link btn btn-link btn-link-yellow" href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
+                <li><a v-on:click.prevent="logOut" class="nav-link btn btn-link btn-link-yellow" shref="#">Log out</a></li>
+            </template>
+            <template v-else="info.logged">
+                <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Login</router-link></li>
+                <li><router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link></li>
+            </template>
           </ul>
         </div>
       </nav>
@@ -25,11 +27,28 @@
       </div>
     </main>
     <footer>
-      
+
     </footer>
   </div>
 </template>
-
+<script>
+  import { mapState } from 'vuex'
+  import { mapActions } from 'vuex'
+  export default {
+    name: 'lending',
+    computed: {
+      ...mapState('user', [
+        'info',
+        'model'
+      ])
+    },
+    methods: {
+    ...mapActions('user', [
+        'logOut'
+      ])
+    }
+  }
+</script>
 <style scoped>
   nav {
     display: flex;

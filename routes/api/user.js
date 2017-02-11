@@ -4,7 +4,6 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
-//var IfmoSSOStrategy = require('passport-ifmosso').Strategy;
 var config = require('nconf');
 var profile = require('../../db/dao/user');
 var logger = require('../../common/logger');
@@ -65,12 +64,12 @@ router.post('/', function(req, res, next) {
 }, router.logUserIP);
 
 passport.use('vk', new VKontakteStrategy({
-        clientID: config.get('auth:vk:clientID'), // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId' 
+        clientID: config.get('auth:vk:clientID'), // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
         clientSecret: config.get('auth:vk:clientSecret'),
         callbackURL: config.get('auth:vk:callbackURL')
     },
     function(accessToken, refreshToken, params, data, done) {
-        // console.log(params.email); // getting the email 
+        // console.log(params.email); // getting the email
         try {
             console.log(data)
             profile.auth.vk(data, done);
@@ -98,7 +97,7 @@ router.delete('/:userId', function(req, res) {
     res.json({});
 });
 // Get user profile by id
-router.get('/:userId', //router.isMyself, 
+router.get('/:userId', //router.isMyself,
 function(req, res) {
     var args = {
         userId: req.params.userId
