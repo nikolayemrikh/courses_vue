@@ -51,10 +51,10 @@ passport.deserializeUser(function(user, done) {
 // Local strategy
 // Авторизация
 passport.use('local', new LocalStrategy(profile.auth.local));
-router.post('/', function(req, res, next) {
+router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
-    if (err) return res.status(500).send(err);
-    if (!user) return res.status(401).send(info);
+    if (err) return res.status(500).next(err);
+    if (!user) return res.status(401).json(info);
     req.logIn(user, function(err) {
         console.log(user, err)
         if (err) return res.status(500).send(err);
@@ -62,6 +62,22 @@ router.post('/', function(req, res, next) {
     });
   })(req, res, next);
 }, router.logUserIP);
+
+router.post('/', function(req, res, next) {
+  var args = {
+    data: req.body
+  };
+  console.log(args)
+  profile.add(args, function(err, user) {
+    console.log(err, user)
+    if (err) return res.status(409).send({
+      incorrect: {
+        userExists: true
+      }
+    });
+    return res.status(200).end()
+  })
+});
 
 passport.use('vk', new VKontakteStrategy({
         clientID: config.get('auth:vk:clientID'), // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'

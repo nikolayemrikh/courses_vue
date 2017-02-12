@@ -7,11 +7,11 @@
         </div>
         <div class="right-nav">
           <ul>
-            <template v-if="info.logged">
+            <template v-if="model">
                 <li><a v-on:click.prevent class="nav-link btn btn-link btn-link-yellow" href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
                 <li><a v-on:click.prevent="logOut" class="nav-link btn btn-link btn-link-yellow" shref="#">Log out</a></li>
             </template>
-            <template v-else="info.logged">
+            <template v-else="model">
                 <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Login</router-link></li>
                 <li><router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link></li>
             </template>
@@ -78,8 +78,6 @@
   }
   .nav-link {
     font-size: 1rem;
-    padding-right: 1rem;
-    padding-left: 1rem;
     text-decoration: none;
     /*color: rgba(0, 0, 0, 0.9);*/
     padding: 0.3em 1em;

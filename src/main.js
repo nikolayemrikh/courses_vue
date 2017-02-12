@@ -24,30 +24,14 @@ import request from 'superagent'
 const user = {
   namespaced: true,
   state: {
-    model: {},
-    info: {
-      logged: false,
-      err: null
-    }
+    model: null
   },
   mutations: {
-    logIn(state, {
-      err,
-      user
-    }) {
-      if (err) {
-        state.info.logged = false
-        state.info.err = err.response.text
-      }
-      else {
-        state.model = user;
-        state.info.logged = true;
-      }
+    setModel(state, model) {
+      state.model = model
     },
-    logOut(state) {
-      state.model = {}
-      state.info.logged = false
-      state.info.err = null
+    removeModel(state) {
+      state.model = null
     }
   },
   getters: {
@@ -59,59 +43,51 @@ const user = {
     }
   },
   actions: {
-    async logIn(context, args) {
-      await request.post('/api/user')
-        .send({
-          username: args.username,
-          password: args.password
-        })
-        .then(
-          (res) => {
-            context.commit('logIn', {
-              null,
-              user: JSON.parse(res.text)
-            })
-            // if (!args.redirect)
-              app.$router.push('courses')
-            // else
-            //   app.$router.push(args.redirect)
-          },
-          (err) => context.commit('logIn', {
-            err: JSON.parse(err),
-            null
+    logIn(context, args) {
+      return new Promise((resolve, reject) => {
+        request.post('/api/user/login')
+          .send({
+            username: args.username,
+            password: args.password
           })
-        )
+          .then(
+            (res) => {
+              context.commit('setModel', res.body)
+              resolve(res)
+              if (!args.redirect)
+                app.$router.push('courses')
+              else
+                app.$router.push(args.redirect)
+            },
+            (err) => {
+              reject(err)
+            }
+          )
+      })
     },
     fetch(context) {
       request.get('/api/user').then(
         (res) => {
-          context.commit('logIn', {
-            null,
-            user: JSON.parse(res.text)
-          })
+          context.commit('setModel', res.body)
         },
-        (res) => context.commit('logIn', {
-          err: JSON.parse(res.text),
-          null
-        })
+        err => console.log(err)
       )
     },
-    logOut({dispatch, commit, getters, rootGetters}) {
-      console.log(getters.getModel)
-      request.delete('/api/user/' + getters.getModel._id).then(
+    logOut(context) {
+      request.delete('/api/user/' + context.getters.getModel._id).then(
         () => {
-          commit('logOut')
+          context.commit('removeModel')
         }
       )
+    },
+    register(context, args) {
+      return new Promise((resolve, reject) => {
+        request.post('/api/user/').send(args).then(
+          (res) => resolve(res),
+          (err) => reject(err)
+        )
+      })
     }
-    // logOut(context) {
-    //   console.log(context)
-    //   request.delete('/api/user').query({username: context.getters.getModel()._id}).then(
-    //     () => {
-    //       context.commit('logOut')
-    //     }
-    //   )
-    // }
   }
 }
 

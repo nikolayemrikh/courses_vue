@@ -3,15 +3,15 @@
     <h3 class="login-text lead">Log in local or through socials and start learning quickly!</h3>
     <div class="login-section row">
       <section class="col-md-3 col-md-offset-3">
-        <div v-bind:class="[info.err ? 'panel-danger' : 'panel-info']" class="login-panel panel panel-default">
+        <div v-bind:class="[loginError ? 'panel-danger' : 'panel-info']" class="login-panel panel panel-default">
           <div class="panel-body">
-            <div v-if="info.err" class="alert alert-danger" role="alert">{{ getIncorrectMessage }}</div>
+            <div v-if="loginError" class="alert alert-danger" role="alert">{{ getIncorrectMessage }}</div>
             <form @submit.prevent="onSubmit">
-              <div v-bind:class="[info.err && info.err.incorrect.username ? 'has-error' : '']" class="form-group">
+              <div v-bind:class="[loginError && loginError.incorrect.username ? 'has-error' : '']" class="form-group">
                 <label for="username">Login</label>
                 <input v-model="proxyUsername" type="text" class="form-control" id="username" placeholder="Enter login">
               </div>
-              <div v-bind:class="[info.err && info.err.incorrect.password ? 'has-error' : '']" class="form-group">
+              <div v-bind:class="[loginError && loginError.incorrect.password ? 'has-error' : '']" class="form-group">
                 <label for="password">Password</label>
                 <input v-model="proxyPassword" type="password" class="form-control" id="password" placeholder="Enter password">
               </div>
@@ -34,42 +34,45 @@
 
 <script>
   import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   import { mapGetters } from 'vuex'
   import { mapState } from 'vuex'
   export default {
     data () {
       return {
         username: "",
-        password: ""
+        password: "",
+        loginError: null
       }
     },
     methods: {
       ...mapActions('user', [
         'logIn' //async/await
       ]),
-      async onSubmit() {
-        this.info.err = null
-        await this.logIn({
+      onSubmit() {
+        this.logIn({
           username: this.username,
-          password: this.password,
-          redirect: '/'
+          password: this.password
+        }).then((res) => {
+
+        }).catch((err) => {
+            this.loginError = err.response.body
         })
       }
     },
     computed: {
       ...mapState('user', [
-        'info',
         'model'
       ]),
       getIncorrectMessage() {
-        if (this.info.err && this.info.err.incorrect.username)
+        if (this.loginError && this.loginError.incorrect.username)
           return "Incorrect username"
-        if (this.info.err && this.info.err.incorrect.password)
+        if (this.loginError && this.loginError.incorrect.password)
           return "Incorrect password"
       },
       proxyUsername: {
         get() {
-          return this.info.logged ? '' : this.username
+          return this.model ? '' : this.username
         },
         set(value) {
           this.username = value
@@ -77,7 +80,7 @@
       },
       proxyPassword: {
         get() {
-          return this.info.logged ? '' : this.password
+          return this.model ? '' : this.password
         },
         set(value) {
           this.password = value
@@ -87,7 +90,7 @@
   }
 </script>
 
-<style>
+<style scoped>
 .login-text {
   font-size: 1.5rem;
   margin-top: 5%;

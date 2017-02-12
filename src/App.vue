@@ -11,11 +11,11 @@
               <li v-bind:class="{ active: isCourses }"><router-link to="/courses">Courses list</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <template v-if="info.logged">
+              <template v-if="model">
                 <li><a v-on:click.prevent href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
                 <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
               </template>
-              <template v-else="info.logged">
+              <template v-else="model">
                 <li v-if="this.$route.path != '/login'"><router-link to="/login">Log in</router-link></li>
                 <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
               </template>
