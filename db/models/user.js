@@ -56,6 +56,16 @@ var User = new Schema({
   completedTasks: [{
     type: Schema.Types.ObjectId,
     ref: 'Task'
+  }],
+  coursesProgress: [{
+    course: {
+      type: Schema.Types.ObjectId,
+      ref: 'Course'
+    },
+    completedTasks: [{
+      type: Schema.Types.ObjectId,
+      ref: 'completedTasks'
+    }]
   }]
 });
 User.methods.encryptPassword = function (password) {

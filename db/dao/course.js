@@ -15,7 +15,8 @@ module.exports = {
         });
     },
     list: function(args, callback) {
-        Course.find({}).populate('tasks', 'taskDescription taskName taskId').sort({
+        // Course.find({}).populate('tasks', 'taskDescription taskName taskId').sort({
+      Course.find({}).sort({
             "courseId": 1
         }).exec(callback);
     },

@@ -10,16 +10,7 @@ Vue.use(BootstrapVue)
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-
-// import App_example from './App_example'
-// new Vue({
-//   //el: '#app',
-//   template: '<App_example/>',
-//   components: { App_example }
-// }).$mount('#app')
-
 import request from 'superagent'
-
 
 const user = {
   namespaced: true,
@@ -46,23 +37,23 @@ const user = {
     logIn(context, args) {
       return new Promise((resolve, reject) => {
         request.post('/api/user/login')
-          .send({
-            username: args.username,
-            password: args.password
-          })
-          .then(
-            (res) => {
-              context.commit('setModel', res.body)
-              resolve(res)
-              if (!args.redirect)
-                app.$router.push('courses')
-              else
-                app.$router.push(args.redirect)
-            },
-            (err) => {
-              reject(err)
-            }
-          )
+        .send({
+          username: args.username,
+          password: args.password
+        })
+        .then(
+          (res) => {
+            context.commit('setModel', res.body)
+            resolve(res)
+            if (!args.redirect)
+              app.$router.push('courses')
+            else
+              app.$router.push(args.redirect)
+          },
+          (err) => {
+            reject(err)
+          }
+        )
       })
     },
     fetch(context) {

@@ -23,10 +23,11 @@ export default new VueRouter({
     component: Register
   }, {
     path: '/courses/',
-    component: Courses
+    component: Courses,
   }, {
-    path: '/courses/:courseNumber',
+    path: '/courses/:courseNumber?',
     component: Tasks,
+    name: 'courses',
     beforeEnter: (to, from, next) => {
       next({
         path: '/courses/' + to.params.courseNumber + '/tasks'
@@ -34,7 +35,7 @@ export default new VueRouter({
     }
   }, {
     path: '/courses/:courseNumber/tasks',
-    component: Tasks
+    component: Tasks,
   }, {
     path: '/courses/:courseNumber/tasks/:taskNumber',
     component: Main
