@@ -38,7 +38,6 @@
     name: 'lending',
     computed: {
       ...mapState('user', [
-        'info',
         'model'
       ])
     },

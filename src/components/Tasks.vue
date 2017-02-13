@@ -16,17 +16,21 @@
                     </div>
                     <div class="col-md-2">
                       <div class="row">
-                        <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
-                          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        </button>
-                        <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
-                          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                        </button>
+                        <template v-if="userModel">
+                          <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                          </button>
+                          <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                          </button>
+                        </template>
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="row">
-                        <span class="badge">{{ completed(task) }}</span>
+                        <template v-if="userModel">
+                          <span class="badge">{{ completed(task) }}</span>
+                        </template>
                       </div>
                     </div>
                   </div>

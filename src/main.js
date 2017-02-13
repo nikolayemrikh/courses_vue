@@ -26,9 +26,6 @@ const user = {
     }
   },
   getters: {
-    getInfo(state) {
-      return state.info
-    },
     getModel(state) {
       return state.model
     }

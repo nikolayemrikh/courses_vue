@@ -41,7 +41,6 @@
     name: 'App',
     computed: {
       ...mapState('user', [
-        'info',
         'model'
       ]),
       notLending() {
