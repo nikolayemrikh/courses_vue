@@ -1,7 +1,7 @@
 <template>
   <div id="courses" class="container">
     <div class="row">
-      <section class="col-md-8">
+      <section class="col-md-10">
         <div class="row">
           <ul id="courses-list">
             <li v-for="course in courses">
@@ -25,7 +25,7 @@
           </ul>
         </div>
       </section>
-      <section class="col-md-4">
+      <section class="col-md-2">
         Статистика
       </section>
     </div>

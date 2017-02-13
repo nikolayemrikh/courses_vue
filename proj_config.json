@@ -23,5 +23,6 @@
             "tokenURL": "https://oauth.vk.com/access_token",
             "callbackURL": "http://d3js-node-redishko.c9users.io/profile/vk/callback"
         }
-    }
+    },
+    "repPath": "/home/ubuntu/courses-rep"
 }

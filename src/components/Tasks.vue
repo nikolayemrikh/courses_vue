@@ -1,21 +1,33 @@
 <template>
   <div id="tasks" class="container">
     <div class="row">
-      <section class="col-md-8">
+      <section class="col-md-9">
         <div class="row">
           <ul id="tasks-list">
             <li v-for="task in tasks">
               <div class="thumbnail">
                 <div class="caption">
                   <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                       <h3>
                         <router-link class="btn-link" v-bind:to="{ path: '/' }">{{ task.taskName }}</router-link>
                       </h3>
                       <p>{{ task.taskDescription }}</p>
                     </div>
                     <div class="col-md-2">
-                      <span class="badge">{{ completed(task) }}</span>
+                      <div class="row">
+                        <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
+                          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </button>
+                        <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
+                          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <span class="badge">{{ completed(task) }}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -24,7 +36,7 @@
           </ul>
         </div>
       </section>
-      <section class="col-md-4">
+      <section class="col-md-3">
         Статистика
       </section>
     </div>
@@ -50,10 +62,15 @@
       completed(currentTask) {
         return this.userModel.coursesProgress.find((cp) => {
           return cp.completedTasks.find((ct) => {
-            console.log(currentTask._id, ct)
             return ct == currentTask._id
           })
         }) ? 'completed' : ''
+      },
+      editTask(task) {
+        console.log(task)
+      },
+      deleteTask(task) {
+        console.log(task)
       }
     },
     mounted() {
