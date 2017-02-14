@@ -9,7 +9,7 @@ const fs = require('fs');
 const repPath = config.get('repPath')
 console.log(repPath)
 module.exports = {
-  list(callback) {
+  listCourses(args, callback) {
     // Читаем директорию, в которой хранятся папки с курсами
     fs.readdir(repPath, (err, courseDirs) => {
       if (err) return callback(err, null);
@@ -70,16 +70,76 @@ module.exports = {
       callback(null, courses)
     })
   },
-  get(courseNumber, callback) {
-
+  get(args, callback) {
+    let courseId = args.courseId;
   },
-  add(courseNumber, callback) {
-
+  add(args, callback) {
+    let courseId = args.courseId;
   },
-  delete(courseNumber, callback) {
-
+  delete(args, callback) {
+    let courseId = args.courseId;
   },
-  modify(courseNumber, callback) {
+  modify(args, callback) {
+    let courseId = args.courseId;
+  },
+  listTasksInCourse(args, callback) {
+    let courseId = args.courseId;
+    // Преобразуем номер курса в название папки с файлами курса
+    let repDirs = fs.readdirSync(path.join(repPath));
+    repDirs = repDirs.filter(filename => {
+      return filename[0] != '.'
+        && fs.statSync(path.join(repPath, filename)).isDirectory();
+    });
 
+    let courseDir;
+    for (const i in repDirs) {
+      const repDir = repDirs[i];
+      if (repDir.match(/^(\d+)/gm).length == 1 && repDir.match(/^(\d+)/gm)[0] == courseId)
+        courseDir = repDir;
+    }
+
+    // Забираем мету курса
+    let courseMeta = JSON.parse(fs.readFileSync(path.join(repPath, courseDir, 'meta.json'), {
+      encoding: 'utf8'
+    }));
+
+    console.log(repPath, courseDir)
+    // Читаем директорию курса, в которой хранятся папки с заданиями
+    fs.readdir(path.join(repPath, courseDir), (err, taskDirs) => {
+      if (err) return callback(err, null);
+
+      // Фильтруем выбранные файлы, нам нужны только папки с заданиями (вдруг что-то лишнее попало)
+      taskDirs = taskDirs.filter(file => {
+        return file[0] != '.'
+          && file.indexOf('files') == -1
+          && fs.statSync(path.join(repPath, courseDir, file)).isDirectory();
+      });
+
+      let tasks = [];
+
+      // Идем по папкам заданий
+      for (let i in taskDirs) {
+        let taskDir = taskDirs[i];
+        let taskFiles = fs.readdirSync(path.join(repPath, courseDir, taskDir));
+        if (taskFiles.indexOf('meta.json') == -1) break;
+
+        // Забираем мету задания
+        let taskMeta = JSON.parse(fs.readFileSync(path.join(repPath, courseDir, taskDir, 'meta.json'), {
+          encoding: 'utf8'
+        }));
+
+        // Добавляем к мете номер задания (taskId) - число в названии папки
+        let matchedTaskId= taskDir.match(/^(\d+)/gm)
+        if (matchedTaskId.length != 1) break;
+        taskMeta.taskId = Number.parseInt(matchedTaskId[0]);
+        taskMeta.tasks = [];
+
+        tasks.push(taskMeta);
+
+      }
+      courseMeta.tasks = tasks;
+
+      callback(null, courseMeta)
+    })
   }
 };

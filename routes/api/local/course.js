@@ -9,7 +9,7 @@ var utils = require('../../../utils');
 
 router.get('/', function (req, res, next) {
   var args = {};
-  utils.loader.course.list(function (err, courses) {
+  utils.loader.course.listCourses(args, function (err, courses) {
     if (!err && courses) {
       res.json(courses);
     }
@@ -23,9 +23,9 @@ router.get('/:courseId', function (req, res) {
   var args = {
     courseId: req.params.courseId
   };
-  course.getCourse(args, function (err, data) {
-    if (!err && data) {
-      res.json(data);
+  utils.loader.course.listTasksInCourse(args, function(err, tasks) {
+    if (!err && tasks) {
+      res.json(tasks);
     }
     else {
       res.status(400).end();

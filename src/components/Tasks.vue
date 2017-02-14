@@ -10,9 +10,9 @@
                   <div class="row">
                     <div class="col-md-8">
                       <h3>
-                        <router-link class="btn-link" v-bind:to="{ path: '/' }">{{ task.taskName }}</router-link>
+                        <router-link class="btn-link" v-bind:to="{ path: '/' }">{{ task.title }}</router-link>
                       </h3>
-                      <p>{{ task.taskDescription }}</p>
+                      <p>{{ task.description }}</p>
                     </div>
                     <div class="col-md-2">
                       <div class="row">
@@ -78,7 +78,7 @@
       }
     },
     mounted() {
-      request.get('/api/course/' + this.$route.params.courseNumber).then((res) => {
+      request.get(`/api/local/course/${this.$route.params.courseNumber}`).then((res) => {
         this.tasks = res.body.tasks.slice()
       }).catch((err) => {
         console.error(err)

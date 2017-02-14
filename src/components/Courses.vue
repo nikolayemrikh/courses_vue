@@ -10,7 +10,7 @@
                   <div class="row">
                     <div class="col-md-10">
                       <h3>
-                        <router-link class="btn-link" v-bind:to="{ name: 'courses', params: { courseNumber: course.courseId } }">{{ course.name }}</router-link>
+                        <router-link class="btn-link" v-bind:to="{ name: 'courses', params: { courseNumber: course.courseId } }">{{ course.title }}</router-link>
                         <template v-if="userModel">
                           <template v-if="course.tasks.length > 0">
                             <span class="completed-text">progress: </span>
