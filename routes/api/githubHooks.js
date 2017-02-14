@@ -9,13 +9,14 @@ var config = require('nconf');
 
 router.post('/', function(req, res) {
   simpleGit(config.get('repPath')).pull(function(err, update) {
-    if (err || !update)
-      console.error(err)
-    else if (update && update.summary.changes) {
-      childProcess.exec('git -C ~/courses-rep pull',  (error, stdout, stderr) => {
-        utils.handlePull();
-      })
-    }
+    // if (err || !update)
+    //   console.error(err)
+    // else if (update && update.summary.changes) {
+    //   childProcess.exec('git -C ~/courses-rep pull',  (error, stdout, stderr) => {
+    //     utils.handlePull();
+    //   })
+    // }
+    utils.list()
   });
   res.status(200).end();
 });

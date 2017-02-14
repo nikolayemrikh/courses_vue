@@ -1,3 +1,4 @@
 module.exports = {
-  handlePull: require('./handlePull.js')
+  handlePull: require('./handlePull'),
+  loader: require('./loader')
 }

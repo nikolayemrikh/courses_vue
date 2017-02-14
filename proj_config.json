@@ -24,5 +24,5 @@
             "callbackURL": "http://d3js-node-redishko.c9users.io/profile/vk/callback"
         }
     },
-    "repPath": "/home/ubuntu/courses-rep"
+    "repPath": "../courses-rep"
 }

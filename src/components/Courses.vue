@@ -12,13 +12,20 @@
                       <h3>
                         <router-link class="btn-link" v-bind:to="{ name: 'courses', params: { courseNumber: course.courseId } }">{{ course.name }}</router-link>
                         <template v-if="userModel">
-                          <span class="completed-text">progress: </span>
-                          <span class="badge">{{ progress(course) }}</span>
+                          <template v-if="course.tasks.length > 0">
+                            <span class="completed-text">progress: </span>
+                            <span class="badge">{{ progress(course) }}</span>
+                          </template>
+                          <template v-if="haveChallenges(course)">
+                            <span class="completed-text">challenges: </span>
+                            <span class="badge">{{ challengesProgress(course) }}</span>
+                          </template>
                         </template>
                       </h3>
                       <p>{{ course.description }}</p>
                     </div>
                     <div class="col-md-2">
+
                     </div>
                   </div>
                 </div>
@@ -52,20 +59,49 @@
     methods: {
       progress(currentCourse) {
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
-          return cp.course == currentCourse._id
+//          return cp.course == currentCourse._id // Заменил в модели юзера course на courseId
+          return cp.courseId == currentCourse.courseId
         })
         let userCompleted = (courseProgress && courseProgress.completedTasks) ? courseProgress.completedTasks.length : 0
         let tasksQuantity = currentCourse.tasks ? currentCourse.tasks.length : 0
         return userCompleted + ' / ' + tasksQuantity
+      },
+      challengesProgress(currentCourse) {
+        let courseProgress = this.userModel.coursesProgress.find((cp) => {
+          return cp.courseId == currentCourse.courseId
+        })
+
+        let progressCounter = 0;
+        let wholeChallengesCounter = 0;
+
+        for (const i in currentCourse.tasks) {
+          let task = currentCourse.tasks[i];
+          if (task.isChallenge) wholeChallengesCounter++;
+          if (task.isChallenge && courseProgress.completedTasks.find(progressTaskId => {
+            console.log(task)
+              return progressTaskId == task.taskId
+            })) progressCounter++;
+        }
+        if (wholeChallengesCounter == 0) return;
+        return progressCounter + ' / ' + wholeChallengesCounter
+      },
+      haveChallenges(currentCourse) {
+        if (currentCourse.tasks && currentCourse.tasks.length > 0) {
+          for (const i in currentCourse.tasks) {
+            let task = currentCourse.tasks[i];
+            if (task.isChallenge) {
+              return true;
+            }
+          }
+        }
       }
     },
-    beforeRouteEnter (to, from, next) {
-      next((vm) => {
-        request.get('/api/course').then((res) => {
-          vm.courses = res.body.slice()
-        }).catch((err) => {
-          console.error(err)
-        })
+    mounted() {
+//      request.get('/api/course').then((res) => {
+      request.get('/api/local/course').then((res) => {
+        this.courses = res.body.slice()
+      }).catch((err) => {
+        console.error(err)
       })
     }
   }

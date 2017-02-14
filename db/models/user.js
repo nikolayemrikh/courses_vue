@@ -48,25 +48,31 @@ var User = new Schema({
   // Связанные с пользователем файлы
   // Первый элемент массива - фотография пользователя
   attach: [Attach],
-  // Пройденные курсы
-  completedCourses: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Course'
-  }],
-  completedTasks: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Task'
-  }],
   coursesProgress: [{
-    course: {
-      type: Schema.Types.ObjectId,
-      ref: 'Course'
-    },
-    completedTasks: [{
-      type: Schema.Types.ObjectId,
-      ref: 'completedTasks'
-    }]
+    courseId: Number, //
+    completedTasks: [Number]
   }]
+  // Заменяю на локальные айдишники ^
+  // / устарело
+  // completedTasks: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Task'
+  // }],
+  // coursesProgress: [{
+  //   course: {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'Course'
+  //   },
+  //   completedTasks: [{
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'completedTasks'
+  //   }]
+  // }],
+  // Пройденные курсы
+  // completedCourses: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Course'
+  // }]
 });
 User.methods.encryptPassword = function (password) {
   return crypto.createHmac('sha1', this.salt).update(password).digest('hex');

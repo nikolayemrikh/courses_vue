@@ -32,6 +32,7 @@
     "passport-local": "^1.0.0",
     "passport-oauth": "^1.0.0",
     "passport-vkontakte": "^0.3.2",
+    "simple-git": "^1.65.0",
     "superagent": "^3.4.1",
     "vue": "^2.1.0",
     "vue-router": "^2.2.0",
