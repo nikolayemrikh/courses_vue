@@ -24,13 +24,15 @@
         </div>
       </nav>
     </header>
-    <ol v-if="isCoursesOrTasks" class="breadcrumb">
-      <li><router-link to="/courses">Courses</router-link></li>
-      <li v-if="this.$route.params.courseNumber">{{this.$route.params.courseNumber}}</li>
-      <li v-if="this.$route.params.courseNumber"><router-link to="/tasks" class="btn-link-yellow">Tasks</router-link></li>
-      <li v-if="this.$route.params.taskNumber">{{this.$route.params.taskNumber}}</li>
-    </ol>
-    <router-view class="view"></router-view>
+    <div v-bind:class="{'container-fluid': notLending}">
+      <ol v-if="isCoursesOrTasks" class="breadcrumb">
+        <li><router-link to="/courses">Courses</router-link></li>
+        <li v-if="this.$route.params.courseNumber">{{this.$route.params.courseNumber}}</li>
+        <li v-if="this.$route.params.courseNumber"><router-link to="/tasks">Tasks</router-link></li>
+        <li v-if="this.$route.params.taskNumber">{{this.$route.params.taskNumber}}</li>
+      </ol>
+      <router-view class="view"></router-view>
+    </div>
     <footer :if="notLending"></footer>
   </div>
 </template>

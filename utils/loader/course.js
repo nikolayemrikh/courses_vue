@@ -103,6 +103,12 @@ module.exports = {
       encoding: 'utf8'
     }));
 
+    // Добавляем к мете номер курса (courseId) - число в названии папки
+    let matchedCourseId = courseDir.match(/^(\d+)/gm);
+    if (matchedCourseId.length != 1) callback('multiple directories with same number');
+    courseMeta.courseId = Number.parseInt(matchedCourseId[0]);
+    courseMeta.tasks = [];
+
     console.log(repPath, courseDir)
     // Читаем директорию курса, в которой хранятся папки с заданиями
     fs.readdir(path.join(repPath, courseDir), (err, taskDirs) => {

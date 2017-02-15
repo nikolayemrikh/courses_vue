@@ -97,6 +97,7 @@ files - файлы, которые будут загружены в iframe в к
     ├── initial
     │   └── script.js
     ├── meta.json
+    ├── goals.html
     ├── check.js
     └── theory.html
 </pre>
