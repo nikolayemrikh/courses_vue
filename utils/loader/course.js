@@ -163,14 +163,17 @@ module.exports = {
   getCourseFiles(args, callback) {
     let courseId = args.courseId;
     let filesDirPath = path.join(helpers.resolveDirName(repPath, courseId), filesDirName);
-    let files = [];
-    let fileNames = fs.readdirSync(filesDirPath);
+    let files = {};
+    let fileNames = fs.readdirSync(filesDirPath).filter(file => {
+      return file[0] != '.';
+    });
     for (i in fileNames) {
       let fileName = fileNames[i];
-      files.push(fs.readFileSync(path.join(filesDirPath, fileName), {
+      files[fileName] = fs.readFileSync(path.join(filesDirPath, fileName), {
         encoding: 'utf8'
-      }));
+      });
     }
+    console.log(files)
     callback(null, files);
 
   },
@@ -187,7 +190,7 @@ module.exports = {
 
     let taskFiles = fs.readdirSync(fullTaskPath);
     taskFiles = taskFiles.filter(file => {
-      return file[0] != '.'
+      return file[0] != '.';
     });
     // Сначала заберем все initial файлы
     task.initial = {};
@@ -229,7 +232,7 @@ module.exports = {
         encoding: 'utf8'
       });
 
-    this.getCourseFiles({courseId}, (files) => {
+    this.getCourseFiles({courseId}, (err, files) => {
       task.files = files;
       callback(null, task);
     });
