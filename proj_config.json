@@ -24,5 +24,22 @@
             "callbackURL": "http://d3js-node-redishko.c9users.io/profile/vk/callback"
         }
     },
-    "repPath": "../courses-rep"
+    "courses": {
+      "repPath": "../courses-rep",
+      "dirNameTemplate": {
+        "pattern": "^(\\d+)",
+        "flags": "gm"
+      },
+      "initialFilesDir": "initial",
+      "initialHtmlFile": "index.html",
+      "initialCssFile": "style.css",
+      "initialJsFile": "script.js",
+      "initialAnswersFile": "answers.json",
+      "metaFile": "meta.json",
+      "solutionFile": "solution.html",
+      "theoryFile": "theory.html",
+      "checkerFile": "check.js",
+      "goalsFile": "goals.html",
+      "filesDirName": "files"
+    }
 }

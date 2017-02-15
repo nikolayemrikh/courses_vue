@@ -28,7 +28,7 @@
       <ol v-if="isCoursesOrTasks" class="breadcrumb">
         <li><router-link to="/courses">Courses</router-link></li>
         <li v-if="this.$route.params.courseNumber">{{this.$route.params.courseNumber}}</li>
-        <li v-if="this.$route.params.courseNumber"><router-link to="/tasks">Tasks</router-link></li>
+        <li v-if="this.$route.params.courseNumber"><router-link v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
         <li v-if="this.$route.params.taskNumber">{{this.$route.params.taskNumber}}</li>
       </ol>
       <router-view class="view"></router-view>

@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var course = require('../../../db/dao/course');
 var taskRouter = require('./task');
 router.use('/:courseId/task', taskRouter);
 // List all course in course

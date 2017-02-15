@@ -8,8 +8,8 @@
 //  import * as brace from 'brace';
 //  import 'brace/mode/javascript';
 //  import 'brace/theme/textmate';
-
-  import jsProgramming from './JsProgramming';
+  import request from 'superagent'
+  import jsProgramming from './JsProgramming'
   import bootstrapDialog from 'bootstrap3-dialog'
 
   // "type": "htmlCssJs/jsProgramming/question/radio/answers"
@@ -23,7 +23,12 @@
       }
     },
     mounted() {
-
+      request.get(`/api/local/course/${this.$route.params.courseNumber}/task/${this.$route.params.courseNumber}`).then((res) => {
+        this.task = res.body;
+        console.log(this.task)
+      }).catch((err) => {
+        console.error(err)
+      })
 //      switch (this.type) {
 //        case 'jsProgramming':
 //

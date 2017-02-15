@@ -132,7 +132,7 @@ files - файлы, которые будут загружены в iframe в к
 .
 └── j-task-name
     ├── initial
-    │   └── k
+    │   └── answers.json
     ├── meta.json
     └── theory.html
 </pre>

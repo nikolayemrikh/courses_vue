@@ -1,12 +1,12 @@
-var express = require('express');
-var router = express.Router({
+let express = require('express');
+let router = express.Router({
     mergeParams: true
 });
-var task = require('../../../db/dao/task');
+let utils = require('../../../utils');
 // List all task in course
 router.get('/', function(req, res) {
     console.log(req.params.courseId, "test1")
-    var args = {
+    let args = {
         courseId: req.params.courseId
     };
     task.list(args, function(err, data) {
@@ -20,13 +20,14 @@ router.get('/', function(req, res) {
 });
 // Get task by id
 router.get('/:taskId', function(req, res, next) {
-    var args = {
+    let args = {
         courseId: req.params.courseId,
         taskId: req.params.taskId
     };
-    task.getTask(args, function(err, data) {
-        if (!err && data) {
-            res.json(data);
+    console.log('teste')
+    utils.loader.course.getTask(args, function(err, task) {
+        if (!err && task) {
+            res.json(task);
         }
         else {
             res.status(400).end();
@@ -35,7 +36,7 @@ router.get('/:taskId', function(req, res, next) {
 });
 // Create new task
 router.post('/', function(req, res, next) {
-    var args = {
+    let args = {
         courseId: req.params.courseId,
         data: req.body
     };
@@ -55,7 +56,7 @@ router.post('/', function(req, res, next) {
 });
 // Update task
 router.put('/:_id', function(req, res, next) {
-    var args = {
+  let args = {
         _id: req.params._id,
         data: req.body
     };
@@ -75,7 +76,7 @@ router.put('/:_id', function(req, res, next) {
 });
 // Remove task
 router.delete('/:taskId', function(req, res, next) {
-    var args = {
+  let args = {
         courseId: req.params.courseId,
         taskId: req.params.taskId
     };
