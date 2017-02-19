@@ -8,6 +8,8 @@ import Register from './components/Register'
 import Courses from './components/Courses'
 import Tasks from './components/Tasks'
 import Main from './components/Main'
+import ManageCourses from './components/ManageCourses'
+import ManageTasks from './components/ManageTasks'
 import EditCourse from './components/EditCourse'
 import EditTask from './components/EditTask'
 
@@ -40,11 +42,20 @@ export default new VueRouter({
     path: '/courses/:courseNumber/tasks/:taskNumber',
     component: Main
   }, {
-    path: '/edit/courses/:courseNumber',
-    component: EditCourse
+    path: '/manage/courses/',
+    component: ManageCourses
   }, {
-    path: '/edit/courses/:courseNumber/tasks/:taskNumber',
-    component: EditTask
+    path: '/manage/courses/:courseNumber?',
+    component: Tasks,
+    name: 'manage',
+    beforeEnter: (to, from, next) => {
+      next({
+        path: '/manage/courses/' + to.params.courseNumber + '/tasks'
+      })
+    }
+  }, {
+    path: '/manage/courses/:courseNumber/tasks/',
+    component: ManageTasks
   }, {
     path: '*',
     redirect: '/'

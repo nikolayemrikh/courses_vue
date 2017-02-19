@@ -26,6 +26,7 @@
         </div>
       </div>
     </div>
+    <!--<img src="~assets/1-es6Course/1-letconst/assets/logo.png">-->
   </div>
 </template>
 
@@ -48,6 +49,12 @@
       this.editor.getSession().setMode('ace/mode/javascript');
 
       this.$parent.openDialog(this.theory);
+
+      // Загружка файлов из courses_rep/course_number/files
+      let scr = document.createElement('script');
+      scr.textContent = 'window.test = "KEK"'
+      let jsp = document.querySelector('#js-programming');
+      jsp.appendChild(scr)
     },
     methods() {
     }

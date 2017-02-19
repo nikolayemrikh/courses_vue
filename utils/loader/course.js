@@ -173,7 +173,6 @@ module.exports = {
         encoding: 'utf8'
       });
     }
-    console.log(files)
     callback(null, files);
 
   },
