@@ -162,7 +162,7 @@ module.exports = {
   },
   getCourseFiles(args, callback) {
     let courseId = args.courseId;
-    let filesDirPath = path.join(helpers.resolveDirName(repPath, courseId), filesDirName);
+    let filesDirPath = path.join(helpers.resolveDirName(repPath, courseId).path, filesDirName);
     let files = {};
     let fileNames = fs.readdirSync(filesDirPath).filter(file => {
       return file[0] != '.';
@@ -179,11 +179,16 @@ module.exports = {
   getTask(args, callback) {
     let courseId = args.courseId;
     let taskId = args.taskId;
+    console.log(courseId)
 
-    let fullTaskPath = helpers.resolveDirName(repPath, courseId, taskId);
+    let { path: fullTaskPath, courseDirName, taskDirName } = helpers.resolveDirName(repPath, courseId, taskId);
+    // let fullTaskPath = helpers.resolveDirName(repPath, courseId, taskId);
 
+    console.log(fullTaskPath, courseDirName, taskDirName)
     let task = {};
-    task.taskMeta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
+    task.taskDirName = taskDirName;
+    task.courseDirName = courseDirName;
+    task.meta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
       encoding: 'utf8'
     }));
 
@@ -193,7 +198,7 @@ module.exports = {
     });
     // Сначала заберем все initial файлы
     task.initial = {};
-    let initialFiles = fs.readdirSync(path.join(repPath, fullTaskPath, initialFilesDir));
+    let initialFiles = fs.readdirSync(path.join(fullTaskPath, initialFilesDir));
 
     if (initialFiles.includes(initialHtmlFile))
       task.initial.html = fs.readFileSync(path.join(fullTaskPath, initialFilesDir, initialHtmlFile), {
@@ -217,19 +222,25 @@ module.exports = {
 
     // Потом все остальные
     if (taskFiles.includes(solutionFile))
-      task.initial.solution = fs.readFileSync(path.join(fullTaskPath, solutionFile), {
+      task.solution = fs.readFileSync(path.join(fullTaskPath, solutionFile), {
         encoding: 'utf8'
       });
 
     if (taskFiles.includes(checkerFile))
-      task.initial.checker = fs.readFileSync(path.join(fullTaskPath, checkerFile), {
+      task.checker = fs.readFileSync(path.join(fullTaskPath, checkerFile), {
         encoding: 'utf8'
       });
 
     if (taskFiles.includes(goalsFile))
-      task.initial.goals = fs.readFileSync(path.join(fullTaskPath, goalsFile), {
+      task.goals = fs.readFileSync(path.join(fullTaskPath, goalsFile), {
         encoding: 'utf8'
       });
+
+    if (taskFiles.includes(theoryFile))
+      task.theory = fs.readFileSync(path.join(fullTaskPath, theoryFile), {
+        encoding: 'utf8'
+      });
+    console.log(courseId)
 
     this.getCourseFiles({courseId}, (err, files) => {
       task.files = files;

@@ -3,9 +3,7 @@
     <div class="row cont">
       <div class="col-md-6 col-xs-6 left">
         <div class="panel panel-default panel-code">
-          <!--<div class="panel-body">-->
-            <div id="editor"></div>
-          <!--</div>-->
+          <div id="editor"></div>
         </div>
       </div>
       <div class="col-md-6 col-xs-6 right">
@@ -16,7 +14,7 @@
               <ol class="task-goals-list">
               </ol>
             </div>
-            <a v-on:click.prevent="$parent.openDialog(theory)" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
+            <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
             <a v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
             <label class="checkbox-inline">
               <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check"> autocheck
@@ -26,7 +24,7 @@
         </div>
       </div>
     </div>
-    <!--<img src="~assets/1-es6Course/1-letconst/assets/logo.png">-->
+    <!--<img id="qwe" v-bind:src="require('assets/1-es6Course/2-programOnJs/images/logo.png')">-->
   </div>
 </template>
 
@@ -40,7 +38,6 @@
     data() {
       return {
         autocheck: false,
-        theory: 'lel'
       }
     },
     mounted() {
@@ -48,15 +45,24 @@
       this.editor.setTheme("ace/theme/textmate");
       this.editor.getSession().setMode('ace/mode/javascript');
 
-      this.$parent.openDialog(this.theory);
-
+      this.task = this.$parent.task;
+      this.openDialog();
       // Загружка файлов из courses_rep/course_number/files
       let scr = document.createElement('script');
       scr.textContent = 'window.test = "KEK"'
       let jsp = document.querySelector('#js-programming');
       jsp.appendChild(scr)
     },
-    methods() {
+    methods: {
+      openDialog() {
+        this.$parent.openDialog({
+          title: this.task.meta.title,
+          body: this.task.theory
+        });
+      }
+    },
+    beforeDestroy() {
+      if (this.$parent.dialog) this.$parent.dialog.close();
     }
   }
 </script>

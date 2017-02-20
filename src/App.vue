@@ -72,7 +72,7 @@
     margin: 0;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.5;
     color: #292b2c;
     background-color: #ffffff;

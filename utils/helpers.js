@@ -21,7 +21,11 @@ module.exports = {
       if (dir.match(/^(\d+)/gm).length == 1 && dir.match(/^(\d+)/gm)[0] == courseId)
         courseDir = dir;
     }
-    if (!otherIds[1]) return path.join(repPath, courseDir);
+    if (!otherIds[1]) return {
+      path: path.join(repPath, courseDir),
+      courseDirName: courseDir
+    };
+    // if (!otherIds[1]) return path.join(repPath, courseDir);
 
     let taskId = otherIds[1];
 
@@ -38,6 +42,11 @@ module.exports = {
         taskDir = dir;
     }
     console.log(repPath, courseDir, taskDir)
-    return path.join(repPath, courseDir, taskDir)
+    return {
+      path: path.join(repPath, courseDir, taskDir),
+      courseDirName: courseDir,
+      taskDirName: taskDir
+    }
+    // return path.join(repPath, courseDir, taskDir)
   }
 }
