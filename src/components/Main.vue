@@ -91,8 +91,7 @@
         return div.innerHTML;
       },
       resolveImgUrl(relativePath) {
-        let req = require.context("assets/", true, /\.(png|jpe?g|gif|svg)(\?.*)?$/);
-        return req('.' + path.join(`/${this.task.courseDirName}/${this.task.taskDirName}/`, relativePath));
+        return path.join(`/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`, relativePath);
       }
     },
     beforeDestroy() {

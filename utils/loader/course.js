@@ -150,7 +150,7 @@ module.exports = {
         }));
 
         // Добавляем к мете номер задания (taskId) - число в названии папки
-        let matchedTaskId= taskDir.match(dirNameTemplate)
+        let matchedTaskId = taskDir.match(dirNameTemplate)
         if (matchedTaskId.length != 1) break;
         taskMeta.taskId = Number.parseInt(matchedTaskId[0]);
         taskMeta.tasks = [];
@@ -184,7 +184,7 @@ module.exports = {
     let taskId = args.taskId;
     console.log(courseId)
 
-    let { path: fullTaskPath, courseDirName, taskDirName } = helpers.resolveDirName(repPath, courseId, taskId);
+    let {path: fullTaskPath, courseDirName, taskDirName} = helpers.resolveDirName(repPath, courseId, taskId);
     // let fullTaskPath = helpers.resolveDirName(repPath, courseId, taskId);
 
     console.log(fullTaskPath, courseDirName, taskDirName)
