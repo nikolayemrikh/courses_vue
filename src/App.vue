@@ -8,7 +8,8 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li v-bind:class="{ active: isCourses }"><router-link to="/courses">Courses list</router-link></li>
+              <li v-bind:class="{ active: isCourses && !isDevelopment }"><router-link to="/courses">Courses list</router-link></li>
+              <li v-bind:class="{ active: isDevelopment }"><router-link to="/development/courses">Development</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <template v-if="userModel">
@@ -26,9 +27,9 @@
     </header>
     <div v-bind:class="{'container-fluid': notLending}">
       <ol v-if="isCoursesOrTasks" class="breadcrumb">
-        <li><router-link to="/courses">Courses</router-link></li>
+        <li><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses`">{{ this.isDevelopment ? "Your courses" : "Courses" }}</router-link></li>
         <li v-if="this.course">{{ this.courseName }}</li>
-        <li v-if="this.course"><router-link v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
+        <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
         <li v-if="this.task">{{ this.taskName }}</li>
       </ol>
       <router-view class="view"></router-view>
@@ -59,7 +60,10 @@
         return this.$route.path != '/'
       },
       isCourses() {
-        return this.$route.path == '/courses' || this.$route.path == '/courses/'
+        return this.$route.path.includes('courses')
+      },
+      isDevelopment() {
+        return this.$route.path.includes('development')
       },
       isCoursesOrTasks() {
         return this.$route.path.indexOf('courses') != -1 || this.$route.path.indexOf('tasks') != -1;

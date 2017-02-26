@@ -44,20 +44,25 @@ export default new VueRouter({
     name: 'main',
     component: Main
   }, {
-    path: '/manage/courses/',
+    path: '/development/courses/',
+    name: 'manageCourses',
     component: ManageCourses
   }, {
-    path: '/manage/courses/:courseNumber?',
+    path: '/development/courses/:courseNumber?',
     component: Tasks,
-    name: 'manage',
     beforeEnter: (to, from, next) => {
       next({
         path: '/manage/courses/' + to.params.courseNumber + '/tasks'
       })
     }
   }, {
-    path: '/manage/courses/:courseNumber/tasks/',
+    path: '/development/courses/:courseNumber/tasks/',
+    name: 'manageTasks',
     component: ManageTasks
+  }, {
+    path: '/development/courses/:courseNumber/tasks/:taskNumber',
+    name: 'manageMain',
+    component: Main
   }, {
     path: '*',
     redirect: '/'

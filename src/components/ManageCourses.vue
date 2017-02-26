@@ -8,9 +8,9 @@
               <div class="thumbnail">
                 <div class="caption">
                   <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                       <h3>
-                        <router-link class="btn-link" v-bind:to="{ name: 'courses', params: { courseNumber: course.courseId } }">{{ course.title }}</router-link>
+                        <router-link class="btn-link" v-bind:to="{ name: 'manageTasks', params: { courseNumber: course.courseId } }">{{ course.title }}</router-link>
                         <template v-if="userModel">
                           <template v-if="course.tasks.length > 0">
                             <span class="completed-text">progress: </span>
@@ -26,6 +26,18 @@
                     </div>
                     <div class="col-md-2">
 
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <template v-if="userModel">
+                          <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                          </button>
+                          <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                          </button>
+                        </template>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -78,7 +90,6 @@
           let task = currentCourse.tasks[i];
           if (task.isChallenge) wholeChallengesCounter++;
           if (task.isChallenge && courseProgress.completedTasks.find(progressTaskId => {
-              console.log(task)
               return progressTaskId == task.taskId
             })) progressCounter++;
         }
@@ -96,7 +107,7 @@
         }
       }
     },
-    mounted() {
+    beforeMount() {
 //      request.get('/api/course').then((res) => {
       request.get('/api/local/course').then((res) => {
         this.courses = res.body.slice()

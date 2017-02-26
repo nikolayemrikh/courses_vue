@@ -8,23 +8,11 @@
               <div class="thumbnail">
                 <div class="caption">
                   <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                       <h3>
                         <router-link class="btn-link" v-bind:to="`/courses/${course.courseId}/tasks/${task.taskId}`">{{ task.title }}</router-link>
                       </h3>
                       <p>{{ task.description }}</p>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="row">
-                        <template v-if="userModel">
-                          <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                          </button>
-                          <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                          </button>
-                        </template>
-                      </div>
                     </div>
                     <div class="col-md-2">
                       <div class="row">
@@ -69,12 +57,6 @@
       ])
     },
     methods: {
-      ...mapActions('models', [
-        'loadCourse'
-      ]),
-      ...mapMutations('models', [
-        'setCourse'
-      ]),
       completed(currentTask) {
         return this.userModel.coursesProgress.find((cp) => {
           return cp.completedTasks.find((ct) => {
@@ -91,12 +73,6 @@
     },
     beforeMount() {
       this.tasks = this.course.tasks;
-//      request.get(`/api/local/course/${this.$route.params.courseNumber}`).then((res) => {
-//        this.course = res.body;
-//        this.tasks = res.body.tasks.slice()
-//      }).catch((err) => {
-//        console.error(err)
-//      })
     }
   }
 </script>

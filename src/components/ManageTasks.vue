@@ -10,9 +10,16 @@
                   <div class="row">
                     <div class="col-md-8">
                       <h3>
-                        <router-link class="btn-link" v-bind:to="`/courses/${course.courseId}/tasks/${task.taskId}`">{{ task.title }}</router-link>
+                        <router-link class="btn-link" v-bind:to="`/development/courses/${course.courseId}/tasks/${task.taskId}`">{{ task.title }}</router-link>
                       </h3>
                       <p>{{ task.description }}</p>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <template v-if="userModel">
+                          <span class="badge">{{ completed(task) }}</span>
+                        </template>
+                      </div>
                     </div>
                     <div class="col-md-2">
                       <div class="row">
@@ -23,13 +30,6 @@
                           <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                           </button>
-                        </template>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="row">
-                        <template v-if="userModel">
-                          <span class="badge">{{ completed(task) }}</span>
                         </template>
                       </div>
                     </div>
@@ -50,6 +50,8 @@
 <script>
   import request from 'superagent'
   import { mapState } from 'vuex'
+  import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   export default {
     name: 'manageTasks',
     data () {
@@ -60,7 +62,11 @@
     computed: {
       ...mapState('user', {
         userModel: 'model'
-      })
+      }),
+      ...mapState('models', [
+        'course',
+        'task'
+      ])
     },
     methods: {
       completed(currentTask) {
@@ -77,14 +83,8 @@
         console.log(task)
       }
     },
-    mounted() {
-      request.get(`/api/local/course/${this.$route.params.courseNumber}`).then((res) => {
-        this.course = res.body;
-        console.log(this.course)
-        this.tasks = res.body.tasks.slice()
-      }).catch((err) => {
-        console.error(err)
-      })
+    beforeMount() {
+      this.tasks = this.course.tasks;
     }
   }
 </script>
