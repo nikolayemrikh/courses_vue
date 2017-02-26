@@ -37,6 +37,7 @@
     "simple-git": "^1.65.0",
     "superagent": "^3.4.1",
     "vue": "^2.1.0",
+    "vue-head": "^2.0.10",
     "vue-router": "^2.2.0",
     "vue-strap": "^1.1.36",
     "vuex": "^2.1.1",

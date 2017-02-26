@@ -10,6 +10,9 @@ Vue.use(BootstrapVue)
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
+import VueHead from 'vue-head'
+Vue.use(VueHead)
+
 import request from 'superagent'
 
 const user = {

@@ -34,25 +34,20 @@
       ])
     },
     beforeMount() {
-      this.task.theory = this.constructHtmlCss(this.task.theory);
-      switch (this.task.type) {
-        case 'jsProgramming':
-          this.currentView = 'jsProgramming';
-          break;
-      }
+      this.$on('okHead', function() {
+        switch (this.task.type) {
+          case 'jsProgramming':
+            this.currentView = 'jsProgramming';
+            break;
+        }
+      })
+//      this.task.theory = this.constructHtmlCss(this.task.theory);
+
 
 //      this.editor = ace.edit('editor');
 //      this.editor.setTheme("ace/theme/textmate");
 //      this.editor.getSession().setMode('ace/mode/javascript');
 
-    },
-    beforeRouteLeave (to, from, next) {
-      if (!to.params.taskNumber) {
-        this.setTask({
-          task: null
-        });
-      }
-      next();
     },
     methods: {
       ...mapActions('models', [
@@ -74,28 +69,17 @@
           }],
           nl2br: false
         });
-      },
-      constructHtmlCss(htmlText) {
-        let doc = window.document;
-        let template = doc.createElement('template');
-        let div = doc.createElement('div');
-        div.innerHTML = htmlText;
-        template.appendChild(div);
-        let images = Array.from(template.querySelectorAll('img'));
-        for (const i in images) {
-          let img = images[i];
-          let src = img.attributes.src.value;
-          src = this.resolveImgUrl(src);
-          img.attributes.src.value = src;
-        }
-        return div.innerHTML;
-      },
-      resolveImgUrl(relativePath) {
-        return path.join(`/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`, relativePath);
       }
     },
     beforeDestroy() {
       if (this.dialog) this.dialog.close();
+    },
+    head: {
+      base() {
+        return [{
+          href: `/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`
+        }]
+      }
     }
   }
 </script>
