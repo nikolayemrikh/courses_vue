@@ -1,0 +1,10 @@
+{
+    "type": "htmlCssJs",
+    "title": "Let и const",
+    "description": "Выясняем че это за дичь",
+    "activeTab": "JS",
+    "blockedCSS": false,
+    "blockedHTML": false,
+    "blockedJS": false,
+    "isChallenge": false
+}

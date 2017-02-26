@@ -49,7 +49,7 @@ var User = new Schema({
   // Первый элемент массива - фотография пользователя
   attach: [Attach],
   coursesProgress: [{
-    courseId: Number, //
+    courseId: String, //
     completedTasks: [Number]
   }]
   // Заменяю на локальные айдишники ^

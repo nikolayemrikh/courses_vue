@@ -50,6 +50,8 @@
 <script>
   import request from 'superagent'
   import { mapState } from 'vuex'
+  import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   export default {
     name: 'tasks',
     data () {
@@ -60,9 +62,19 @@
     computed: {
       ...mapState('user', {
         userModel: 'model'
-      })
+      }),
+      ...mapState('models', [
+        'course',
+        'task'
+      ])
     },
     methods: {
+      ...mapActions('models', [
+        'loadCourse'
+      ]),
+      ...mapMutations('models', [
+        'setCourse'
+      ]),
       completed(currentTask) {
         return this.userModel.coursesProgress.find((cp) => {
           return cp.completedTasks.find((ct) => {
@@ -77,14 +89,14 @@
         console.log(task)
       }
     },
-    mounted() {
-      request.get(`/api/local/course/${this.$route.params.courseNumber}`).then((res) => {
-        this.course = res.body;
-        console.log(this.course)
-        this.tasks = res.body.tasks.slice()
-      }).catch((err) => {
-        console.error(err)
-      })
+    beforeMount() {
+      this.tasks = this.course.tasks;
+//      request.get(`/api/local/course/${this.$route.params.courseNumber}`).then((res) => {
+//        this.course = res.body;
+//        this.tasks = res.body.tasks.slice()
+//      }).catch((err) => {
+//        console.error(err)
+//      })
     }
   }
 </script>

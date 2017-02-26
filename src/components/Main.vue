@@ -9,6 +9,9 @@
   //  import * as brace from 'brace';
   //  import 'brace/mode/javascript';
   //  import 'brace/theme/textmate';
+  import { mapState } from 'vuex'
+  import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   import request from 'superagent'
   import jsProgramming from './JsProgramming'
   import bootstrapDialog from 'bootstrap3-dialog'
@@ -24,25 +27,40 @@
         currentView: null
       }
     },
-    mounted() {
-      request.get(`/api/local/course/${this.$route.params.courseNumber}/task/${this.$route.params.taskNumber}`).then((res) => {
-        this.task = res.body;
-        this.task.theory = this.constructHtmlCss(this.task.theory);
-        switch (this.task.meta.type) {
-          case 'jsProgramming':
-            this.currentView = 'jsProgramming';
-            break;
-        }
-      }).catch((err) => {
-        console.error(err)
-      })
+    computed: {
+      ...mapState('models', [
+        'course',
+        'task'
+      ])
+    },
+    beforeMount() {
+      this.task.theory = this.constructHtmlCss(this.task.theory);
+      switch (this.task.type) {
+        case 'jsProgramming':
+          this.currentView = 'jsProgramming';
+          break;
+      }
 
 //      this.editor = ace.edit('editor');
 //      this.editor.setTheme("ace/theme/textmate");
 //      this.editor.getSession().setMode('ace/mode/javascript');
 
     },
+    beforeRouteLeave (to, from, next) {
+      if (!to.params.taskNumber) {
+        this.setTask({
+          task: null
+        });
+      }
+      next();
+    },
     methods: {
+      ...mapActions('models', [
+        'loadTask'
+      ]),
+      ...mapMutations('models', [
+        'setTask'
+      ]),
       openDialog({title, body}) {
         this.dialog = bootstrapDialog.show({
           title: title,
@@ -62,7 +80,6 @@
         let template = doc.createElement('template');
         let div = doc.createElement('div');
         div.innerHTML = htmlText;
-        console.log(div)
         template.appendChild(div);
         let images = Array.from(template.querySelectorAll('img'));
         for (const i in images) {
@@ -75,7 +92,6 @@
       },
       resolveImgUrl(relativePath) {
         let req = require.context("assets/", true, /\.(png|jpe?g|gif|svg)(\?.*)?$/);
-        console.log("est")
         return req('.' + path.join(`/${this.task.courseDirName}/${this.task.taskDirName}/`, relativePath));
       }
     },

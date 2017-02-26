@@ -79,11 +79,92 @@ const user = {
   }
 }
 
+const models = {
+  namespaced: true,
+  state: {
+    course: null,
+    task: null
+  },
+  mutations: {
+    setCourse(state, args) {
+      state.course = args.course;
+    },
+    setTask(state, args) {
+      state.task = args.task;
+    }
+  },
+  getters: {
+
+  },
+  actions: {
+    loadCourse(context, args) {
+      return new Promise((resolve, reject) => {
+        request.get(`/api/local/course/${args.courseNumber}`).then((res) => {
+          context.commit('setCourse', {
+            course: res.body
+          });
+          resolve(context.state.course)
+        }).catch(err => reject(err));
+      });
+    },
+    loadTask(context, args) {
+      return new Promise((resolve, reject) => {
+        request.get(`/api/local/course/${args.courseNumber}/task/${args.taskNumber}`).then(res => {
+          context.commit('setTask', {
+            task: res.body
+          });
+          resolve(context.state.task)
+        }).catch(err => reject(err));
+      });
+    }
+  }
+}
+
 const store = new Vuex.Store({
   modules: {
-    user
+    user,
+    models
   }
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.params.taskNumber && !store.state.models.task) {
+    let args = {
+      courseNumber: to.params.courseNumber,
+      taskNumber: to.params.taskNumber
+    }
+    store.dispatch('models/loadTask', args).then(task => {
+      next();
+    }).catch(err => next());
+  } else next();
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.params.courseNumber && !store.state.models.course) {
+    let args = {
+      courseNumber: to.params.courseNumber
+    }
+    store.dispatch('models/loadCourse', args).then(course => next()).catch(err => next());
+  } else next();
+})
+
+router.beforeEach((to, from, next) => {
+  if (!to.params.courseNumber && store.state.models.course) {
+    store.commit('models/setCourse', {
+      course: null,
+    });
+    next();
+  } else next();
+});
+
+router.beforeEach((to, from, next) => {
+  if (!to.params.taskNumber && store.state.models.task) {
+    store.commit('models/setTask', {
+      task: null
+    })
+    next();
+  } else next();
+});
 
 const app = new Vue({
   template: '<AppView/>',

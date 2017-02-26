@@ -45,9 +45,10 @@ module.exports = {
         }));
 
         // Добавляем к мете номер курса (courseId) - число в названии папки
-        let matchedCourseId = courseDir.match(dirNameTemplate)
-        if (matchedCourseId.length != 1) break;
-        courseMeta.courseId = Number.parseInt(matchedCourseId[0]);
+        // let matchedCourseId = courseDir.match(dirNameTemplate)
+        // if (matchedCourseId.length != 1) break;
+        // courseMeta.courseId = Number.parseInt(matchedCourseId[0]);
+        courseMeta.courseId = courseDir;
         courseMeta.tasks = [];
 
         // Фильтруем файлы в папке курса, нам нужны папки заданий
@@ -106,7 +107,8 @@ module.exports = {
     let courseDir;
     for (const i in repDirs) {
       const repDir = repDirs[i];
-      if (repDir.match(dirNameTemplate).length == 1 && repDir.match(dirNameTemplate)[0] == courseId)
+      // if (repDir.match(dirNameTemplate).length == 1 && repDir.match(dirNameTemplate)[0] == courseId)
+      if (repDir == courseId)
         courseDir = repDir;
     }
 
@@ -116,9 +118,10 @@ module.exports = {
     }));
 
     // Добавляем к мете номер курса (courseId) - число в названии папки
-    let matchedCourseId = courseDir.match(dirNameTemplate);
-    if (matchedCourseId.length != 1) callback('multiple directories with same number');
-    courseMeta.courseId = Number.parseInt(matchedCourseId[0]);
+    // let matchedCourseId = courseDir.match(dirNameTemplate);
+    // if (matchedCourseId.length != 1) callback('multiple directories with same number');
+    // courseMeta.courseId = Number.parseInt(matchedCourseId[0]);
+    courseMeta.courseId = courseDir;
     courseMeta.tasks = [];
 
     console.log(repPath, courseDir)
@@ -188,9 +191,11 @@ module.exports = {
     let task = {};
     task.taskDirName = taskDirName;
     task.courseDirName = courseDirName;
-    task.meta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
+    let meta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
       encoding: 'utf8'
     }));
+
+    Object.assign(task, meta)
 
     let taskFiles = fs.readdirSync(fullTaskPath);
     taskFiles = taskFiles.filter(file => {

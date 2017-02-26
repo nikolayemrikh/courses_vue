@@ -25,7 +25,7 @@
         }
     },
     "courses": {
-      "repPath": "./courses-rep",
+      "repPath": "./courses",
       "dirNameTemplate": {
         "pattern": "^(\\d+)",
         "flags": "gm"

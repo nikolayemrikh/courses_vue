@@ -11,11 +11,11 @@
               <li v-bind:class="{ active: isCourses }"><router-link to="/courses">Courses list</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <template v-if="model">
-                <li><a v-on:click.prevent href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
+              <template v-if="userModel">
+                <li><a v-on:click.prevent href="#">{{ this.userModel.firstname + ' ' + this.userModel.lastname }}</a></li>
                 <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
               </template>
-              <template v-else="model">
+              <template v-else="userModel">
                 <li v-if="this.$route.path != '/login'"><router-link to="/login">Log in</router-link></li>
                 <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
               </template>
@@ -27,9 +27,9 @@
     <div v-bind:class="{'container-fluid': notLending}">
       <ol v-if="isCoursesOrTasks" class="breadcrumb">
         <li><router-link to="/courses">Courses</router-link></li>
-        <li v-if="this.$route.params.courseNumber">{{this.$route.params.courseNumber}}</li>
-        <li v-if="this.$route.params.courseNumber"><router-link v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
-        <li v-if="this.$route.params.taskNumber">{{this.$route.params.taskNumber}}</li>
+        <li v-if="this.course">{{ this.courseName }}</li>
+        <li v-if="this.course"><router-link v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
+        <li v-if="this.task">{{ this.taskName }}</li>
       </ol>
       <router-view class="view"></router-view>
     </div>
@@ -42,9 +42,19 @@
   export default {
     name: 'App',
     computed: {
-      ...mapState('user', [
-        'model'
+      ...mapState('user', {
+        userModel: 'model',
+      }),
+      ...mapState('models', [
+        'course',
+        'task'
       ]),
+      courseName() {
+        return this.course.title;
+      },
+      taskName() {
+        return this.task.title;
+      },
       notLending() {
         return this.$route.path != '/'
       },

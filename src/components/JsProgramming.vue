@@ -56,7 +56,7 @@
     methods: {
       openDialog() {
         this.$parent.openDialog({
-          title: this.task.meta.title,
+          title: this.task.title,
           body: this.task.theory
         });
       }

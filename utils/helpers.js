@@ -18,7 +18,8 @@ module.exports = {
     let courseDir;
     for (const i in coursesDirs ) {
       const dir = coursesDirs[i];
-      if (dir.match(/^(\d+)/gm).length == 1 && dir.match(/^(\d+)/gm)[0] == courseId)
+      // if (dir.match(/^(\d+)/gm).length == 1 && dir.match(/^(\d+)/gm)[0] == courseId)
+      if (dir == courseId)
         courseDir = dir;
     }
     if (!otherIds[1]) return {

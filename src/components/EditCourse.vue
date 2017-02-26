@@ -5,12 +5,11 @@
 </template>
 
 <script>
-console.log(this)
 export default {
   name: 'editCourse',
   data () {
     return {
-      
+
     }
   }
 }

@@ -11,6 +11,7 @@ var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 ///// Добавил
+var projConfig = require('nconf').file('./proj_config.json');
 var webpack = require("webpack");
 /////
 module.exports = {
@@ -37,7 +38,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.common.js',
       'src': path.resolve(__dirname, '../src'),
       // 'assets': path.resolve(__dirname, '../src/assets'),
-      'assets': path.resolve(__dirname, '../courses-rep'),
+      'assets': path.resolve(projConfig.get('courses:repPath')),
       'components': path.resolve(__dirname, '../src/components')
     }
   },
