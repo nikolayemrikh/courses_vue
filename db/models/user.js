@@ -13,6 +13,12 @@ var User = new Schema({
     unique: true,
     required: true
   },
+  githubId: {
+    type: String
+  },
+  vkId: {
+    type: String
+  },
   firstname: {
     type: String
   },
@@ -45,34 +51,10 @@ var User = new Schema({
     type: Number,
     default: 1
   },
-  // Связанные с пользователем файлы
-  // Первый элемент массива - фотография пользователя
-  attach: [Attach],
   coursesProgress: [{
     courseId: String, //
     completedTasks: [Number]
   }]
-  // Заменяю на локальные айдишники ^
-  // / устарело
-  // completedTasks: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Task'
-  // }],
-  // coursesProgress: [{
-  //   course: {
-  //     type: Schema.Types.ObjectId,
-  //     ref: 'Course'
-  //   },
-  //   completedTasks: [{
-  //     type: Schema.Types.ObjectId,
-  //     ref: 'completedTasks'
-  //   }]
-  // }],
-  // Пройденные курсы
-  // completedCourses: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Course'
-  // }]
 });
 User.methods.encryptPassword = function (password) {
   return crypto.createHmac('sha1', this.salt).update(password).digest('hex');

@@ -36,24 +36,25 @@ const user = {
   actions: {
     logIn(context, args) {
       return new Promise((resolve, reject) => {
-        request.post('/api/user/login')
-        .send({
-          username: args.username,
-          password: args.password
-        })
-        .then(
-          (res) => {
-            context.commit('setModel', res.body)
-            resolve(res)
-            if (!args.redirect)
-              app.$router.push('courses')
-            else
-              app.$router.push(args.redirect)
-          },
-          (err) => {
-            reject(err)
-          }
-        )
+        request
+          .post('/api/user/login')
+          .send({
+            username: args.username,
+            password: args.password
+          })
+          .then(
+            (res) => {
+              context.commit('setModel', res.body)
+              resolve(res)
+              if (!args.redirect)
+                app.$router.push('courses')
+              else
+                app.$router.push(args.redirect)
+            },
+            (err) => {
+              reject(err)
+            }
+          )
       })
     },
     fetch(context) {
@@ -78,6 +79,20 @@ const user = {
           (err) => reject(err)
         )
       })
+    },
+    // github не дает в cors
+    githubAuth(context, args) {
+      request.get('/api/user/github')
+        .then(
+          (res) => {
+            context.commit('setModel', res.body)
+            resolve(res)
+            if (!args.redirect)
+              app.$router.push('courses')
+            else
+              app.$router.push(args.redirect)
+          }
+        )
     }
   }
 }
@@ -139,7 +154,8 @@ router.beforeEach((to, from, next) => {
     store.dispatch('models/loadTask', args).then(task => {
       next();
     }).catch(err => next());
-  } else next();
+  }
+  else next();
 })
 
 router.beforeEach((to, from, next) => {
@@ -148,7 +164,8 @@ router.beforeEach((to, from, next) => {
       courseNumber: to.params.courseNumber
     }
     store.dispatch('models/loadCourse', args).then(course => next()).catch(err => next());
-  } else next();
+  }
+  else next();
 })
 
 router.beforeEach((to, from, next) => {
@@ -157,7 +174,8 @@ router.beforeEach((to, from, next) => {
       course: null,
     });
     next();
-  } else next();
+  }
+  else next();
 });
 
 router.beforeEach((to, from, next) => {
@@ -166,7 +184,8 @@ router.beforeEach((to, from, next) => {
       task: null
     })
     next();
-  } else next();
+  }
+  else next();
 });
 
 const app = new Vue({

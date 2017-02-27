@@ -25,7 +25,9 @@
         <div class="panel panel-default panel-info">
           <div class="panel-body">
             <p>Socials:</p>
-            <a href="/profile/vk"><img class="vk-image" src="../assets/vk-logo.png"></a>
+            <!--<a href="/profile/vk"><img class="social-image" src="../assets/vk-logo.png"></a>-->
+            <!--<a v-on:click.prevent="githubAuth" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>-->
+            <a href="/api/user/github" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>
           </div>
         </div>
       </section>
@@ -48,7 +50,9 @@
     },
     methods: {
       ...mapActions('user', [
-        'logIn'
+        'logIn',
+        //не работает
+        'githubAuth'
       ]),
       onSubmit(event) {
         let form = event.target
@@ -87,8 +91,12 @@
     margin-top: 10%;
   }
 
-  .vk-image {
+  .social-image {
     width: 50px;
     height: 50px;
+  }
+  
+  .social-btn {
+    cursor: pointer;
   }
 </style>

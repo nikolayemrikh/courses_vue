@@ -41,8 +41,9 @@
       <section class="socials col-md-3">
         <div class="panel panel-default panel-info">
           <div class="panel-body">
-            <p>Or log in through socials:</p>
-            <a href="/profile/vk"><img class="vk-image" src="../assets/vk-logo.png"></a>
+            <p>Or log in through:</p>
+            <!--<router-link to="/api/user/vk"><img class="social-image" src="/assets/vk-logo.png"></router-link>-->
+            <a href="/api/user/github"><img class="social-image" src="~assets/github-logo.png"></a>
           </div>
         </div>
       </section>
@@ -118,7 +119,7 @@
   text-align: center;
 }
 
-.vk-image {
+.social-image {
   width: 50px;
   height: 50px;
 }

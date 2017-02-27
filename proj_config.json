@@ -13,7 +13,7 @@
         "cleanup": 60
     },
     "mongoose": {
-      "uri": "mongodb://localhost:27017/vue"
+      "uri": "mongodb://nikolayemrikh:789pp369@ds017070.mlab.com:17070/d3jsdb"
     },
     "auth": {
         "vk": {
@@ -21,7 +21,12 @@
             "clientID": "5824763",
             "clientSecret": "JsLUk77xUiJf61nwcTEt",
             "tokenURL": "https://oauth.vk.com/access_token",
-            "callbackURL": "http://d3js-node-redishko.c9users.io/profile/vk/callback"
+            "callbackURL": "https://courses-redishko.c9users.io/api/user/vk/callback"
+        },
+        "github": {
+            "clientID": "f3ea15eaa26028b1974e",
+            "clientSecret": "d8179ed51f974514ece94b9fab2a54b4cf8f598b",
+            "callbackURL": "https://courses-redishko.c9users.io/api/user/github/callback"
         }
     },
     "courses": {

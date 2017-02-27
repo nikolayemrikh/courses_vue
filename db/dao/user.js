@@ -55,6 +55,63 @@ module.exports = {
           return done(null, data);
         }
       });
+    },
+    github: function (ghProfile, done) {
+      let ghUserData = {
+        username: ghProfile.username,
+        githubId: ghProfile.id,
+        firstname: ghProfile._json.name.split(" ")[0] || '',
+        lastname: ghProfile._json.name.split(" ")[1] || '',
+        password: null,
+        provider: config.get('auth:github:provider') || 'github'
+      };
+      
+      let primaryEmail = ghProfile.emails.find(function(element, index, array) {
+        return !!element.primary;
+      }).value;
+      let emails = ghProfile.emails.filter(obj => !obj.primary);
+      console.log(emails)
+      emails = emails.map(obj => {
+        return {
+          email: obj.value
+        }
+      });
+      console.log(emails)
+      User.findOne({
+        githubId: ghProfile.id
+      }).exec(function(err, ghUser) {
+        if (err) return done(err);
+        if (!ghUser) {
+          User.findOne({
+            email: primaryEmail
+          }).exec(function(err, localUserPrimaryEmail) {
+            if (err) return done(err);
+            
+            if (!localUserPrimaryEmail) {
+              User.findOne({
+                $or: emails
+              }).exec(function(err, localUserEmail) {
+                if (err) return done(err);
+                
+                if (!localUserEmail) {
+                  var user = new User(ghUserData);
+                  user.save(done);
+                }
+                
+                else {
+                  localUserEmail.githubId = ghProfile.id;
+                  localUserEmail.save(done);
+                }
+              })
+            }
+            else {
+              localUserPrimaryEmail.githubId = ghProfile.id;
+              localUserPrimaryEmail.save(done);
+            }
+          })
+        }
+        else return done(null, ghUser);
+      });
     }
   },
   search: function (args, callback) {
