@@ -2,7 +2,7 @@
   <div id="register" class="container">
     <h3 class="register-text lead">Register and start learning quickly!</h3>
     <div class="register-section row">
-      <section class="col-md-4 col-md-offset-3">
+      <section class="col-md-4 col-md-offset-4">
         <!--<div v-bind:class="[info.registerError ? 'panel-danger' : 'panel-info']" class="register-panel panel panel-info">-->
         <div v-bind:class="panelStatus" class="register-panel panel panel-default">
           <div class="panel-body">
@@ -38,15 +38,15 @@
           </div>
         </div>
       </section>
-      <section class="socials col-md-3">
-        <div class="panel panel-default panel-info">
-          <div class="panel-body">
-            <p>Or log in through:</p>
-            <!--<router-link to="/api/user/vk"><img class="social-image" src="/assets/vk-logo.png"></router-link>-->
-            <a href="/api/user/github"><img class="social-image" src="~assets/github-logo.png"></a>
-          </div>
-        </div>
-      </section>
+      <!--<section class="socials col-md-3">-->
+        <!--<div class="panel panel-default panel-info">-->
+          <!--<div class="panel-body">-->
+            <!--<p>Or log in through:</p>-->
+            <!--&lt;!&ndash;<router-link to="/api/user/vk"><img class="social-image" src="/assets/vk-logo.png"></router-link>&ndash;&gt;-->
+            <!--<a href="/api/user/github"><img class="social-image" src="~assets/github-logo.png"></a>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</section>-->
     </div>
   </div>
 </template>
