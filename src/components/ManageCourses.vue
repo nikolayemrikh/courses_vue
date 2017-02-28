@@ -56,6 +56,7 @@
 <script>
   import request from 'superagent'
   import { mapState } from 'vuex'
+  import { mapGetters } from 'vuex'
   export default {
     name: 'manageCourses',
     data () {
@@ -68,7 +69,15 @@
         userModel: 'model'
       })
     },
+    watch: {
+      userModel(model) {
+        this.$emit('logged');
+      }
+    },
     methods: {
+      ...mapGetters('user', [
+        'getModel'
+      ]),
       progress(currentCourse) {
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
 //          return cp.course == currentCourse._id // Заменил в модели юзера course на courseId
@@ -108,12 +117,13 @@
       }
     },
     beforeMount() {
-//      request.get('/api/course').then((res) => {
-      request.get('/api/local/course').then((res) => {
-        this.courses = res.body.slice()
-      }).catch((err) => {
-        console.error(err)
-      })
+      if (this.userModel && this.userModel.username) {
+        request.get(`/api/local/course?author=${this.userModel.username}`).then((res) => {
+          this.courses = res.body.slice()
+        }).catch((err) => {
+          console.error(err)
+        })
+      }
     }
   }
 </script>

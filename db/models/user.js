@@ -16,6 +16,9 @@ var User = new Schema({
   githubId: {
     type: String
   },
+  bitbucketId: {
+    type: String
+  },
   vkId: {
     type: String
   },

@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+var BitbucketStrategy = require('../../lib/passport-bitbucket/index.js').Strategy;
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
 var config = require('nconf');
@@ -125,17 +126,25 @@ router.get('/github/callback', passport.authenticate('github', {
 }), router.logUserIP, function(req, res, next) {
   res.redirect('/#courses');
 });
-// Переделать
-// router.get('/github/callback', function(req, res, next) {
-//   passport.authenticate('github', function(err, user, info) {
-//     if (err || !user) return res.status(500).next(err);
-//     req.logIn(user, function(err) {
-//       console.log(user, err)
-//       if (err) return res.status(500).send(err);
-//       return res.status(200).json(user);
-//     });
-//   })(req, res, next);
-// }, router.logUserIP);
+
+passport.use(new BitbucketStrategy({
+    clientID: config.get('auth:bitbucket:clientID'),
+    clientSecret: config.get('auth:bitbucket:clientSecret'),
+    callbackURL: config.get('auth:bitbucket:callbackURL'),
+  },
+  function(accessToken, refreshToken, bitbucketProfile, callback) {
+    // 
+      profile.auth.bitbucket(bitbucketProfile, callback);
+    console.log(bitbucketProfile)
+  }
+));
+
+router.get('/bitbucket', passport.authenticate('bitbucket'));
+router.get('/bitbucket/callback', passport.authenticate('bitbucket', {
+  failureRedirect: '/#login'
+}), router.logUserIP, function(req, res, next) {
+  res.redirect('/#courses');
+});
 
 // Get user profile
 router.get('/', function(req, res) {

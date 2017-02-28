@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <h3 class="login-text lead">Log in local or through socials and start learning quickly!</h3>
+    <h3 class="login-text lead">Sign in local or through socials and start learning quickly!</h3>
     <div class="login-section row">
       <section class="col-md-3 col-md-offset-3">
         <div v-bind:class="[loginError ? 'panel-danger' : 'panel-info']" class="login-panel panel panel-default">
@@ -28,6 +28,7 @@
             <!--<a href="/profile/vk"><img class="social-image" src="../assets/vk-logo.png"></a>-->
             <!--<a v-on:click.prevent="githubAuth" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>-->
             <a href="/api/user/github" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>
+            <a href="/api/user/bitbucket" class="social-btn"><img class="social-image" src="~assets/bitbucket-logo.png"></a>
           </div>
         </div>
       </section>

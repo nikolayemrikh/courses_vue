@@ -17,7 +17,7 @@
                 <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
               </template>
               <template v-else="userModel">
-                <li v-if="this.$route.path != '/login'"><router-link to="/login">Log in</router-link></li>
+                <li v-if="this.$route.path != '/login'"><router-link to="/login">Sign in</router-link></li>
                 <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
               </template>
             </ul>

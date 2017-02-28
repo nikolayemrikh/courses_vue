@@ -27,6 +27,11 @@
             "clientID": "f3ea15eaa26028b1974e",
             "clientSecret": "d8179ed51f974514ece94b9fab2a54b4cf8f598b",
             "callbackURL": "https://courses-redishko.c9users.io/api/user/github/callback"
+        },
+        "bitbucket": {
+            "clientID": "Vz6DWTZLbAhVanawDp",
+            "clientSecret": "68g9k7nLdE44ff7vExELdNyYBwtSMGNm",
+            "callbackURL": "https://courses-redishko.c9users.io/api/user/bitbucket/callback"
         }
     },
     "courses": {
@@ -35,6 +40,7 @@
         "pattern": "^(\\d+)",
         "flags": "gm"
       },
+      "authorUsernameDelimiter": "@",
       "initialFilesDir": "initial",
       "initialHtmlFile": "index.html",
       "initialCssFile": "style.css",

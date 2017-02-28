@@ -57,11 +57,12 @@ module.exports = {
       });
     },
     github: function (ghProfile, done) {
+      let fullname = (ghProfile._json.name && ghProfile._json.name.search(" ")) ? ghProfile._json.name.split(" ") : "";
       let ghUserData = {
         username: ghProfile.username,
         githubId: ghProfile.id,
-        firstname: ghProfile._json.name.split(" ")[0] || '',
-        lastname: ghProfile._json.name.split(" ")[1] || '',
+        firstname: fullname[0],
+        lastname: fullname[1] ? fullname[1] : '',
         password: null,
         provider: config.get('auth:github:provider') || 'github'
       };
@@ -111,6 +112,65 @@ module.exports = {
           })
         }
         else return done(null, ghUser);
+      });
+    },
+    bitbucket: function (bbProfile, done) {
+      console.log(bbProfile)
+      let fullname = (bbProfile.displayName && bbProfile.displayName.search(" ")) ? bbProfile.displayName.split(" ") : "";
+      let bbUserData = {
+        username: bbProfile.username,
+        githubId: bbProfile.id,
+        firstname: fullname[0],
+        lastname: fullname[1] ? fullname[1] : '',
+        password: null,
+        provider: config.get('auth:github:provider') || 'github'
+      };
+      
+      let primaryEmail = bbProfile.emails.find(function(element, index, array) {
+        return !!element.primary;
+      }).value;
+      let emails = bbProfile.emails.filter(obj => !obj.primary);
+      console.log(emails)
+      emails = emails.map(obj => {
+        return {
+          email: obj.value
+        }
+      });
+      console.log(emails)
+      User.findOne({
+        githubId: bbProfile.id
+      }).exec(function(err, bbUser) {
+        if (err) return done(err);
+        if (!bbUser) {
+          User.findOne({
+            email: primaryEmail
+          }).exec(function(err, localUserPrimaryEmail) {
+            if (err) return done(err);
+            
+            if (!localUserPrimaryEmail) {
+              User.findOne({
+                $or: emails
+              }).exec(function(err, localUserEmail) {
+                if (err) return done(err);
+                
+                if (!localUserEmail) {
+                  var user = new User(bbUserData);
+                  user.save(done);
+                }
+                
+                else {
+                  localUserEmail.bitbucketId = bbProfile.id;
+                  localUserEmail.save(done);
+                }
+              })
+            }
+            else {
+              localUserPrimaryEmail.bitbucketId = bbProfile.id;
+              localUserPrimaryEmail.save(done);
+            }
+          })
+        }
+        else return done(null, bbUser);
       });
     }
   },

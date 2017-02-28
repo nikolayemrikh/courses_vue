@@ -18,14 +18,14 @@ const theoryFile = config.get('courses:theoryFile');
 const checkerFile = config.get('courses:checkerFile');
 const goalsFile = config.get('courses:goalsFile');
 const filesDirName = config.get('courses:filesDirName');
-
+const authorUsernameDelimiter = config.get('courses:authorUsernameDelimiter');
 
 module.exports = {
   listCourses(args, callback) {
     // Читаем директорию, в которой хранятся папки с курсами
     fs.readdir(repPath, (err, courseDirs) => {
       if (err) return callback(err, null);
-
+      
       // Фильтруем выбранные файлы, нам нужны только папки с курсами (вдруг что-то лишнее попало)
       courseDirs = courseDirs.filter(file => {
         return file[0] != '.' && fs.statSync(path.join(repPath, file)).isDirectory();
@@ -36,6 +36,12 @@ module.exports = {
       // Идем по папкам курсов
       for (let i in courseDirs) {
         let courseDir = courseDirs[i];
+        
+        let dirNameParts = courseDir.split(authorUsernameDelimiter);
+        let courseAuthorUsername = dirNameParts[dirNameParts.length - 1];
+        console.log(courseAuthorUsername, args.author)
+        if (args.author && args.author !== courseAuthorUsername) break;
+        
         let courseFiles = fs.readdirSync(path.join(repPath, courseDir));
         if (courseFiles.indexOf(metaFile) == -1) break;
 

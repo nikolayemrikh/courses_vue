@@ -58,12 +58,15 @@ const user = {
       })
     },
     fetch(context) {
-      request.get('/api/user').then(
-        (res) => {
-          context.commit('setModel', res.body)
-        },
-        err => console.log(err)
-      )
+      return new Promise((resolve, reject) => {
+        request.get('/api/user').then(
+          res => {
+            context.commit('setModel', res.body)
+            resolve();
+          },
+          err => reject(err)
+        )
+      });
     },
     logOut(context) {
       request.delete('/api/user/' + context.getters.getModel._id).then(
@@ -79,20 +82,6 @@ const user = {
           (err) => reject(err)
         )
       })
-    },
-    // github не дает в cors
-    githubAuth(context, args) {
-      request.get('/api/user/github')
-        .then(
-          (res) => {
-            context.commit('setModel', res.body)
-            resolve(res)
-            if (!args.redirect)
-              app.$router.push('courses')
-            else
-              app.$router.push(args.redirect)
-          }
-        )
     }
   }
 }
@@ -160,6 +149,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (to.params.courseNumber && !store.state.models.course) {
+    console.log(to)
     let args = {
       courseNumber: to.params.courseNumber
     }
@@ -195,9 +185,13 @@ const app = new Vue({
   },
   router,
   store
-}).$mount('#app')
+})//.$mount('#app')
 
-store.dispatch('user/fetch')
+store.dispatch('user/fetch').then(res => {
+  app.$mount('#app');
+}).catch(err => {
+  app.$mount('#app');
+});
 
 window.app = app
 window.store = store

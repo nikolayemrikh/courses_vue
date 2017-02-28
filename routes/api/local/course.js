@@ -7,7 +7,9 @@ router.use('/:courseId/task', taskRouter);
 var utils = require('../../../utils');
 
 router.get('/', function (req, res, next) {
-  var args = {};
+  var args = {
+      author: req.query.author
+  };
   utils.loader.course.listCourses(args, function (err, courses) {
     if (!err && courses) {
       res.json(courses);
