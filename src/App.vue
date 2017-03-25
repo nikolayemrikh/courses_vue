@@ -9,11 +9,11 @@
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li v-bind:class="{ active: isCourses && !isDevelopment }"><router-link to="/courses">Courses list</router-link></li>
-              <li v-bind:class="{ active: isDevelopment }"><router-link to="/development/courses">Development</router-link></li>
+              <li v-bind:class="{ active: isDevelopment }"><router-link to="/development">Development</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <template v-if="userModel">
-                <li><a v-on:click.prevent href="#">{{ this.userModel.firstname + ' ' + this.userModel.lastname }}</a></li>
+                <li><a v-on:click.prevent href="#">{{ username }}</a></li>
                 <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
               </template>
               <template v-else="userModel">
@@ -27,10 +27,14 @@
     </header>
     <div v-bind:class="{'container-fluid': notLending}">
       <ol v-if="isCoursesOrTasks" class="breadcrumb">
-        <li><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses`">{{ this.isDevelopment ? "Your courses" : "Courses" }}</router-link></li>
-        <li v-if="this.course">{{ this.courseName }}</li>
-        <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
-        <li v-if="this.task">{{ this.taskName }}</li>
+        <li v-if="this.isDevelopment"><router-link to="/development">Development</router-link></li>
+        <template v-if="this.isDevelopment ? this.isGitOrBitBinded : true">
+          <li><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses`">{{ this.isDevelopment ? "Your courses" : "Courses" }}</router-link></li>
+          <li v-if="this.course">{{ this.courseName }}</li>
+          <li v-if="this.$route.name === 'addCourse'">Add course</li>
+          <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
+          <li v-if="this.task">{{ this.taskName }}</li>
+        </template>
       </ol>
       <router-view class="view"></router-view>
     </div>
@@ -40,6 +44,7 @@
 <script>
   import { mapState } from 'vuex'
   import { mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'
   export default {
     name: 'App',
     computed: {
@@ -49,6 +54,9 @@
       ...mapState('models', [
         'course',
         'task'
+      ]),
+      ...mapGetters('user', [
+        'isGitOrBitBinded'
       ]),
       courseName() {
         return this.course.title;
@@ -66,7 +74,12 @@
         return this.$route.path.includes('development')
       },
       isCoursesOrTasks() {
-        return this.$route.path.indexOf('courses') != -1 || this.$route.path.indexOf('tasks') != -1;
+        return this.$route.path.indexOf('courses') != -1 || this.$route.path.indexOf('tasks') != -1 || this.$route.path.indexOf('development') != -1;
+      },
+      username() {
+        if (this.userModel.firstname && this.userModel.lastname)
+          return this.userModel.firstname + ' ' + this.userModel.lastname;
+        else return this.userModel.username;
       }
     },
     methods: {

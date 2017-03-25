@@ -30,7 +30,10 @@ const user = {
   },
   getters: {
     getModel(state) {
-      return state.model
+      return state.model ? state.model : null
+    },
+    isGitOrBitBinded(state) {
+      return state.model && (state.model.githubId || state.model.bitbucketId)
     }
   },
   actions: {
@@ -72,6 +75,9 @@ const user = {
       request.delete('/api/user/' + context.getters.getModel._id).then(
         () => {
           context.commit('removeModel')
+          router.push({
+            name: 'courses'
+          })
         }
       )
     },
@@ -101,7 +107,7 @@ const models = {
     }
   },
   getters: {
-
+    
   },
   actions: {
     loadCourse(context, args) {

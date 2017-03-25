@@ -47,7 +47,7 @@
         </div>
       </section>
       <section class="col-md-2">
-        Статистика
+        <router-link to="/development/courses/addCourse">Add course</router-link>
       </section>
     </div>
   </div>

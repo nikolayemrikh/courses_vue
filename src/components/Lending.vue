@@ -12,7 +12,7 @@
                 <li><a v-on:click.prevent="logOut" class="nav-link btn btn-link btn-link-yellow" shref="#">Log out</a></li>
             </template>
             <template v-else="model">
-                <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Login</router-link></li>
+                <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Sign in</router-link></li>
                 <li><router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link></li>
             </template>
           </ul>

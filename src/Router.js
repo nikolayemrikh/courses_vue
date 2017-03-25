@@ -12,6 +12,8 @@ import ManageCourses from './components/ManageCourses'
 import ManageTasks from './components/ManageTasks'
 import EditCourse from './components/EditCourse'
 import EditTask from './components/EditTask'
+import Development from './components/Development'
+import AddCourse from './components/AddCourse'
 
 export default new VueRouter({
   routes: [{
@@ -19,6 +21,7 @@ export default new VueRouter({
     component: Lending
   }, {
     path: '/login',
+    name: 'login',
     component: Login
   }, {
     path: '/register',
@@ -44,9 +47,17 @@ export default new VueRouter({
     name: 'main',
     component: Main
   }, {
+    path: '/development/',
+    name: 'development',
+    component: Development
+  }, {
     path: '/development/courses/',
     name: 'manageCourses',
     component: ManageCourses
+  }, {
+    path: '/development/courses/addcourse',
+    name: 'addCourse',
+    component: AddCourse
   }, {
     path: '/development/courses/:courseNumber?',
     component: Tasks,

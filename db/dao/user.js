@@ -85,29 +85,36 @@ module.exports = {
         if (!ghUser) {
           User.findOne({
             email: primaryEmail
-          }).exec(function(err, localUserPrimaryEmail) {
+          }).exec(function(err, localUserFromPrimaryEmail) {
             if (err) return done(err);
             
-            if (!localUserPrimaryEmail) {
-              User.findOne({
-                $or: emails
-              }).exec(function(err, localUserEmail) {
-                if (err) return done(err);
-                
-                if (!localUserEmail) {
-                  var user = new User(ghUserData);
-                  user.save(done);
-                }
-                
-                else {
-                  localUserEmail.githubId = ghProfile.id;
-                  localUserEmail.save(done);
-                }
-              })
+            if (!localUserFromPrimaryEmail) {
+              if (!!emails.length) {
+                console.log('lol')
+                User.findOne({
+                  $or: emails
+                }).exec(function(err, localUserFromEmail) {
+                  if (err) return done(err);
+                  
+                  if (!localUserFromEmail) {
+                    var user = new User(ghUserData);
+                    user.save(done);
+                  }
+                  
+                  else {
+                    localUserFromEmail.githubId = ghProfile.id;
+                    localUserFromEmail.save(done);
+                  }
+                })
+              } else {
+                var user = new User(ghUserData);
+                user.save(done);
+              }
             }
             else {
-              localUserPrimaryEmail.githubId = ghProfile.id;
-              localUserPrimaryEmail.save(done);
+              console.log('kek')
+              localUserFromPrimaryEmail.githubId = ghProfile.id;
+              localUserFromPrimaryEmail.save(done);
             }
           })
         }
@@ -148,21 +155,26 @@ module.exports = {
             if (err) return done(err);
             
             if (!localUserPrimaryEmail) {
-              User.findOne({
-                $or: emails
-              }).exec(function(err, localUserEmail) {
-                if (err) return done(err);
-                
-                if (!localUserEmail) {
-                  var user = new User(bbUserData);
-                  user.save(done);
-                }
-                
-                else {
-                  localUserEmail.bitbucketId = bbProfile.id;
-                  localUserEmail.save(done);
-                }
-              })
+              if (!!emails.length) {
+                User.findOne({
+                  $or: emails
+                }).exec(function(err, localUserEmail) {
+                  if (err) return done(err);
+                  
+                  if (!localUserEmail) {
+                    var user = new User(bbUserData);
+                    user.save(done);
+                  }
+                  
+                  else {
+                    localUserEmail.bitbucketId = bbProfile.id;
+                    localUserEmail.save(done);
+                  }
+                })
+              } else {
+                var user = new User(bbUserData);
+                user.save(done);
+              }
             }
             else {
               localUserPrimaryEmail.bitbucketId = bbProfile.id;
@@ -173,6 +185,12 @@ module.exports = {
         else return done(null, bbUser);
       });
     }
+  },
+  bindGithubId: function(args, callback) {
+    
+  },
+  bindBitbucketId: function(args, callback) {
+    
   },
   search: function (args, callback) {
     var query = {};
