@@ -6,9 +6,20 @@ router.use('/:courseId/task', taskRouter);
 
 var utils = require('../../../utils');
 
+var multer  = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, 'uploads/');
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.originalname);
+  }
+});
+var upload = multer({ storage: storage });
+
 router.get('/', function (req, res, next) {
   var args = {
-      author: req.query.author
+    author: req.query.author
   };
   utils.loader.course.listCourses(args, function (err, courses) {
     if (!err && courses) {
@@ -34,18 +45,14 @@ router.get('/:courseId', function (req, res) {
   });
 });
 // Create new course
-router.post('/', function (req, res, next) {
+router.post('/', upload.any(), function (req, res, next) {
   var args = {
     data: req.body
   };
-  course.add(args, function (err, data) {
-    if (!err && data) {
-      //res.status(200).end();
-      res.json(data);
-    }
-    else {
-      res.status(400).end();
-    }
+  console.log(args.data, req.files)
+  utils.course.create(args, (err, ok) => {
+    if (err) return res.status(400).end();
+    res.status(200).end();
   });
 });
 // Update course
