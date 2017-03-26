@@ -1,6 +1,8 @@
 <template>
   <div id="addCourse" class="container">
     <form v-on:submit.prevent="submitCourse($event.target)">
+      <div v-if="createError" class="alert alert-danger" role="alert">{{ createError }}</div>
+      <div v-if="createSuccess" class="alert alert-success" role="alert">Course successfully created!</div>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -62,7 +64,9 @@
     data() {
       return {
         currentView: null,
-        files: []
+        files: [],
+        createSuccess: null,
+        createError: null
       }
     },
     computed: {
@@ -97,35 +101,45 @@
       filesChanged(files) {
         console.dir(files)
         this.files = files.map((file, i) => {
-          // file.order = i + 1;
           file.fixed = false;
           return file;
         });
       },
       submitCourse(form) {
-        const req = request
-          .post('/api/local/course')
-          .field('title', form.title.value)
-          .field('description', form.description.value)
-          .field('service', form.service.value)
-          .field('filesOrded', this.files.map(file => file.name))
-          .field('author', Object.assign({}, {
+        this.resetFormStyles();
+        const meta = {
+          title: form.title.value,
+          description: form.description.value,
+          service: form.service.value,
+          filesOrder: this.files.map(file => file.name),
+          author: Object.assign({}, {
+            id: this.model.id,
             username: this.model.username,
             bitbucketId: this.model.bitbucketId,
             githubId: this.model.githubId
-          }));
-          for (let i = 0; i < form.files.files.length; ++i) {
-            const file = form.files.files[i];
-            req.attach(file.file, file);
-          }
+          })
+        };
+        
+        const req = request
+          .post('/api/local/course')
+          .field('meta', JSON.stringify(meta));
           
-          req.end(function(err, res){
-            if (err || !res.ok) {
-              alert('Oh no! error');
-            } else {
-              alert('yay got ' + JSON.stringify(res.body));
-            }
-          });
+        for (let i = 0; i < form.files.files.length; ++i) {
+          const file = form.files.files[i];
+          req.attach(file.file, file);
+        }
+        
+        req.then(res => {
+          this.createSuccess = true;
+          form.reset();
+          this.files = [];
+        }).catch(err => {
+          this.createError = err.response.text;
+        })
+      },
+      resetFormStyles() {
+        this.createSuccess = null;
+        this.createError = null;
       }
     },
     beforeDestroy() {

@@ -3,16 +3,16 @@ var router = express.Router();
 var taskRouter = require('./task');
 router.use('/:courseId/task', taskRouter);
 // List all course in course
-
+var shortid = require('shortid');
 var utils = require('../../../utils');
 
-var multer  = require('multer')
+var multer  = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, 'uploads/');
   },
   filename: function (req, file, callback) {
-    callback(null, file.originalname);
+    callback(null, shortid.generate() + file.originalname);
   }
 });
 var upload = multer({ storage: storage });
@@ -47,11 +47,11 @@ router.get('/:courseId', function (req, res) {
 // Create new course
 router.post('/', upload.any(), function (req, res, next) {
   var args = {
-    data: req.body
+    meta: JSON.parse(req.body.meta)
   };
-  console.log(args.data, req.files)
-  utils.course.create(args, (err, ok) => {
-    if (err) return res.status(400).end();
+  let course = new utils.course.Course(args.meta, req.files);
+  course.save((err, ok) => {
+    if (err) return res.status(400).send(err.message);
     res.status(200).end();
   });
 });
