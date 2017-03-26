@@ -57,7 +57,13 @@ var User = new Schema({
   coursesProgress: [{
     courseId: String, //
     completedTasks: [Number]
-  }]
+  }],
+  bitbucketToken: {
+    type: String
+  },
+  githubToken: {
+    type: String
+  }
 });
 User.methods.encryptPassword = function (password) {
   return crypto.createHmac('sha1', this.salt).update(password).digest('hex');

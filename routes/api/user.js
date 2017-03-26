@@ -115,8 +115,11 @@ passport.use(new GitHubStrategy({
     ]
   },
   function(accessToken, refreshToken, githubProfile, callback) {
-    console.log(githubProfile)
-    profile.auth.github(githubProfile, callback);
+    // profile.auth.github(githubProfile, callback);
+    profile.auth.github({
+      profile: githubProfile,
+      token: accessToken
+    }, callback);
   }
 ));
 
@@ -133,9 +136,10 @@ passport.use(new BitbucketStrategy({
     callbackURL: config.get('auth:bitbucket:callbackURL'),
   },
   function(accessToken, refreshToken, bitbucketProfile, callback) {
-    // 
-      profile.auth.bitbucket(bitbucketProfile, callback);
-    console.log(bitbucketProfile)
+    profile.auth.bitbucket({
+      profile: bitbucketProfile,
+      token: accessToken
+    }, callback);
   }
 ));
 

@@ -56,7 +56,7 @@ module.exports = {
         }
       });
     },
-    github: function (ghProfile, done) {
+    github: function ({profile: ghProfile, token}, done) {
       let fullname = (ghProfile._json.name && ghProfile._json.name.search(" ")) ? ghProfile._json.name.split(" ") : "";
       let ghUserData = {
         username: ghProfile.username,
@@ -64,20 +64,19 @@ module.exports = {
         firstname: fullname[0],
         lastname: fullname[1] ? fullname[1] : '',
         password: null,
-        provider: config.get('auth:github:provider') || 'github'
+        provider: config.get('auth:github:provider') || 'github',
+        githubToken: token
       };
       
       let primaryEmail = ghProfile.emails.find(function(element, index, array) {
         return !!element.primary;
       }).value;
       let emails = ghProfile.emails.filter(obj => !obj.primary);
-      console.log(emails)
       emails = emails.map(obj => {
         return {
           email: obj.value
         }
       });
-      console.log(emails)
       User.findOne({
         githubId: ghProfile.id
       }).exec(function(err, ghUser) {
@@ -102,6 +101,7 @@ module.exports = {
                   }
                   
                   else {
+                    localUserFromEmail.githubToken = token;
                     localUserFromEmail.githubId = ghProfile.id;
                     localUserFromEmail.save(done);
                   }
@@ -112,40 +112,42 @@ module.exports = {
               }
             }
             else {
-              console.log('kek')
+              localUserFromPrimaryEmail.githubToken = toke;
               localUserFromPrimaryEmail.githubId = ghProfile.id;
               localUserFromPrimaryEmail.save(done);
             }
           })
         }
-        else return done(null, ghUser);
+        else {
+          ghUser.githubToken = token;
+          ghUser.save(done);
+        }
       });
     },
-    bitbucket: function (bbProfile, done) {
-      console.log(bbProfile)
+    bitbucket: function ({profile: bbProfile, token}, done) {
+      console.log(token)
       let fullname = (bbProfile.displayName && bbProfile.displayName.search(" ")) ? bbProfile.displayName.split(" ") : "";
       let bbUserData = {
         username: bbProfile.username,
-        githubId: bbProfile.id,
+        bitbucketId: bbProfile.id,
         firstname: fullname[0],
         lastname: fullname[1] ? fullname[1] : '',
         password: null,
-        provider: config.get('auth:github:provider') || 'github'
+        provider: config.get('auth:bitbucket:provider') || 'bitbucket',
+        bitbucketToken: token
       };
       
       let primaryEmail = bbProfile.emails.find(function(element, index, array) {
         return !!element.primary;
       }).value;
       let emails = bbProfile.emails.filter(obj => !obj.primary);
-      console.log(emails)
       emails = emails.map(obj => {
         return {
           email: obj.value
         }
       });
-      console.log(emails)
       User.findOne({
-        githubId: bbProfile.id
+        bitbucketId: bbProfile.id
       }).exec(function(err, bbUser) {
         if (err) return done(err);
         if (!bbUser) {
@@ -168,6 +170,7 @@ module.exports = {
                   
                   else {
                     localUserEmail.bitbucketId = bbProfile.id;
+                    localUserEmail.bitbucketToken = token;
                     localUserEmail.save(done);
                   }
                 })
@@ -178,11 +181,15 @@ module.exports = {
             }
             else {
               localUserPrimaryEmail.bitbucketId = bbProfile.id;
+              localUserPrimaryEmail.bitbucketToken = token;
               localUserPrimaryEmail.save(done);
             }
           })
         }
-        else return done(null, bbUser);
+        else {
+          bbUser.bitbucketToken = token;
+          bbUser.save(done);
+        }
       });
     }
   },
