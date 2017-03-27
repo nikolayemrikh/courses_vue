@@ -10,7 +10,7 @@ const urlify = require('urlify').create({
   nonPrintable: "_",
   trim: true
 });
-
+const simpleGit = require('simple-git');
 const helpers = require('./helpers');
 const repPath = config.get('courses:repPath');
 const dirNameTemplate = new RegExp(config.get('courses:dirNameTemplate:pattern'), config.get('courses:dirNameTemplate:flags'));
@@ -95,11 +95,11 @@ module.exports.Course = class Course {
       case 'github':
         options.url = 'https://api.github.com/user/repos';
         options.body = {
-          name: this.title,
-          auto_init: true
+          name: urlify(this.title),
+          // auto_init: true
         };
         options.headers['Authorization'] = `token ${userSession.githubToken}`;
-        options.headers['user-agent'] = 'NE-LMS';
+        options.headers['user-agent'] = githubUserAgent;
         break;
       case 'bitbucket':
         options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${urlify(this.title)}`;
@@ -113,8 +113,25 @@ module.exports.Course = class Course {
     }
     request(options, (err, res) => {
       if (err || !res && res.statusCode !== 201) return callback(err);
+      this.gitUrl = res.body.git_url;
+      this.id = res.body.id;
+      this.remoteUrl = res.body.clone_url;
+      console.log(res.body)
       callback(null, res.body);
     });
+  }
+  gitInit(callback) {
+    console.log(path.join(__dirname, '..', this.dirName))
+    simpleGit(path.join(__dirname, '..', this.dirName))
+      .init()
+      .add('.')
+      .commit("NE LMS COMMIT")
+      .addRemote('origin', this.remoteUrl)
+      // .pull()
+      .push(['-u', 'origin', 'master'], (err, res) => {
+        if (err) return callback(err);
+        callback(null, res);
+      });
   }
 };
 // bb create repo

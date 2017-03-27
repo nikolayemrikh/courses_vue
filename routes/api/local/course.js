@@ -50,11 +50,14 @@ router.post('/', upload.any(), function (req, res, next) {
     meta: JSON.parse(req.body.meta)
   };
   let course = new utils.course.Course(args.meta, req.files);
-  course.save((err, res) => {
-    // if (err) return res.status(400).send(err.message);
-    // res.status(200).end();
+  course.save((err, stat) => {
+    if (err) return res.status(400).send(err.message);
     course.createRepository(req.user, (err, body) => {
-      
+      if (err) return res.status(400).send(err.message);
+      course.gitInit((err, gitAnswer) => {
+        if (err) return res.status(400).send(err.message);
+        res.json(course.remoteUrl);
+      })
     });
   });
 });
