@@ -63,6 +63,12 @@ var User = new Schema({
   },
   githubToken: {
     type: String
+  },
+  githubUsername: {
+    type: String
+  },
+  bitbucketUsername: {
+    type: String
   }
 });
 User.methods.encryptPassword = function (password) {

@@ -50,9 +50,12 @@ router.post('/', upload.any(), function (req, res, next) {
     meta: JSON.parse(req.body.meta)
   };
   let course = new utils.course.Course(args.meta, req.files);
-  course.save((err, ok) => {
-    if (err) return res.status(400).send(err.message);
-    res.status(200).end();
+  course.save((err, res) => {
+    // if (err) return res.status(400).send(err.message);
+    // res.status(200).end();
+    course.createRepository(req.user, (err, body) => {
+      
+    });
   });
 });
 // Update course

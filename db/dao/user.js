@@ -65,7 +65,8 @@ module.exports = {
         lastname: fullname[1] ? fullname[1] : '',
         password: null,
         provider: config.get('auth:github:provider') || 'github',
-        githubToken: token
+        githubToken: token,
+        githubUsername: ghProfile.username
       };
       
       let primaryEmail = ghProfile.emails.find(function(element, index, array) {
@@ -101,6 +102,7 @@ module.exports = {
                   }
                   
                   else {
+                    localUserFromEmail.githubUsername = ghProfile.username;
                     localUserFromEmail.githubToken = token;
                     localUserFromEmail.githubId = ghProfile.id;
                     localUserFromEmail.save(done);
@@ -112,13 +114,15 @@ module.exports = {
               }
             }
             else {
-              localUserFromPrimaryEmail.githubToken = toke;
+              localUserFromPrimaryEmail.githubUsername = ghProfile.username;
+              localUserFromPrimaryEmail.githubToken = token;
               localUserFromPrimaryEmail.githubId = ghProfile.id;
               localUserFromPrimaryEmail.save(done);
             }
           })
         }
         else {
+          if (!ghUser.githubUsername) ghUser.githubUsername = ghProfile.username;
           ghUser.githubToken = token;
           ghUser.save(done);
         }
@@ -134,7 +138,8 @@ module.exports = {
         lastname: fullname[1] ? fullname[1] : '',
         password: null,
         provider: config.get('auth:bitbucket:provider') || 'bitbucket',
-        bitbucketToken: token
+        bitbucketToken: token,
+        bitbucketUsername: bbProfile.username
       };
       
       let primaryEmail = bbProfile.emails.find(function(element, index, array) {
@@ -169,6 +174,7 @@ module.exports = {
                   }
                   
                   else {
+                    localUserEmail.bitbucketUsername = bbProfile.username;
                     localUserEmail.bitbucketId = bbProfile.id;
                     localUserEmail.bitbucketToken = token;
                     localUserEmail.save(done);
@@ -180,6 +186,7 @@ module.exports = {
               }
             }
             else {
+              localUserPrimaryEmail.bitbucketUsername = bbProfile.username;
               localUserPrimaryEmail.bitbucketId = bbProfile.id;
               localUserPrimaryEmail.bitbucketToken = token;
               localUserPrimaryEmail.save(done);
@@ -187,6 +194,7 @@ module.exports = {
           })
         }
         else {
+          if (!bbUser.bitbucketUsername) bbUser.bitbucketUsername = bbProfile.username;
           bbUser.bitbucketToken = token;
           bbUser.save(done);
         }

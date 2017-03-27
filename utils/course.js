@@ -6,7 +6,7 @@ const fs = require('fs-extra');
 const urlify = require('urlify').create({
   // addEToUmlauts: true,
   // szToSs: true,
-  spaces: "-",
+  spaces: "_",
   nonPrintable: "_",
   trim: true
 });
@@ -26,29 +26,9 @@ const checkerFile = config.get('courses:checkerFile');
 const goalsFile = config.get('courses:goalsFile');
 const filesDirName = config.get('courses:filesDirName');
 const authorUsernameDelimiter = config.get('courses:authorUsernameDelimiter');
+const githubUserAgent = config.get('auth:github:userAgent')
 
 const User = require('../db/dao/user');
-
-// module.exports = {
-//   create(meta, callback) {
-//     let dirName = this._constructDirName(meta.title, meta.author.username);
-//     let absDirPath = path.join(repPath, dirName);
-//     this._createDirectory(absDirPath, (err, dir) => {
-//       if (err) return callback(err);
-//       fs.writeFile(path.join(absDirPath, metaFile), JSON.stringify(meta, null, 4), callback);
-//     });
-//   },
-//   _constructDirName(courseName, authorUsername) {
-//     return urlify(courseName) + '@' + authorUsername;
-//   },
-//   _createDirectory(absoluteDirName, callback) {
-//     if (!fs.existsSync(absoluteDirName)){
-//       fs.mkdir(absoluteDirName, callback);
-//     } else {
-//       callback(new Error('Course with same username and title already exists'));
-//     }
-//   }
-// };
 
 module.exports.Course = class Course {
   constructor(meta, tempFiles) {
@@ -67,8 +47,11 @@ module.exports.Course = class Course {
           description: this.description,
           filesOrder: this.filesOrder ? this.filesOrder : []
         }
-        fs.writeFile(path.join(this.dirName, metaFile), JSON.stringify(meta, null, 4), callback);
-        this._saveFiles(callback);
+        fs.writeFile(path.join(this.dirName, metaFile), JSON.stringify(meta, null, 4), (err, res) => {
+          if (err) return callback(err);
+          if (this.tempFiles.length) this._saveFiles(callback);
+          else callback(null, 'meta');
+        });
       })
     }
   }
@@ -94,16 +77,47 @@ module.exports.Course = class Course {
         promises.push(new Promise((resolve, reject) => {
           fs.move(tempFileInfo.path, path.join(absFilesDirPath, tempFileInfo.originalname), err => {
             if (err) return reject('Something went wrong');
-            return resolve('OK');
+            resolve('OK');
           })
         }));
       }
-      Promise.all(promises).then(val => {
-        callback(null, "OK");
-      }).catch(err => {
-        callback(err);
-      })
+      Promise.all(promises).then(val => callback(null, val)).catch(err => callback(err));
     });
   }
-  
+  createRepository(userSession, callback) {
+    if (!this.service) return callback(new Error('No service attached'));
+    let options = {
+      json: true,
+      headers: {}
+    };
+    options.method = 'POST';
+    switch (this.service) {
+      case 'github':
+        options.url = 'https://api.github.com/user/repos';
+        options.body = {
+          name: this.title,
+          auto_init: true
+        };
+        options.headers['Authorization'] = `token ${userSession.githubToken}`;
+        options.headers['user-agent'] = 'NE-LMS';
+        break;
+      case 'bitbucket':
+        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${urlify(this.title)}`;
+        options.headers['Authorization'] = `Bearer ${userSession.bitbucketToken}`;
+        options.body = {
+          scm: "git",
+          is_private: "true",
+          fork_policy: "no_public_forks"
+        };
+        break;
+    }
+    request(options, (err, res) => {
+      if (err || !res && res.statusCode !== 201) return callback(err);
+      callback(null, res.body);
+    });
+  }
 };
+// bb create repo
+// curl -X POST -v -H "Authorization: Bearer UF3BlzCkByByMdpTsAIjtIbOWYCjQ-_N4xogNZZ7Aa6hStE2St90VAPUvM_fqIng-0QqH7qoDutW_O2HOpg=" -H "Content-Type: application/json" https://api.bitbucket.org/2.0/repositories/nikolayemrikh/test_create -d '{"scm": "git", "is_private": "true", "fork_policy": "no_public_forks" }'
+// gh create repo
+// curl -i -u neproctor -d '{"name": "create-repo-test", "auto_init": true}' https://api.github.com/user/repos
