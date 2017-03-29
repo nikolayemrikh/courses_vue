@@ -54,7 +54,7 @@ router.post('/', upload.any(), function (req, res, next) {
     if (err) return res.status(400).send(err.message);
     course.createRepository(req.user, (err, body) => {
       if (err) return res.status(400).send(err.message);
-      course.gitInit((err, gitAnswer) => {
+      course.gitInit(req.user, (err, gitAnswer) => {
         if (err) return res.status(400).send(err.message);
         res.json(course.remoteUrl);
       })

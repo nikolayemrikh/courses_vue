@@ -53,11 +53,13 @@ export default new VueRouter({
   }, {
     path: '/development/courses/',
     name: 'manageCourses',
-    component: ManageCourses
+    component: ManageCourses,
+    meta: { requiresAuth: true }
   }, {
     path: '/development/courses/addcourse',
     name: 'addCourse',
-    component: AddCourse
+    component: AddCourse,
+    meta: { requiresAuth: true }
   }, {
     path: '/development/courses/:courseNumber?',
     component: Tasks,
@@ -65,15 +67,18 @@ export default new VueRouter({
       next({
         path: '/manage/courses/' + to.params.courseNumber + '/tasks'
       })
-    }
+    },
+    meta: { requiresAuth: true }
   }, {
     path: '/development/courses/:courseNumber/tasks/',
     name: 'manageTasks',
-    component: ManageTasks
+    component: ManageTasks,
+    meta: { requiresAuth: true }
   }, {
     path: '/development/courses/:courseNumber/tasks/:taskNumber',
     name: 'manageMain',
-    component: Main
+    component: Main,
+    meta: { requiresAuth: true }
   }, {
     path: '*',
     redirect: '/'

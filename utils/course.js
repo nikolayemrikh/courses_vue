@@ -120,7 +120,7 @@ module.exports.Course = class Course {
       callback(null, res.body);
     });
   }
-  gitInit(callback) {
+  gitInit(userSession, callback) {
     console.log(path.join(__dirname, '..', this.dirName))
     simpleGit(path.join(__dirname, '..', this.dirName))
       .init()
@@ -128,10 +128,16 @@ module.exports.Course = class Course {
       .commit("NE LMS COMMIT")
       .addRemote('origin', this.remoteUrl)
       // .pull()
+      .raw([
+        'config',
+        'remote.origin.url',
+        `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
+      ])
       .push(['-u', 'origin', 'master'], (err, res) => {
         if (err) return callback(err);
         callback(null, res);
       });
+      
   }
 };
 // bb create repo
