@@ -141,22 +141,6 @@ const store = new Vuex.Store({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // этот путь требует авторизации, проверяем залогинен ли
-    // пользователь, и если нет, перенаправляем на страницу логина
-    if (!store.state.user.model) {
-      next({
-        name: 'login'
-      })
-    } else {
-      next()
-    }
-  } else {
-    next() // всегда так или иначе нужно вызвать next()!
-  }
-})
-
-router.beforeEach((to, from, next) => {
   if (to.params.taskNumber && !store.state.models.task) {
     let args = {
       courseNumber: to.params.courseNumber,
@@ -214,6 +198,22 @@ store.dispatch('user/fetch').then(res => {
 }).catch(err => {
   app.$mount('#app');
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // этот путь требует авторизации, проверяем залогинен ли
+    // пользователь, и если нет, перенаправляем на страницу логина
+    if (!store.state.user.model) {
+      next({
+        name: 'login'
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // всегда так или иначе нужно вызвать next()!
+  }
+})
 
 window.app = app
 window.store = store

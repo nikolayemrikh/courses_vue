@@ -1,4 +1,5 @@
 {
+    "systemUrl": "https://courses-redishko.c9users.io/",
     "logger": {
         "level": "debug",
         "file": "./output.log"

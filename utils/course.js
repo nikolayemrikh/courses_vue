@@ -95,7 +95,75 @@ module.exports.Course = class Course {
       case 'github':
         options.url = 'https://api.github.com/user/repos';
         options.body = {
-          name: urlify(this.title),
+          name: urlify(this.title).toLowerCase(),
+          // auto_init: true
+        };
+        options.headers['Authorization'] = `token ${userSession.githubToken}`;
+        options.headers['user-agent'] = githubUserAgent;
+        break;
+      case 'bitbucket':
+        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${urlify(this.title).toLowerCase()}`;
+        options.headers['Authorization'] = `Bearer ${userSession.bitbucketToken}`;
+        options.body = {
+          scm: "git",
+          is_private: "true",
+          fork_policy: "no_public_forks"
+        };
+        break;
+    }
+    request(options, (err, res) => {
+      if (err || !res && res.statusCode !== 201) return callback(err);
+      this.gitUrl = res.body.git_url;
+      this.id = res.body.id;
+      this.remoteUrl = res.body.clone_url;
+      console.log(res.body)
+      callback(null, res.body);
+    });
+  }
+  gitInit(userSession, callback) {
+    let remoteUrl;
+    switch (this.service) {
+      case 'github':
+        remoteUrl = `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
+        break;
+      case 'bitbucket':
+        remoteUrl = `https://${userSession.bitbucketUsername}:${userSession.bitbucketToken}@bitbucket.org/${userSession.bitbucketUsername}/${urlify(this.title)}.git`
+        break;
+    }
+    
+    simpleGit(path.join(__dirname, '..', this.dirName))
+      .init()
+      .add('.')
+      .commit("NE LMS COMMIT")
+      .addRemote('origin', this.remoteUrl)
+      // .pull()
+      .raw([
+        'config',
+        'remote.origin.url',
+        remoteUrl
+      ])
+      .push(['-u', 'origin', 'master'], (err, res) => {
+        if (err) return callback(err);
+        callback(null, res);
+      });
+      
+  }
+  hookRepo(userSession, callback) {
+    if (!this.service) return callback(new Error('No service attached'));
+    let options = {
+      json: true,
+      headers: {}
+    };
+    options.method = 'POST';
+    switch (this.service) {
+      case 'github':
+        options.url = 'https://api.github.com/user/repos';
+        options.body = {
+          name: "push",
+          content_type: {
+            url: config.get('systemUrl') + 'api/githubHooks',
+            content_type: 'json'
+          }
           // auto_init: true
         };
         options.headers['Authorization'] = `token ${userSession.githubToken}`;
@@ -119,25 +187,6 @@ module.exports.Course = class Course {
       console.log(res.body)
       callback(null, res.body);
     });
-  }
-  gitInit(userSession, callback) {
-    console.log(path.join(__dirname, '..', this.dirName))
-    simpleGit(path.join(__dirname, '..', this.dirName))
-      .init()
-      .add('.')
-      .commit("NE LMS COMMIT")
-      .addRemote('origin', this.remoteUrl)
-      // .pull()
-      .raw([
-        'config',
-        'remote.origin.url',
-        `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
-      ])
-      .push(['-u', 'origin', 'master'], (err, res) => {
-        if (err) return callback(err);
-        callback(null, res);
-      });
-      
   }
 };
 // bb create repo
