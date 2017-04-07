@@ -8,15 +8,12 @@ var utils = require('../../utils');
 var config = require('nconf');
 
 router.post('/', function(req, res) {
-  simpleGit(config.get('repPath')).pull(function(err, update) {
-    // if (err || !update)
-    //   console.error(err)
-    // else if (update && update.summary.changes) {
-    //   childProcess.exec('git -C ~/courses-rep pull',  (error, stdout, stderr) => {
-    //     utils.handlePull();
-    //   })
-    // }
-    utils.list()
+  let body = req.body;
+  let courseDirName = `${body.repository.name}@${body.repository.owner.name}`;
+  let coursePath = path.join(config.get('courses:repPath'), courseDirName);
+  console.log(coursePath)
+  simpleGit(coursePath).pull(function(err, update) {
+    
   });
   res.status(200).end();
 });

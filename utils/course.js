@@ -127,7 +127,7 @@ module.exports.Course = class Course {
         remoteUrl = `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
         break;
       case 'bitbucket':
-        remoteUrl = `https://${userSession.bitbucketUsername}:${userSession.bitbucketToken}@bitbucket.org/${userSession.bitbucketUsername}/${urlify(this.title)}.git`
+        remoteUrl = `https://${userSession.bitbucketUsername}:${userSession.bitbucketToken}@bitbucket.org/${userSession.bitbucketUsername}/${urlify(this.title).toLowerCase()}.git`
         break;
     }
     
@@ -157,10 +157,12 @@ module.exports.Course = class Course {
     options.method = 'POST';
     switch (this.service) {
       case 'github':
-        options.url = 'https://api.github.com/user/repos';
+        options.url = `https://api.github.com/repos/${userSession.githubUsername}/${urlify(this.title)}/hooks`;
         options.body = {
-          name: "push",
-          content_type: {
+          name: "web",
+          active: true,
+          events: ["push"],
+          config: {
             url: config.get('systemUrl') + 'api/githubHooks',
             content_type: 'json'
           }
@@ -181,9 +183,6 @@ module.exports.Course = class Course {
     }
     request(options, (err, res) => {
       if (err || !res && res.statusCode !== 201) return callback(err);
-      this.gitUrl = res.body.git_url;
-      this.id = res.body.id;
-      this.remoteUrl = res.body.clone_url;
       console.log(res.body)
       callback(null, res.body);
     });
