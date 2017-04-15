@@ -83,7 +83,7 @@
       
       this.styleFrameElement = null;
       this.scriptFrameElement = null;
-      this.htmlFrameElement = this.iframe.body;
+      this.htmlFrameElement = this.doc.body;
       
       this.initializeEditors();
       this.initializeIframe(() => {
@@ -111,15 +111,53 @@
         this.editorJS.insert(this.task.initial.js);
       },
       linkEditorsToIframe() {
-        let style = this.doc.createElement('style');
-        style.innerHTML = this.editorCSS.getValue();
-        this.doc.head.appendChild(style);
+        this.styleFrameElement = this.doc.createElement('style');
+        this.styleFrameElement.setAttribute('id', 'user-style');
+        this.doc.head.appendChild(this.styleFrameElement);
+        this.loadUserCSS();
         
-        this.doc.body.innerHTML = this.editorHTML.getValue();
+        this.loadUserHTML();
         
-        let script = this.doc.createElement('script');
-        script.innerHTML = this.editorJS.getValue();
-        this.doc.body.appendChild(script);
+        this.loadUserScript();
+        
+        this.editorHTML.getSession().on('change', (e) => {
+          if (this.timeoutHTML) clearTimeout(this.timeoutHTML);
+          this.timeoutHTML = setTimeout(() => {
+            this.loadUserHTML();
+            this.loadUserScript();
+          }, 1000);
+        });
+        
+        this.editorJS.getSession().on('change', (e) => {
+          if (this.timeoutJS) clearTimeout(this.timeoutJS);
+          this.timeoutJS = setTimeout(() => {
+            this.loadUserHTML();
+            this.loadUserScript();
+          }, 1000);
+        });
+        
+        this.editorCSS.getSession().on('change', (e) => {
+          if (this.timeoutCSS) clearTimeout(this.timeoutCSS);
+          this.timeoutCSS = setTimeout(() => {
+            this.loadUserCSS();
+          }, 1000);
+        });
+      },
+      loadUserScript() {
+        if (this.scriptFrameElement) {
+          console.log(this.scriptFrameElement)
+          this.scriptFrameElement.parentElement.removeChild(this.scriptFrameElement);
+        }
+        this.scriptFrameElement = this.doc.createElement('script');
+        this.scriptFrameElement.innerHTML = this.editorJS.getValue();
+        this.scriptFrameElement.setAttribute('id', 'user-script');
+        this.doc.head.appendChild(this.scriptFrameElement);
+      },
+      loadUserHTML() {
+        this.htmlFrameElement.innerHTML = this.editorHTML.getValue();
+      },
+      loadUserCSS() {
+        this.styleFrameElement.innerHTML = this.editorCSS.getValue();
       },
       initializeIframe(callback) {
         let filesDirName = this.course.filesDirName;
