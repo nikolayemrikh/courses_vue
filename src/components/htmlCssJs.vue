@@ -15,22 +15,13 @@
             <div v-bind:class="{ active: activeTabs.css }" class="editor ace_editor ace-tm" id="editor-css"></div>
             <div v-bind:class="{ active: activeTabs.js }" class="editor ace_editor ace-tm" id="editor-js"></div>
           </div>
-          <!--<div class="panel-body">-->
-          <!--  <div v-bind:class="{ active: htmlActive }" class="panel-code panel-html">-->
-          <!--    <div class="editor" id="editor-html"></div>-->
-          <!--  </div>-->
-          <!--  <div v-bind:class="{ active: cssActive }" class="panel-code panel-css">-->
-          <!--    <div class="editor" id="editor-css"></div>-->
-          <!--  </div>-->
-          <!--  <div v-bind:class="{ active: jsActive }" class="panel-code panel-js">-->
-          <!--    <div class="editor" id="editor-js"></div>-->
-          <!--  </div>-->
-          <!--</div>-->
         </div>
       </div>
       <div class="col-md-6 col-xs-6 right">
         <div class="panel panel-default panel-log">
-          <div class="panel-body"></div>
+          <div class="panel-body iframe-container">
+            <iframe name="htmlCssJs" frameborder="yes"></iframe>
+          </div>
           <div class="panel-footer">
             <div class="task-goals">
               <ol class="task-goals-list">
@@ -51,6 +42,7 @@
 </template>
 
 <script>
+/* global ace */
   import * as brace from 'brace';
   import 'brace/mode/javascript';
   import 'brace/mode/css';
@@ -73,27 +65,83 @@
       }
     },
     mounted() {
-      this.editor = ace.edit('editor-html');
-      this.editor.setTheme("ace/theme/textmate");
-      this.editor.getSession().setMode('ace/mode/html');
-      
-      this.editor = ace.edit('editor-css');
-      this.editor.setTheme("ace/theme/textmate");
-      this.editor.getSession().setMode('ace/mode/css');
-      
-      this.editor = ace.edit('editor-js');
-      this.editor.setTheme("ace/theme/textmate");
-      this.editor.getSession().setMode('ace/mode/javascript');
-
       this.task = this.$parent.task;
+      this.course = this.$parent.course;
       this.openDialog();
       // Загружка файлов из courses_rep/course_number/files
-      let scr = document.createElement('script');
-      scr.textContent = 'window.test = "KEK"'
-      let jsp = document.querySelector('#js-programming');
-      jsp.appendChild(scr)
+      // let scr = document.createElement('script');
+      // scr.textContent = 'window.test = "KEK"'
+      // let jsp = document.querySelector('#js-programming');
+      // jsp.appendChild(scr)
+      console.log(this.task)
+      console.log(this.course)
+      this.iframe = document.htmlCssJs;
+      
+      this.styleFrameElement = null;
+      this.scriptFrameElement = null;
+      this.htmlFrameElement = this.iframe.body;
+      
+      this.initializeEditors();
+      this.initializeIframe();
+      this.linkEditorsToIframe();
+      
+      
+      
     },
     methods: {
+      initializeEditors() {
+        this.editorHTML = ace.edit('editor-html');
+        this.editorHTML.setTheme("ace/theme/textmate");
+        this.editorHTML.getSession().setMode('ace/mode/html');
+        
+        this.editorCSS = ace.edit('editor-css');
+        this.editorCSS.setTheme("ace/theme/textmate");
+        this.editorCSS.getSession().setMode('ace/mode/css');
+        
+        this.editorJS = ace.edit('editor-js');
+        this.editorJS.setTheme("ace/theme/textmate");
+        this.editorJS.getSession().setMode('ace/mode/javascript');
+        
+        this.editorCSS.insert(this.task.initial.css);
+        this.editorHTML.insert(this.task.initial.html);
+        this.editorJS.insert(this.task.initial.js);
+      },
+      linkEditorsToIframe() {
+        let doc = this.iframe.document;
+        
+        let style = doc.createElement('style');
+        style.innerHTML = this.editorCSS.getValue();
+        doc.head.appendChild(style);
+        
+        doc.body.innerHTML = this.editorHTML.getValue();
+        
+        let script = doc.createElement('script');
+        script.innerHTML = this.editorJS.getValue();
+        doc.body.appendChild(script);
+        
+      },
+      initializeIframe() {
+        let doc = this.iframe.document;
+        let filesDirName = this.course.filesDirName;
+        let extRE = /(?:\.([^.]+))?$/;
+        for (let fileName of this.course.filesOrder) {
+          switch (extRE.exec(fileName)[1]) {
+            case 'js':
+              let script = doc.createElement('script');
+              script.src = filesDirName + '/' + fileName;
+              script.async = false;
+              script.defer = true;
+              doc.head.appendChild(script);
+              break;
+            case 'css':
+              let link = doc.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = filesDirName + '/' + fileName;
+              doc.head.appendChild(link);
+              break;
+          }
+        }
+      },
       openDialog() {
         this.$parent.openDialog({
           title: this.task.title,
@@ -106,9 +154,10 @@
         if (e.target.tagName === 'LI') {
           editorType = e.target.dataset.type;
         }
-        if (e.target.tagName === 'A') {
+        else if (e.target.tagName === 'A') {
           editorType = e.target.parentElement.dataset.type;
         }
+        else return;
         for (let tabName in this.activeTabs) {
           if (tabName !== editorType) {
             this.activeTabs[tabName] = false;
@@ -116,23 +165,6 @@
             this.activeTabs[tabName] = true;
           }
         }
-        // switch (editorType) {
-        //   case 'html':
-        //     this.htmlActive = true;
-        //     this.cssActive = false;
-        //     this.jsActive = false;
-        //     break;
-        //   case 'css':
-        //     this.cssActive = true;
-        //     this.htmlActive = false;
-        //     this.jsActive = false;
-        //     break;
-        //   case 'js':
-        //     this.jsActive = true;
-        //     this.cssActive = false;
-        //     this.htmlActive = false;
-        //     break;
-        // }
       }
     },
     beforeDestroy() {
@@ -155,9 +187,8 @@
   .editor.active {
     z-index: 999;
   }
-  /*.panel-code .active {*/
-  /*  position: relative;*/
-  /*  z-index: 999;*/
-  /*}*/
+  .iframe-container {
+    padding: 0;
+  }
   
 </style>

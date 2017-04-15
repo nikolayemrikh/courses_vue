@@ -99,9 +99,16 @@ const allowedExtension = ['.png', '.jpg', '.jpeg', '.gif', '.svg'];
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, function(req, res, next) {
-  const urlPath = path.extname(req.path);
-  if (allowedExtension.includes(urlPath)) next();
-  else res.status(404).end();
+  if (req.path.indexOf('/files') !== -1) next();
+  else {
+    const ext = path.extname(req.path);
+    if (allowedExtension.includes(ext)) {
+      next();
+    }
+    else {
+      res.status(404).end();
+    }
+  }
 }, express.static('./static'))
 
 var uri = 'http://localhost:' + port

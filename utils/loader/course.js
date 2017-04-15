@@ -165,8 +165,12 @@ module.exports = {
 
       }
       courseMeta.tasks = tasks;
-
-      callback(null, courseMeta)
+      
+      this.getCourseFiles({courseId}, (err, files) => {
+        courseMeta.files = files;
+        courseMeta.filesDirName = filesDirName;
+        callback(null, courseMeta)
+      });
     })
   },
   getCourseFiles(args, callback) {
@@ -253,9 +257,10 @@ module.exports = {
       });
     console.log(courseId)
 
-    this.getCourseFiles({courseId}, (err, files) => {
-      task.files = files;
-      callback(null, task);
-    });
+    // this.getCourseFiles({courseId}, (err, files) => {
+    //   task.files = files;
+    //   callback(null, task);
+    // });
+    callback(null, task);
   }
 };

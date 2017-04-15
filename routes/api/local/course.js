@@ -47,22 +47,28 @@ router.get('/:courseId', function (req, res) {
 // Create new course
 router.post('/', upload.any(), function (req, res, next) {
   var args = {
-    meta: JSON.parse(req.body.meta)
+    meta: req.body.meta ? JSON.parse(req.body.meta) : null,
+    url: req.body.url ? req.body.url : null
   };
-  let course = new utils.course.Course(args.meta, req.files);
-  course.save((err, stat) => {
-    if (err) return res.status(400).send(err.message);
-    course.createRepository(req.user, (err, body) => {
+  if (args.meta) {
+    let course = new utils.course.Course(args.meta, req.files);
+    course.save((err, stat) => {
       if (err) return res.status(400).send(err.message);
-      course.gitInit(req.user, (err, gitAnswer) => {
+      course.createRepository(req.user, (err, body) => {
         if (err) return res.status(400).send(err.message);
-        course.hookRepo(req.user, (err, webHookResp) => {
+        course.gitInit(req.user, (err, gitAnswer) => {
           if (err) return res.status(400).send(err.message);
-          res.json(course.remoteUrl);
-        });
-      })
+          course.hookRepo(req.user, (err, webHookResp) => {
+            if (err) return res.status(400).send(err.message);
+            res.json(course.remoteUrl);
+          });
+        })
+      });
     });
-  });
+  }
+  if (args.url) {
+    console.log(args.url)
+  }
 });
 // Update course
 router.put('/:_id', function (req, res, next) {

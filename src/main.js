@@ -208,10 +208,10 @@ router.beforeEach((to, from, next) => {
         name: 'login'
       })
     } else {
-      next()
+      next();
     }
   } else {
-    next() // всегда так или иначе нужно вызвать next()!
+    next();
   }
 })
 

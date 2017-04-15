@@ -83,13 +83,18 @@
     head: {
       base() {
         return [{
-          href: `/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`
+          // href: `/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`
+          href: `/static/courses/${this.task.courseDirName}/`
         }]
       }
     }
   }
 </script>
 <style>
+  iframe {
+    width: 100%;
+    height: auto;
+  }
   #main {
     position: relative;
   }
