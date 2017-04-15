@@ -20,7 +20,8 @@
       <div class="col-md-6 col-xs-6 right">
         <div class="panel panel-default panel-log">
           <div class="panel-body iframe-container">
-            <iframe name="htmlCssJs" frameborder="yes"></iframe>
+            <iframe src="javascript:''" frameborder="yes">
+            </iframe>
           </div>
           <div class="panel-footer">
             <div class="task-goals">
@@ -75,16 +76,19 @@
       // jsp.appendChild(scr)
       console.log(this.task)
       console.log(this.course)
-      this.iframe = document.htmlCssJs;
+      this.iframe = document.querySelector('iframe');
+      this.doc = this.iframe.contentDocument || this.iframe.contentWindow.document;
+      
+      this.doc.body.setAttribute("style", "margin: 0;");
       
       this.styleFrameElement = null;
       this.scriptFrameElement = null;
       this.htmlFrameElement = this.iframe.body;
       
       this.initializeEditors();
-      this.initializeIframe();
-      this.linkEditorsToIframe();
-      
+      this.initializeIframe(() => {
+        this.linkEditorsToIframe();
+      });
       
       
     },
@@ -107,40 +111,51 @@
         this.editorJS.insert(this.task.initial.js);
       },
       linkEditorsToIframe() {
-        let doc = this.iframe.document;
-        
-        let style = doc.createElement('style');
+        let style = this.doc.createElement('style');
         style.innerHTML = this.editorCSS.getValue();
-        doc.head.appendChild(style);
+        this.doc.head.appendChild(style);
         
-        doc.body.innerHTML = this.editorHTML.getValue();
+        this.doc.body.innerHTML = this.editorHTML.getValue();
         
-        let script = doc.createElement('script');
+        let script = this.doc.createElement('script');
         script.innerHTML = this.editorJS.getValue();
-        doc.body.appendChild(script);
-        
+        this.doc.body.appendChild(script);
       },
-      initializeIframe() {
-        let doc = this.iframe.document;
+      initializeIframe(callback) {
         let filesDirName = this.course.filesDirName;
         let extRE = /(?:\.([^.]+))?$/;
+        let scriptUrls = [];
         for (let fileName of this.course.filesOrder) {
           switch (extRE.exec(fileName)[1]) {
             case 'js':
-              let script = doc.createElement('script');
-              script.src = filesDirName + '/' + fileName;
-              script.async = false;
-              script.defer = true;
-              doc.head.appendChild(script);
+              let url = filesDirName + '/' + fileName;
+              scriptUrls.push(url);
               break;
             case 'css':
-              let link = doc.createElement('link');
+              let link = this.doc.createElement('link');
               link.rel = 'stylesheet';
               link.href = filesDirName + '/' + fileName;
-              doc.head.appendChild(link);
+              this.doc.head.appendChild(link);
               break;
           }
         }
+        this.createAndLoadScript(scriptUrls, callback);
+      },
+      /**
+       * Загрузить скрипты по урлам в правильном порядке
+       */
+      createAndLoadScript(urls, callback) {
+        let url = urls.shift();
+        console.log('test')
+        let script = this.doc.createElement('script');
+        script.src = url;
+        script.onload = () => {
+          console.log(script)
+          if (urls.length) {
+            this.createAndLoadScript(urls, callback)
+          } else callback();
+        }
+        this.doc.head.appendChild(script);
       },
       openDialog() {
         this.$parent.openDialog({
