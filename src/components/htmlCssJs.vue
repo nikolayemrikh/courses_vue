@@ -29,11 +29,12 @@
               </ol>
             </div>
             <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
-            <a v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
+            <a v-on:click.prevent="checkGoals" v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
             <label class="checkbox-inline">
               <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check"> autocheck
             </label>
             <a class="pull-right btn btn-default btn-next" href="#" role="button">Next</a>
+            <a v-on:click.prevent="showGoalsList" class="pull-right btn btn-default btn-check" href="#" role="button">{{goalsDisplayed ? 'Show goals' : 'Hide goals'}}</a>
           </div>
         </div>
       </div>
@@ -59,7 +60,8 @@
           html: false,
           css: false,
           js: true
-        }
+        },
+        goalsDisplayed: true
         // htmlActive: false,
         // jsActive: true,
         // cssActive: false
@@ -90,7 +92,9 @@
         this.linkEditorsToIframe();
       });
       
-      
+      this.loadCheckerScript(this.task.checker);
+      this.taskList = document.querySelector('.task-goals-list');
+      this.initializeGoalsList(this.task.goals, this.taskList);
     },
     methods: {
       initializeEditors() {
@@ -194,6 +198,35 @@
           } else callback();
         }
         this.doc.head.appendChild(script);
+      },
+      loadCheckerScript(checkerJS) {
+        let script = this.doc.createElement('script');
+        script.setAttribute('id', 'checker');
+        script.innerHTML = checkerJS;
+        this.doc.head.appendChild(script);
+      },
+      checkGoals() {
+        let goalKeys = Array.from(this.taskList.querySelectorAll('.task-goal')).map(el => {
+          return el.getAttribute('id');
+        })
+        for (let key of goalKeys) {
+          console.log(key)
+          let completed = this.iframe.contentWindow.checker[key]();
+          completed && document.querySelector(`#${key}`).classList.add('task-goal-completed');
+        }
+      },
+      showGoalsList() {
+        let taskGoals = document.querySelector('.task-goals');
+        if (taskGoals.style.display === 'block' || taskGoals.style.display === '') {
+          taskGoals.style.display = 'none';
+          this.goalsDisplayed = false;
+        } else {
+          taskGoals.style.display = 'block';
+          this.goalsDisplayed = true;
+        }
+      },
+      initializeGoalsList(goalsHTML, taskList) {
+        taskList.innerHTML = goalsHTML;
       },
       openDialog() {
         this.$parent.openDialog({

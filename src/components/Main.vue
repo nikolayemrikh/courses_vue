@@ -155,6 +155,16 @@
     background-color: white;
   }
   
+  .task-goal-completed.task-goal::before {
+    border: 1px solid rebeccapurple;
+    background-color: rebeccapurple;
+    color: white;
+  }
+  
+  .task-goal p {
+    margin: 10px;
+  }
+  
   .panel.with-nav-tabs .panel-heading{
       padding: 5px 5px 0 5px;
   }
