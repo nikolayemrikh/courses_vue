@@ -30,10 +30,10 @@
                     <div class="col-md-2">
                       <div class="row">
                         <template v-if="userModel">
-                          <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                          </button>
-                          <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
+                          <!--<button v-on:click.prevent="editCourse(course)" type="button" class="btn btn-default">-->
+                          <!--  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>-->
+                          <!--</button>-->
+                          <button v-on:click.prevent="deleteCourse(course)" type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                           </button>
                         </template>
@@ -57,6 +57,7 @@
   import request from 'superagent'
   import { mapState } from 'vuex'
   import { mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
   export default {
     name: 'manageCourses',
     data () {
@@ -77,6 +78,9 @@
     methods: {
       ...mapGetters('user', [
         'getModel'
+      ]),
+      ...mapActions('models', [
+        'removeCourse'
       ]),
       progress(currentCourse) {
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
@@ -114,6 +118,11 @@
             }
           }
         }
+      },
+      deleteCourse(course) {
+        let courseId = course.courseId;
+        
+        
       }
     },
     beforeMount() {
