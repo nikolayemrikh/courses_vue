@@ -215,7 +215,7 @@ module.exports.Course = class Course {
         options.body = {
           events: ["repo:push"],
           description: "NE LMS webhook",
-          url: config.get('systemUrl') + 'api/githubHooks',
+          url: config.get('systemUrl') + 'api/bitbucketHooks',
           active: true
         };
         break;
