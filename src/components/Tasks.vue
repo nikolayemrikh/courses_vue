@@ -59,10 +59,10 @@
     methods: {
       completed(currentTask) {
         return this.userModel.coursesProgress.find((cp) => {
-          return cp.completedTasks.find((ct) => {
-            return ct == currentTask._id
-          })
-        }) ? 'completed' : ''
+          if (cp.courseId !== this.$route.params.courseNumber || !cp.completedTasks.length) return;
+          if (cp.completedTasks.indexOf(currentTask.taskId) !== -1) return true;
+          
+        }) ? 'completed' : '';
       },
       editTask(task) {
         console.log(task)

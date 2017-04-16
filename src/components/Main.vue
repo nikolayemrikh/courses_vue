@@ -34,6 +34,9 @@
       ...mapState('models', [
         'course',
         'task'
+      ]),
+      ...mapState('user', [
+        'model'
       ])
     },
     beforeMount() {
@@ -56,6 +59,9 @@
 
     },
     methods: {
+      ...mapActions('user', [
+        'setSolvedTask'
+      ]),
       ...mapActions('models', [
         'loadTask'
       ]),
@@ -75,6 +81,24 @@
           }],
           nl2br: false
         });
+      },
+      setSolved(callback) {
+        let solved = false;
+        for (let cp of this.model.coursesProgress) {
+          if (cp.courseId === this.$route.params.courseNumber) {
+            if (cp.completedTasks.indexOf(Number(this.$route.params.taskNumber)) !== -1) solved = true;
+          }
+        }
+        if (!solved) {
+          this.setSolvedTask({
+            courseNumber: this.$route.params.courseNumber,
+            taskNumber: this.$route.params.taskNumber,
+          }).then((res) => {
+            callback(null, res)
+          }).catch((err) => {
+            callback(err);
+          })
+        } else callback('Already solved');
       }
     },
     beforeDestroy() {

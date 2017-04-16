@@ -152,7 +152,17 @@ router.get('/bitbucket/callback', passport.authenticate('bitbucket', {
 
 // Get user profile
 router.get('/', function(req, res) {
-  req.isAuthenticated() ? res.json(req.user) : res.status(401).end();
+  // req.isAuthenticated() ? res.json(req.user) : res.status(401).end();
+  req.isAuthenticated() ? profile.get({
+    userId: req.user._id
+  }, function(err, data) {
+      if (!err && data) {
+        res.json(data);
+      }
+      else {
+        res.status(400).end();
+      }
+    }) : res.status(401).end();
 });
 // User logout
 router.delete('/:userId', function(req, res) {

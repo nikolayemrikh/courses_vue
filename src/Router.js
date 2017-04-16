@@ -45,7 +45,8 @@ export default new VueRouter({
   }, {
     path: '/courses/:courseNumber/tasks/:taskNumber',
     name: 'main',
-    component: Main
+    component: Main,
+    meta: { requiresAuth: true }
   }, {
     path: '/development/',
     name: 'development',

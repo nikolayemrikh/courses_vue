@@ -26,6 +26,9 @@ const user = {
     },
     removeModel(state) {
       state.model = null
+    },
+    setCoursesProgress(state, cp) {
+      state.model.coursesProgress = cp;
     }
   },
   getters: {
@@ -85,6 +88,35 @@ const user = {
       return new Promise((resolve, reject) => {
         request.post('/api/user/').send(args).then(
           (res) => resolve(res),
+          (err) => reject(err)
+        )
+      })
+    },
+    setSolvedTask(context, {courseNumber, taskNumber}) {
+      let userId = context.state.model._id;
+      let userCoursesProgress = context.state.model.coursesProgress;
+      
+      if (userCoursesProgress && userCoursesProgress.length) {
+        let index = userCoursesProgress.findIndex(el => {
+          if (el.courseId === courseNumber) return el;
+        });
+        userCoursesProgress[index].completedTasks.push(taskNumber);
+      } else {
+        userCoursesProgress = [{
+          courseId: courseNumber,
+          completedTasks: [taskNumber]
+        }];
+      }
+      let args = {
+        coursesProgress: userCoursesProgress
+      };
+      
+      return new Promise((resolve, reject) => {
+        request.put(`/api/user/${userId}`).send(args).then(
+          (res) => {
+            context.commit('setCoursesProgress', userCoursesProgress);
+            resolve(res);
+          },
           (err) => reject(err)
         )
       })

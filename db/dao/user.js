@@ -223,13 +223,11 @@ module.exports = {
   },
   get: function (args, callback) {
     // Не получаем модели курсов в модель пользователя, нам нужны только айдишники пройденных курсов
-    // User.findById(args.userId).exec(callback);
-    User.findById(args.userId).populate('coursesProgress').exec(callback);
+    User.findById(args.userId).exec(callback);
+    // User.findById(args.userId).populate('coursesProgress').exec(callback);
   },
   update: function (args, callback) {
     var data = args.data || {};
-    var attach = data.attach;
-    data.attach = storage.setId(data.attach);
     User.findByIdAndUpdate(args.userId, {
       '$set': data
     }, {

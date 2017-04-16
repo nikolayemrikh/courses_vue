@@ -71,11 +71,10 @@
       this.task = this.$parent.task;
       this.course = this.$parent.course;
       this.openDialog();
-      // Загружка файлов из courses_rep/course_number/files
-      // let scr = document.createElement('script');
-      // scr.textContent = 'window.test = "KEK"'
-      // let jsp = document.querySelector('#js-programming');
-      // jsp.appendChild(scr)
+      
+      this.buttonNext = document.querySelector('.btn-next');
+      this.buttonCheck = document.querySelector('.btn-check');
+      this.goalsCompleted = 0;
       console.log(this.task)
       console.log(this.course)
       this.iframe = document.querySelector('iframe');
@@ -129,6 +128,7 @@
           this.timeoutHTML = setTimeout(() => {
             this.loadUserHTML();
             this.loadUserScript();
+            this.autocheck && this.checkGoals();
           }, 1000);
         });
         
@@ -137,6 +137,7 @@
           this.timeoutJS = setTimeout(() => {
             this.loadUserHTML();
             this.loadUserScript();
+            this.autocheck && this.checkGoals();
           }, 1000);
         });
         
@@ -144,6 +145,7 @@
           if (this.timeoutCSS) clearTimeout(this.timeoutCSS);
           this.timeoutCSS = setTimeout(() => {
             this.loadUserCSS();
+            this.autocheck && this.checkGoals();
           }, 1000);
         });
       },
@@ -210,9 +212,22 @@
           return el.getAttribute('id');
         })
         for (let key of goalKeys) {
-          console.log(key)
           let completed = this.iframe.contentWindow.checker[key]();
-          completed && document.querySelector(`#${key}`).classList.add('task-goal-completed');
+          console.log(key, completed)
+          if (completed) {
+            this.goalsCompleted++;
+            document.querySelector(`#${key}`).classList.add('task-goal-completed');
+          }
+        }
+        
+        if (this.goalsCompleted === goalKeys.length) {
+          this.$parent.setSolved((err, res) => {
+            if (res || err === 'Already solved') {
+              this.buttonNext.classList.add('btn-success');
+              this.buttonCheck.classList.add('disabled');
+              this.goalsCompleted = Number.NEGATIVE_INFINITY;
+            }
+          })
         }
       },
       showGoalsList() {

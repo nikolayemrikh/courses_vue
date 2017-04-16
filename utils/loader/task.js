@@ -52,7 +52,7 @@ module.exports = {
 
       }
 
-      callback(null, courses)
+      callback(null, tasks)
     })
   },
   get(courseId, taskNumber, callback) {
