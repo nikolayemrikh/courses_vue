@@ -37,6 +37,12 @@ const user = {
     },
     isGitOrBitBinded(state) {
       return state.model && (state.model.githubId || state.model.bitbucketId)
+    },
+    solvedLengthInCourse(state, {courseNumber}) {
+      let cp = state.model.coursesProgress.find(el => {
+        if (el.courseId === courseNumber) return el;
+      });
+      return cp.completedTasks.length;
     }
   },
   actions: {

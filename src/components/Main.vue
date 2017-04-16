@@ -1,6 +1,10 @@
 <template>
   <div id="main">
     <!--<js-programming v-if="type == 'jsProgramming'"></js-programming>-->
+    <div class="achieves" style="display: none; max-width: 100px; height: auto;">
+      <img id="achieve-half">
+      <img id="achieve-full">
+    </div>
     <component v-if="currentView" v-bind:is="currentView"></component>
   </div>
 </template>
@@ -12,6 +16,7 @@
   import { mapState } from 'vuex'
   import { mapActions } from 'vuex'
   import { mapMutations } from 'vuex'
+  import { mapGetters } from 'vuex'
   import request from 'superagent'
   import jsProgramming from './JsProgramming'
   import htmlCssJs from './htmlCssJs'
@@ -58,6 +63,10 @@
 //      this.editor.getSession().setMode('ace/mode/javascript');
 
     },
+    mounted() {
+      // document.querySelector('.achieves .achieve-half').setAttribute('src', this.course.filesDirName + '/' + this.course.meta.halfCourse.image);
+      // document.querySelector('.achieves .achieve-full').setAttribute('src', this.course.filesDirName + '/' + this.course.meta.fullCourse.image);
+    },
     methods: {
       ...mapActions('user', [
         'setSolvedTask'
@@ -67,6 +76,9 @@
       ]),
       ...mapMutations('models', [
         'setTask'
+      ]),
+      ...mapGetters('user', [
+        'solvedLengthInCourse'  
       ]),
       openDialog({title, body}) {
         this.dialog = bootstrapDialog.show({
@@ -92,13 +104,32 @@
         if (!solved) {
           this.setSolvedTask({
             courseNumber: this.$route.params.courseNumber,
-            taskNumber: this.$route.params.taskNumber,
+            taskNumber: Number(this.$route.params.taskNumber),
           }).then((res) => {
-            callback(null, res)
+            callback(null, res);
+            this.checkAchieve();
           }).catch((err) => {
             callback(err);
           })
         } else callback('Already solved');
+      }
+    },
+    checkAchieve() {
+      let len = this.solvedLengthInCourse({
+        courseNumber: this.$route.params.courseNumber
+      });
+      if (len === this.course.tasks.length) {
+        this.showAchieve('full');
+        return;
+      }
+      if (len >= this.course.tasks.length) {
+        this.showAchieve('half');
+        return;
+      }
+    },
+    showAchieve(quantityStr) {
+      if (quantityStr === 'half') {
+        
       }
     },
     beforeDestroy() {
