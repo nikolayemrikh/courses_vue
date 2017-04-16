@@ -167,6 +167,11 @@ const models = {
           resolve(context.state.task)
         }).catch(err => reject(err));
       });
+    },
+    removeCourse(context, {courseNumber}) {
+      // return new Promise((resolve, reject) => {
+        return request.delete(`/api/local/course/${courseNumber}`);
+      // });
     }
   }
 }

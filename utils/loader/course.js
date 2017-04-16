@@ -39,9 +39,8 @@ module.exports = {
         
         let dirNameParts = courseDir.split(authorUsernameDelimiter);
         let courseAuthorUsername = dirNameParts[dirNameParts.length - 1];
-        console.log(courseAuthorUsername, args.author)
-        if (args.author && args.author !== courseAuthorUsername) break;
-        
+        console.log(courseAuthorUsername, args.author, 'test')
+        if (args.author && args.author !== courseAuthorUsername) continue;
         let courseFiles = fs.readdirSync(path.join(repPath, courseDir));
         if (courseFiles.indexOf(metaFile) == -1) break;
 
@@ -85,7 +84,6 @@ module.exports = {
         courses.push(courseMeta);
 
       }
-
       callback(null, courses)
     })
   },

@@ -65,7 +65,7 @@ router.post('/', upload.any(), function (req, res, next) {
         })
       });
     });
-  }
+  } else return res.status(400).end
   if (args.url) {
     console.log(args.url)
   }
@@ -88,18 +88,14 @@ router.put('/:_id', function (req, res, next) {
   });
 });
 // Remove course
-router.delete('/:courseId', function (req, res, next) {
-  console.log('tyt')
-  var args = {
-    courseId: req.params.courseId
-  };
-  course.delete(args, function (err, data) {
-    if (!err && data) {
-      res.json(data);
-    }
-    else {
-      res.status(400).end();
-    }
-  });
+router.delete('/:courseName', function (req, res, next) {
+  let courseName = req.params.courseName;
+  if (courseName) {
+    let course = utils.course.Course.createFromName(courseName);
+    course.remove(req.user, (err, removed) => {
+      if (err) return res.status(400).send(err.message);
+      res.status(200).end();
+    });
+  } else return res.status(400).end();
 });
 module.exports = router;

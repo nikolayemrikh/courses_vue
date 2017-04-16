@@ -9,7 +9,8 @@ var config = require('nconf');
 
 router.post('/', function(req, res) {
   let body = req.body;
-  let courseDirName = `${body.repository.name}@${body.repository.owner.name}`;
+  console.log(body.repository)
+  let courseDirName = `${body.repository.name}@${body.repository.owner.login}`;
   let coursePath = path.join(config.get('courses:repPath'), courseDirName);
   console.log(coursePath)
   simpleGit(coursePath).pull(function(err, update) {

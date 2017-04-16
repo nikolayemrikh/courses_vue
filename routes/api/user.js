@@ -111,7 +111,8 @@ passport.use(new GitHubStrategy({
     callbackURL: config.get('auth:github:callbackURL'),
     scope: [
       'user:email',
-      'repo'
+      'repo',
+      'delete_repo'
     ]
   },
   function(accessToken, refreshToken, githubProfile, callback) {

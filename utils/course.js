@@ -36,7 +36,7 @@ module.exports.Course = class Course {
     this.tempFiles = tempFiles;
   }
   _constructDirName(title, username) {
-    return urlify(title) + '@' + username;
+    return urlify(title).toLowerCase() + '@' + username;
   }
   save(callback) {
     if (this.title && this.author && this.author.username) {
@@ -76,7 +76,10 @@ module.exports.Course = class Course {
       for (let tempFileInfo of this.tempFiles) {
         promises.push(new Promise((resolve, reject) => {
           fs.move(tempFileInfo.path, path.join(absFilesDirPath, tempFileInfo.originalname), err => {
-            if (err) return reject('Something went wrong');
+            if (err) {
+              this.removeDir();
+              return reject('Something went wrong');
+            }
             resolve('OK');
           })
         }));
@@ -86,6 +89,7 @@ module.exports.Course = class Course {
   }
   createRepository(userSession, callback) {
     if (!this.service) return callback(new Error('No service attached'));
+    let repoName = urlify(this.title).toLowerCase();
     let options = {
       json: true,
       headers: {}
@@ -95,14 +99,14 @@ module.exports.Course = class Course {
       case 'github':
         options.url = 'https://api.github.com/user/repos';
         options.body = {
-          name: urlify(this.title).toLowerCase(),
+          name: repoName,
           // auto_init: true
         };
         options.headers['Authorization'] = `token ${userSession.githubToken}`;
         options.headers['user-agent'] = githubUserAgent;
         break;
       case 'bitbucket':
-        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${urlify(this.title).toLowerCase()}`;
+        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${repoName}`;
         options.headers['Authorization'] = `Bearer ${userSession.bitbucketToken}`;
         options.body = {
           scm: "git",
@@ -112,12 +116,20 @@ module.exports.Course = class Course {
         break;
     }
     request(options, (err, res) => {
-      if (err || !res && res.statusCode !== 201) return callback(err);
+      if (err || !res && res.statusCode !== 201) {
+        this.removeDir();
+        return callback(err);
+      }
       this.gitUrl = res.body.git_url;
       this.id = res.body.id;
       this.remoteUrl = res.body.clone_url;
-      console.log(res.body)
-      callback(null, res.body);
+      this.updateMeta({
+        repoName: repoName,
+        service: this.service,
+        remoteUrl: this.remoteUrl
+      }, () => {
+        callback(null, res.body);
+      })
     });
   }
   gitInit(userSession, callback) {
@@ -143,13 +155,39 @@ module.exports.Course = class Course {
         remoteUrl
       ])
       .push(['-u', 'origin', 'master'], (err, res) => {
-        if (err) return callback(err);
+        if (err) {
+          this.removeDir();
+          return callback(err);
+        }
         callback(null, res);
       });
       
   }
+  updateMeta(props, callback) {
+    let metaPath = path.join(this.dirName, metaFile);
+    fs.readFile(metaPath, {
+      encoding: 'utf8'
+    }, (err, courseMeta) => {
+      courseMeta = JSON.parse(courseMeta)
+      if (err) {
+        this.removeDir();
+        return callback(err);
+      }
+      
+      Object.assign(courseMeta, props);
+      
+      fs.writeFile(metaPath, JSON.stringify(courseMeta, null, 4), (err, res) => {
+        if (err) {
+          this.removeDir();
+          return callback(err);
+        }
+        else callback(null, 'meta');
+      })
+    });
+  }
   hookRepo(userSession, callback) {
     if (!this.service) return callback(new Error('No service attached'));
+    let repoName = urlify(this.title).toLowerCase();
     let options = {
       json: true,
       headers: {}
@@ -157,7 +195,7 @@ module.exports.Course = class Course {
     options.method = 'POST';
     switch (this.service) {
       case 'github':
-        options.url = `https://api.github.com/repos/${userSession.githubUsername}/${urlify(this.title)}/hooks`;
+        options.url = `https://api.github.com/repos/${userSession.githubUsername}/${repoName}/hooks`;
         options.body = {
           name: "web",
           active: true,
@@ -172,7 +210,71 @@ module.exports.Course = class Course {
         options.headers['user-agent'] = githubUserAgent;
         break;
       case 'bitbucket':
-        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${urlify(this.title)}`;
+        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${repoName}/hooks`;
+        options.headers['Authorization'] = `Bearer ${userSession.bitbucketToken}`;
+        options.body = {
+          events: ["repo:push"],
+          description: "NE LMS webhook",
+          url: config.get('systemUrl') + 'api/githubHooks',
+          active: true
+        };
+        break;
+    }
+    request(options, (err, res) => {
+      if (err || !res && res.statusCode !== 201) {
+        this.removeDir();
+        return callback(err);
+      }
+      callback(null, res.body);
+    });
+  }
+  static createFromName(fullCourseName) {
+    let course = new Course;
+    let absDirPath = path.join(repPath, fullCourseName.toLowerCase());
+    course.dirName = absDirPath;
+    let metaPath = path.join(absDirPath, config.get('courses:metaFile'));
+    let meta = JSON.parse(fs.readFileSync(metaPath), {
+      encoding: 'utf8'
+    });
+    Object.assign(course, meta);
+    return course;
+  }
+  remove(userSession, cb) {
+    this.removeDir();
+    this.removeRepo(userSession, cb);
+  }
+  removeDir() {
+    this.deleteFolderRecursive(this.dirName);
+  }
+  deleteFolderRecursive(path) {
+    if( fs.existsSync(path) ) {
+      fs.readdirSync(path).forEach((file, index) => {
+        var curPath = path + "/" + file;
+        if(fs.lstatSync(curPath).isDirectory()) { // recurse
+          this.deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+      fs.rmdirSync(path);
+    }
+  }
+  removeRepo(userSession, callback) {
+    if (!this.service) return callback(new Error('No service attached'));
+    let repoName = urlify(this.title).toLowerCase();
+    let options = {
+      json: true,
+      headers: {}
+    };
+    options.method = 'DELETE';
+    switch (this.service) {
+      case 'github':
+        options.url = `https://api.github.com/repos/${userSession.githubUsername}/${repoName}`;
+        options.headers['Authorization'] = `token ${userSession.githubToken}`;
+        options.headers['user-agent'] = githubUserAgent;
+        break;
+      case 'bitbucket':
+        options.url = `https://api.bitbucket.org/2.0/repositories/${userSession.bitbucketUsername}/${repoName}`;
         options.headers['Authorization'] = `Bearer ${userSession.bitbucketToken}`;
         options.body = {
           scm: "git",
@@ -182,9 +284,8 @@ module.exports.Course = class Course {
         break;
     }
     request(options, (err, res) => {
-      if (err || !res && res.statusCode !== 201) return callback(err);
-      console.log(res.body)
-      callback(null, res.body);
+      if (err || !res && res.statusCode !== 204) return callback(err);
+      callback(null, res);
     });
   }
 };

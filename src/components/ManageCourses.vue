@@ -120,15 +120,23 @@
         }
       },
       deleteCourse(course) {
+        console.log(course)
         let courseId = course.courseId;
-        
-        
+        this.removeCourse({
+          courseNumber: courseId
+        }).then(res => {
+          let index = this.courses.findIndex(el => {
+            el.courseId === courseId
+          });
+          this.courses.splice(index, 1);
+        }).catch(err => console.error(err));
       }
     },
     beforeMount() {
       if (this.userModel && this.userModel.username) {
         request.get(`/api/local/course?author=${this.userModel.username}`).then((res) => {
           this.courses = res.body.slice()
+          console.log(this.courses)
         }).catch((err) => {
           console.error(err)
         })
