@@ -37,12 +37,6 @@ const user = {
     },
     isGitOrBitBinded(state) {
       return state.model && (state.model.githubId || state.model.bitbucketId)
-    },
-    solvedLengthInCourse(state, {courseNumber}) {
-      let cp = state.model.coursesProgress.find(el => {
-        if (el.courseId === courseNumber) return el;
-      });
-      return cp.completedTasks.length;
     }
   },
   actions: {
@@ -98,21 +92,29 @@ const user = {
         )
       })
     },
-    setSolvedTask(context, {courseNumber, taskNumber}) {
+    setSolvedTask(context, {courseNumber, taskNumber, achieveNames}) {
+      console.log(achieveNames)
       let userId = context.state.model._id;
       let userCoursesProgress = context.state.model.coursesProgress;
       
+      let index = null;
       if (userCoursesProgress && userCoursesProgress.length) {
-        let index = userCoursesProgress.findIndex(el => {
+        index = userCoursesProgress.findIndex(el => {
           if (el.courseId === courseNumber) return el;
         });
         userCoursesProgress[index].completedTasks.push(taskNumber);
       } else {
+        index = 0;
         userCoursesProgress = [{
           courseId: courseNumber,
           completedTasks: [taskNumber]
         }];
       }
+      if (!userCoursesProgress[index].achieves) userCoursesProgress[index].achieves = {};
+      for (let achieveName of achieveNames) {
+        userCoursesProgress[index].achieves[achieveName] = true;
+      }
+      console.log(achieveNames)
       let args = {
         coursesProgress: userCoursesProgress
       };

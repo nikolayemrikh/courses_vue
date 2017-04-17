@@ -56,7 +56,11 @@ var User = new Schema({
   },
   coursesProgress: [{
     courseId: String, //
-    completedTasks: [Number]
+    completedTasks: [Number],
+    achieves: {
+      halfCourse: Boolean,
+      fullCourse: Boolean
+    }
   }],
   bitbucketToken: {
     type: String

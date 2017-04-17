@@ -10,5 +10,5 @@ selenium-debug.log
 output.log
 lib/ace-builds
 
-static/courses/
+static/
 uploads/

@@ -1,9 +1,17 @@
 <template>
   <div id="main">
     <!--<js-programming v-if="type == 'jsProgramming'"></js-programming>-->
-    <div class="achieves" style="display: none; max-width: 100px; height: auto;">
-      <img id="achieve-half">
-      <img id="achieve-full">
+    <div class="achieves">
+      <div class="achieves-item half">
+        <p class="achieves-item__title"></p>
+        <img>
+        <p class="achieves-item__alert"></p>
+      </div>
+      <div class="achieves-item full">
+        <p class="achieves-item__title"></p>
+        <img>
+        <p class="achieves-item__alert"></p>
+      </div>
     </div>
     <component v-if="currentView" v-bind:is="currentView"></component>
   </div>
@@ -64,21 +72,41 @@
 
     },
     mounted() {
-      // document.querySelector('.achieves .achieve-half').setAttribute('src', this.course.filesDirName + '/' + this.course.meta.halfCourse.image);
-      // document.querySelector('.achieves .achieve-full').setAttribute('src', this.course.filesDirName + '/' + this.course.meta.fullCourse.image);
+      let halfContainer = document.querySelector('.achieves-item.half');
+      halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
+      halfContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.halfCourse.title;
+      halfContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.halfCourse.alert;
+      this.halfContainer = halfContainer;
+      
+      let fullContainer = document.querySelector('.achieves-item.full');
+      fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
+      fullContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.fullCourse.title;
+      fullContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.fullCourse.alert;
+      this.fullContainer = fullContainer;
+      
+      this.alreadyAchieved = {
+        halfCourse: false,
+        fullCourse: false
+      }
+      for (let cp of this.model.coursesProgress) {
+        if (cp.courseId === this.$route.params.courseNumber) {
+          if (cp.achieves) {
+            if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
+            if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+          }
+        }
+      }
     },
     methods: {
       ...mapActions('user', [
-        'setSolvedTask'
+        'setSolvedTask',
+        'solvedLengthInCourse'
       ]),
       ...mapActions('models', [
         'loadTask'
       ]),
       ...mapMutations('models', [
         'setTask'
-      ]),
-      ...mapGetters('user', [
-        'solvedLengthInCourse'  
       ]),
       openDialog({title, body}) {
         this.dialog = bootstrapDialog.show({
@@ -101,35 +129,64 @@
             if (cp.completedTasks.indexOf(Number(this.$route.params.taskNumber)) !== -1) solved = true;
           }
         }
+        let achieveNames = this.checkAchieve();
+        console.log(achieveNames)
         if (!solved) {
           this.setSolvedTask({
             courseNumber: this.$route.params.courseNumber,
             taskNumber: Number(this.$route.params.taskNumber),
+            achieveNames: achieveNames
           }).then((res) => {
             callback(null, res);
-            this.checkAchieve();
           }).catch((err) => {
             callback(err);
           })
         } else callback('Already solved');
-      }
-    },
-    checkAchieve() {
-      let len = this.solvedLengthInCourse({
-        courseNumber: this.$route.params.courseNumber
-      });
-      if (len === this.course.tasks.length) {
-        this.showAchieve('full');
-        return;
-      }
-      if (len >= this.course.tasks.length) {
-        this.showAchieve('half');
-        return;
-      }
-    },
-    showAchieve(quantityStr) {
-      if (quantityStr === 'half') {
-        
+      },
+      solvedLengthInCourse(courseNumber) {
+        if (this.model.coursesProgress) {
+          let cp = this.model.coursesProgress.find(el => {
+            if (el.courseId === courseNumber) return el;
+          });
+          return (cp && cp.completedTasks) ? cp.completedTasks.length : 1;
+        } else return 1;
+      },
+      checkAchieve() {
+        let len = this.solvedLengthInCourse(this.$route.params.courseNumber);
+        console.log(len)
+        let achieves = [];
+        if (!this.alreadyAchieved.fullCourse && len === this.course.tasks.length) {
+          this.showAchieve('fullCourse');
+          achieves.push('fullCourse');
+        }
+        if (!this.alreadyAchieved.halfCourse && len >= (this.course.tasks.length / 2)) {
+          this.showAchieve('halfCourse');
+          achieves.push('halfCourse');
+        }
+        return achieves;
+      },
+      showAchieve(quantityStr) {
+        if (this.achieveShowing) {
+          setTimeout(() => {
+            this.showAchieve(quantityStr);
+          }, 5000);
+        }
+        switch (quantityStr) {
+          case 'halfCourse':
+            this.halfContainer.style.display = 'flex';
+            this.achieveShowing = setTimeout(() => {
+              this.halfContainer.style.display = 'none';
+              this.achieveShowing = null;
+            }, 5000);
+            break;
+          case 'fullCourse':
+            this.fullContainer.style.display = 'flex';
+            this.achieveShowing = setTimeout(() => {
+              this.fullContainer.style.display = 'none';
+              this.achieveShowing = null;
+            }, 5000);
+            break;
+        }
       }
     },
     beforeDestroy() {
@@ -146,6 +203,39 @@
   }
 </script>
 <style>
+  @keyframes pop-up {
+    from {
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  .achieves-item {
+    /*display: flex;*/
+    display: none;
+    position: fixed;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    left: 0;
+    right: 0;
+    z-index: 9999999;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    opacity: 0;
+    box-shadow: 0 0 10px 0 rebeccapurple;
+    animation: pop-up 5s linear 0s 1;
+  }
+
   iframe {
     width: 100%;
     height: auto;

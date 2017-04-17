@@ -28,13 +28,17 @@
               <ol class="task-goals-list">
               </ol>
             </div>
-            <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
-            <a v-on:click.prevent="checkGoals" v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
+            <div class="btn-group" role="group">
+              <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
+              <a v-on:click.prevent="checkGoals" v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
+            </div>
             <label class="checkbox-inline">
-              <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check"> autocheck
+              <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check" v-bind:checked="autocheck"> autocheck
             </label>
-            <a class="pull-right btn btn-default btn-next" href="#" role="button">Next</a>
-            <a v-on:click.prevent="showGoalsList" class="pull-right btn btn-default btn-check" href="#" role="button">{{goalsDisplayed ? 'Show goals' : 'Hide goals'}}</a>
+            <div class="btn-group pull-right" role="group">
+              <a v-on:click.prevent="showGoalsList" class="btn btn-default btn-show-goals" href="#" role="button">{{goalsDisplayed ? 'Show goals' : 'Hide goals'}}</a>
+              <a class="btn btn-default btn-next" href="#" role="button">Next</a>
+            </div>
           </div>
         </div>
       </div>
@@ -55,7 +59,7 @@
     name: 'htmlCssJs',
     data() {
       return {
-        autocheck: false,
+        autocheck: true,
         activeTabs: {
           html: false,
           css: false,
@@ -74,7 +78,7 @@
       
       this.buttonNext = document.querySelector('.btn-next');
       this.buttonCheck = document.querySelector('.btn-check');
-      this.goalsCompleted = 0;
+      this.goalsCompleted = [];
       console.log(this.task)
       console.log(this.course)
       this.iframe = document.querySelector('iframe');
@@ -211,16 +215,16 @@
         let goalKeys = Array.from(this.taskList.querySelectorAll('.task-goal')).map(el => {
           return el.getAttribute('id');
         })
-        for (let key of goalKeys) {
+        for (let i in goalKeys) {
+          let key = goalKeys[i];
           let completed = this.iframe.contentWindow.checker[key]();
           console.log(key, completed)
           if (completed) {
-            this.goalsCompleted++;
+            this.goalsCompleted[i] = true;
             document.querySelector(`#${key}`).classList.add('task-goal-completed');
           }
         }
-        
-        if (this.goalsCompleted === goalKeys.length) {
+        if (this.goalsCompleted.filter(el => el === true).length === goalKeys.length) {
           this.$parent.setSolved((err, res) => {
             if (res || err === 'Already solved') {
               this.buttonNext.classList.add('btn-success');
@@ -290,6 +294,9 @@
   }
   .iframe-container {
     padding: 0;
+  }
+  .btn-show-goals {
+    width: 110px;
   }
   
 </style>
