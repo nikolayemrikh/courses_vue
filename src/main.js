@@ -125,6 +125,7 @@ const user = {
           userCoursesProgress[index].achieves[achieveName] = true;
         }
       }
+      console.log(achieveNames, userCoursesProgress)
       let args = {
         coursesProgress: userCoursesProgress
       };

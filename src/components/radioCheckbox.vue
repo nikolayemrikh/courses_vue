@@ -79,7 +79,8 @@
         switch (this.task.type) {
           case 'radio':
             let answer = e.target.radios.value;
-            if (this.task.correctAnswer === answer) solved = true;
+            
+            if (this.task.correctAnswer == answer) solved = true;
             break;
           case 'checkbox':
             let answers = Array.from(e.target.querySelectorAll('input[type="checkbox"]')).filter(el => el.checked).map(el => el.value);

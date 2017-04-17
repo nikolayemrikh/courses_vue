@@ -84,7 +84,6 @@
         fullContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.fullCourse.title;
         fullContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.fullCourse.alert;
         this.fullContainer = fullContainer;
-        
         this.alreadyAchieved = {
           halfCourse: false,
           fullCourse: false
@@ -97,12 +96,12 @@
             }
           }
         }
+        console.log(this.alreadyAchieved.halfCourse)
       }
     },
     methods: {
       ...mapActions('user', [
-        'setSolvedTask',
-        'solvedLengthInCourse'
+        'setSolvedTask'
       ]),
       ...mapActions('models', [
         'loadTask'
@@ -131,12 +130,13 @@
             if (cp.completedTasks.indexOf(Number(this.$route.params.taskNumber)) !== -1) solved = true;
           }
         }
-        let achieveNames = null
-        if (this.course.achieves) {
-          let achieveNames = this.checkAchieve();
-        }
-        console.log(achieveNames)
         if (!solved) {
+          let achieveNames = null
+          if (this.course.achieves) {
+            achieveNames = this.checkAchieve();
+          }
+          console.log(achieveNames)
+          console.log('NE SOLVED')
           this.setSolvedTask({
             courseNumber: this.$route.params.courseNumber,
             taskNumber: Number(this.$route.params.taskNumber),
