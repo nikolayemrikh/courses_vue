@@ -17,6 +17,9 @@
                     <div class="col-md-2">
                       <div class="row">
                         <template v-if="userModel">
+                          <span class="badge badge-challenge">{{ task.isChallenge ? 'challenge' : '' }}</span>
+                        </template>
+                        <template v-if="userModel">
                           <span class="badge">{{ completed(task) }}</span>
                         </template>
                       </div>

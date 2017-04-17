@@ -202,6 +202,7 @@ router.beforeEach((to, from, next) => {
       taskNumber: to.params.taskNumber
     }
     store.dispatch('models/loadTask', args).then(task => {
+      console.log(task)
       next();
     }).catch(err => next());
   }

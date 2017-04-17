@@ -104,4 +104,16 @@
     color: #292b2c;
     background-color: #ffffff;
   }
+  
+  .badge {
+    background-color: rebeccapurple;
+  }
+  
+  .badge + .badge {
+    margin-top: 10px;
+  }
+  
+  .badge.badge-challenge {
+    background-color: #449d44;
+  }
 </style>

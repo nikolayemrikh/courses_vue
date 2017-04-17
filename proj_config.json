@@ -48,7 +48,7 @@
       "initialHtmlFile": "index.html",
       "initialCssFile": "style.css",
       "initialJsFile": "script.js",
-      "initialAnswersFile": "answers.json",
+      "initialQuestionsFile": "questions.json",
       "metaFile": "meta.json",
       "solutionFile": "solution.html",
       "theoryFile": "theory.html",

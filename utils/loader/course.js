@@ -11,7 +11,7 @@ const initialFilesDir = config.get('courses:initialFilesDir');
 const initialHtmlFile = config.get('courses:initialHtmlFile');
 const initialCssFile = config.get('courses:initialCssFile');
 const initialJsFile = config.get('courses:initialJsFile');
-const initialAnswersFile = config.get('courses:initialAnswersFile');
+const initialQuestionsFile = config.get('courses:initialQuestionsFile');
 const metaFile = config.get('courses:metaFile');
 const solutionFile = config.get('courses:solutionFile');
 const theoryFile = config.get('courses:theoryFile');
@@ -228,8 +228,8 @@ module.exports = {
         encoding: 'utf8'
       });
 
-    if (initialFiles.includes(initialAnswersFile))
-      task.initial.answers = JSON.parse(fs.readFileSync(path.join(fullTaskPath, initialFilesDir, initialAnswersFile), {
+    if (initialFiles.includes(initialQuestionsFile))
+      task.initial.questions = JSON.parse(fs.readFileSync(path.join(fullTaskPath, initialFilesDir, initialQuestionsFile), {
         encoding: 'utf8'
       }));
 

@@ -37,7 +37,7 @@
             </label>
             <div class="btn-group pull-right" role="group">
               <a v-on:click.prevent="showGoalsList" class="btn btn-default btn-show-goals" href="#" role="button">{{goalsDisplayed ? 'Show goals' : 'Hide goals'}}</a>
-              <a class="btn btn-default btn-next" href="#" role="button">Next</a>
+              <router-link class="btn btn-default btn-next" v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/${Number(this.$route.params.taskNumber) + 1}`">Next</router-link>
             </div>
           </div>
         </div>

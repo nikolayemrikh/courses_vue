@@ -28,15 +28,16 @@
   import request from 'superagent'
   import jsProgramming from './JsProgramming'
   import htmlCssJs from './htmlCssJs'
+  import radioCheckbox from './radioCheckbox'
   import bootstrapDialog from 'bootstrap3-dialog'
   import path from 'path';
 
-  // "type": "htmlCssJs/jsProgramming/question/radio/answers"
   export default {
     name: 'main',
     components: {
       jsProgramming,
-      htmlCssJs
+      htmlCssJs,
+      radioCheckbox
     },
     data() {
       return {
@@ -61,15 +62,14 @@
           case 'htmlCssJs':
             this.currentView = 'htmlCssJs';
             break;
+          case 'radio':
+            this.currentView = 'radioCheckbox';
+            break;
+          case 'checkbox':
+            this.currentView = 'radioCheckbox';
+            break;
         }
       })
-//      this.task.theory = this.constructHtmlCss(this.task.theory);
-
-
-//      this.editor = ace.edit('editor');
-//      this.editor.setTheme("ace/theme/textmate");
-//      this.editor.getSession().setMode('ace/mode/javascript');
-
     },
     mounted() {
       if (this.course.achieves) {
@@ -151,19 +151,22 @@
       solvedLengthInCourse(courseNumber) {
         if (this.model.coursesProgress) {
           let cp = this.model.coursesProgress.find(el => {
+            console.log('have courses progress', el.courseId, courseNumber)
             if (el.courseId === courseNumber) return el;
           });
-          return (cp && cp.completedTasks) ? cp.completedTasks.length : 1;
-        } else return 1;
+          console.log((cp && cp.completedTasks) ? cp.completedTasks.length : 0)
+          return (cp && cp.completedTasks) ? cp.completedTasks.length : 0;
+        } else return 0;
       },
       checkAchieve() {
-        let len = this.solvedLengthInCourse(this.$route.params.courseNumber);
+        let len = this.solvedLengthInCourse(this.$route.params.courseNumber) + 1;
         console.log(len)
         let achieves = [];
         if (!this.alreadyAchieved.fullCourse && len === this.course.tasks.length) {
           this.showAchieve('fullCourse');
           achieves.push('fullCourse');
         }
+        console.log(!this.alreadyAchieved.halfCourse, len >= (this.course.tasks.length / 2))
         if (!this.alreadyAchieved.halfCourse && len >= (this.course.tasks.length / 2)) {
           this.showAchieve('halfCourse');
           achieves.push('halfCourse');
