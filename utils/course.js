@@ -134,12 +134,15 @@ module.exports.Course = class Course {
   }
   gitInit(userSession, callback) {
     let remoteUrl;
+    let username;
     switch (this.service) {
       case 'github':
         remoteUrl = `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
+        username = userSession.githubUsername;
         break;
       case 'bitbucket':
         remoteUrl = `https://${userSession.bitbucketUsername}:${userSession.bitbucketToken}@bitbucket.org/${userSession.bitbucketUsername}/${urlify(this.title).toLowerCase()}.git`
+        username = userSession.bitbucketUsername;
         break;
     }
     

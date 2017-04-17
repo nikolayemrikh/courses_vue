@@ -72,27 +72,29 @@
 
     },
     mounted() {
-      let halfContainer = document.querySelector('.achieves-item.half');
-      halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
-      halfContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.halfCourse.title;
-      halfContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.halfCourse.alert;
-      this.halfContainer = halfContainer;
-      
-      let fullContainer = document.querySelector('.achieves-item.full');
-      fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
-      fullContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.fullCourse.title;
-      fullContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.fullCourse.alert;
-      this.fullContainer = fullContainer;
-      
-      this.alreadyAchieved = {
-        halfCourse: false,
-        fullCourse: false
-      }
-      for (let cp of this.model.coursesProgress) {
-        if (cp.courseId === this.$route.params.courseNumber) {
-          if (cp.achieves) {
-            if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
-            if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+      if (this.course.achieves) {
+        let halfContainer = document.querySelector('.achieves-item.half');
+        halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
+        halfContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.halfCourse.title;
+        halfContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.halfCourse.alert;
+        this.halfContainer = halfContainer;
+        
+        let fullContainer = document.querySelector('.achieves-item.full');
+        fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
+        fullContainer.querySelector('.achieves-item__title').innerText = this.course.achieves.fullCourse.title;
+        fullContainer.querySelector('.achieves-item__alert').innerText = this.course.achieves.fullCourse.alert;
+        this.fullContainer = fullContainer;
+        
+        this.alreadyAchieved = {
+          halfCourse: false,
+          fullCourse: false
+        }
+        for (let cp of this.model.coursesProgress) {
+          if (cp.courseId === this.$route.params.courseNumber) {
+            if (cp.achieves) {
+              if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
+              if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+            }
           }
         }
       }
@@ -129,7 +131,10 @@
             if (cp.completedTasks.indexOf(Number(this.$route.params.taskNumber)) !== -1) solved = true;
           }
         }
-        let achieveNames = this.checkAchieve();
+        let achieveNames = null
+        if (this.course.achieves) {
+          let achieveNames = this.checkAchieve();
+        }
         console.log(achieveNames)
         if (!solved) {
           this.setSolvedTask({

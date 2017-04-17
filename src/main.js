@@ -100,9 +100,18 @@ const user = {
       let index = null;
       if (userCoursesProgress && userCoursesProgress.length) {
         index = userCoursesProgress.findIndex(el => {
+          console.log(el.courseId, courseNumber)
           if (el.courseId === courseNumber) return el;
         });
-        userCoursesProgress[index].completedTasks.push(taskNumber);
+        if (index === -1) {
+          userCoursesProgress.push({
+            completedTasks: [taskNumber],
+            courseId: courseNumber
+          });
+        } else {
+          if (!userCoursesProgress[index].completedTasks) userCoursesProgress[index].completedTasks = [];
+          userCoursesProgress[index].completedTasks.push(taskNumber);
+        }
       } else {
         index = 0;
         userCoursesProgress = [{
@@ -110,11 +119,12 @@ const user = {
           completedTasks: [taskNumber]
         }];
       }
-      if (!userCoursesProgress[index].achieves) userCoursesProgress[index].achieves = {};
-      for (let achieveName of achieveNames) {
-        userCoursesProgress[index].achieves[achieveName] = true;
+      if (achieveNames) {
+        if (!userCoursesProgress[index].achieves) userCoursesProgress[index].achieves = {};
+        for (let achieveName of achieveNames) {
+          userCoursesProgress[index].achieves[achieveName] = true;
+        }
       }
-      console.log(achieveNames)
       let args = {
         coursesProgress: userCoursesProgress
       };

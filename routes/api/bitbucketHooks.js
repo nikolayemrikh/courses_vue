@@ -14,9 +14,8 @@ router.post('/', function(req, res) {
   let coursePath = path.join(config.get('courses:repPath'), courseDirName);
   console.log(coursePath)
   simpleGit(coursePath).pull(function(err, update) {
-    
+    res.status(200).end();
   });
-  res.status(200).end();
 });
 
 module.exports = router;
