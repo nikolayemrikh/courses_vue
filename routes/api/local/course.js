@@ -5,7 +5,7 @@ router.use('/:courseId/task', taskRouter);
 // List all course in course
 var shortid = require('shortid');
 var utils = require('../../../utils');
-
+var profile = require('../../../db/dao/user');
 var multer  = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -50,6 +50,7 @@ router.post('/', upload.any(), function (req, res, next) {
     meta: req.body.meta ? JSON.parse(req.body.meta) : null,
     url: req.body.url ? req.body.url : null
   };
+  let user = new User();
   if (args.meta) {
     let course = new utils.course.Course(args.meta, req.files);
     course.save((err, stat) => {

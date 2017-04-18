@@ -202,7 +202,6 @@ router.beforeEach((to, from, next) => {
       courseNumber: to.params.courseNumber,
       taskNumber: to.params.taskNumber
     }
-  console.log(args.taskNumber)
     store.dispatch('models/loadTask', args).then(task => {
       console.log(task)
       next();

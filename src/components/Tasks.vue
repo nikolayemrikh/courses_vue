@@ -122,7 +122,6 @@
           }
         }
       }
-      console.log(this.alreadyAchieved.halfCourse)
     },
     head: {
       base() {
@@ -183,8 +182,5 @@
   }
   .section-achieves {
     text-align: center;
-  }
-  .no-achieves {
-    display: none;
   }
 </style>

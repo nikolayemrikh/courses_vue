@@ -221,6 +221,11 @@ module.exports = {
       });
     });
   },
+  getBy: function(args, callback) {
+    User.findOne({
+      bitbucketId: args.bitbucketId
+    }).exec(callback);
+  },
   get: function (args, callback) {
     // Не получаем модели курсов в модель пользователя, нам нужны только айдишники пройденных курсов
     User.findById(args.userId).exec(callback);

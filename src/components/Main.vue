@@ -97,7 +97,6 @@
             }
           }
         }
-        console.log(this.alreadyAchieved.halfCourse)
       }
     },
     methods: {
