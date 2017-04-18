@@ -8,15 +8,15 @@
             <div v-if="loginError" class="alert alert-danger" role="alert">{{ getIncorrectMessage }}</div>
             <form @submit.prevent="onSubmit">
               <div v-bind:class="[loginError && loginError.incorrect.username ? 'has-error' : '']" class="form-group">
-                <label for="username">Login</label>
-                <input v-model="username" type="text" class="form-control" id="username" placeholder="Enter login">
+                <label for="username">Имя пользователя</label>
+                <input v-model="username" type="text" class="form-control" id="username" placeholder="Имя пользователя">
               </div>
               <div v-bind:class="[loginError && loginError.incorrect.password ? 'has-error' : '']" class="form-group">
-                <label for="password">Password</label>
+                <label for="password">Пароль</label>
                 <input v-model="password" type="password" class="form-control" id="password"
-                       placeholder="Enter password">
+                       placeholder="Пароль">
               </div>
-              <button type="submit" class="btn btn-default btn-block">Submit</button>
+              <button type="submit" class="btn btn-default btn-block">Войти</button>
             </form>
           </div>
         </div>
@@ -24,7 +24,7 @@
       <section class="socials col-md-3">
         <div class="panel panel-default panel-info">
           <div class="panel-body">
-            <p>Socials:</p>
+            <p>Вход через сервисы:</p>
             <!--<a href="/profile/vk"><img class="social-image" src="../assets/vk-logo.png"></a>-->
             <!--<a v-on:click.prevent="githubAuth" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>-->
             <a href="/api/user/github" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>
@@ -73,9 +73,9 @@
       ]),
       getIncorrectMessage() {
         if (this.loginError && this.loginError.incorrect.username)
-          return "Incorrect username"
+          return "Неверный пароль"
         if (this.loginError && this.loginError.incorrect.password)
-          return "Incorrect password"
+          return "Неверный пароль"
       }
     }
   }

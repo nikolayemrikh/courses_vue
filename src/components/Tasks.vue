@@ -112,12 +112,13 @@
         fullContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.fullCourse.alert;
         this.fullContainer = fullContainer;
       }
-
-      for (let cp of this.userModel.coursesProgress) {
-        if (cp.courseId === this.$route.params.courseNumber) {
-          if (cp.achieves) {
-            if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
-            if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+      if (this.userModel) {
+        for (let cp of this.userModel.coursesProgress) {
+          if (cp.courseId === this.$route.params.courseNumber) {
+            if (cp.achieves) {
+              if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
+              if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+            }
           }
         }
       }
@@ -133,12 +134,13 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        console.log("TASKS")
-        for (let cp of vm.userModel.coursesProgress) {
-          if (cp.courseId === vm.$route.params.courseNumber) {
-            if (cp.achieves) {
-              if (cp.achieves.fullCourse) vm.alreadyAchieved.fullCourse = true;
-              if (cp.achieves.halfCourse) vm.alreadyAchieved.halfCourse = true;
+        if (vm.userModel) {
+          for (let cp of vm.userModel.coursesProgress) {
+            if (cp.courseId === vm.$route.params.courseNumber) {
+              if (cp.achieves) {
+                if (cp.achieves.fullCourse) vm.alreadyAchieved.fullCourse = true;
+                if (cp.achieves.halfCourse) vm.alreadyAchieved.halfCourse = true;
+              }
             }
           }
         }

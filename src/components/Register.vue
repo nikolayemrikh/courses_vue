@@ -1,39 +1,39 @@
 <template>
   <div id="register" class="container">
-    <h3 class="register-text lead">Register and start learning quickly!</h3>
+    <h3 class="register-text lead">Регистрируйтесь и начинайте учиться!</h3>
     <div class="register-section row">
       <section class="col-md-4 col-md-offset-4">
         <!--<div v-bind:class="[info.registerError ? 'panel-danger' : 'panel-info']" class="register-panel panel panel-info">-->
         <div v-bind:class="panelStatus" class="register-panel panel panel-default">
           <div class="panel-body">
             <div v-if="registerError" class="alert alert-danger" role="alert">{{ getIncorrectMessage }}</div>
-            <div v-if="registrationSuccess" class="alert alert-success" role="alert">You've successfully registered!</div>
+            <div v-if="registrationSuccess" class="alert alert-success" role="alert">Вы успешно зарегистрированы!</div>
             <form @submit.prevent="onSubmit">
               <div v-bind:class="[registerError && registerError.incorrect.userExists ? 'has-error' : '']" class="form-group">
-                <label for="username">Username</label>
-                <input v-model="username" type="text" class="form-control" id="username" placeholder="Username">
+                <label for="username">Имя пользователя</label>
+                <input v-model="username" type="text" class="form-control" id="username" placeholder="Имя пользователя">
               </div>
               <div class="form-group">
-                <label for="password">Password</label>
-                <input v-model="password" type="password" class="form-control" id="password" placeholder="Password">
+                <label for="password">Пароль</label>
+                <input v-model="password" type="password" class="form-control" id="password" placeholder="Пароль">
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
                 <input v-model="email" type="email" class="form-control" id="email" placeholder="Email">
               </div>
               <div class="form-group">
-                <label for="firstname">First name</label>
-                <input v-model="firstname" type="text" class="form-control" id="firstname" placeholder="First name">
+                <label for="firstname">Имя</label>
+                <input v-model="firstname" type="text" class="form-control" id="firstname" placeholder="Имя">
               </div>
               <div class="form-group">
-                <label for="lastname">Last name</label>
-                <input v-model="lastname" type="text" class="form-control" id="lastname" placeholder="Last name">
+                <label for="lastname">Фамилия</label>
+                <input v-model="lastname" type="text" class="form-control" id="lastname" placeholder="Фамилия">
               </div>
               <div class="form-group">
-                <label for="birthday">Birthday</label>
-                <input v-model="birthday" type="date" class="form-control" id="birthday" placeholder="Birthday">
+                <label for="birthday">Дата рождения</label>
+                <input v-model="birthday" type="date" class="form-control" id="birthday" placeholder="Дата рождения">
               </div>
-              <button type="submit" class="btn btn-default btn-block">Submit</button>
+              <button type="submit" class="btn btn-default btn-block">Зарегистрироваться</button>
             </form>
           </div>
         </div>
