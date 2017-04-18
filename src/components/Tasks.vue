@@ -31,8 +31,20 @@
           </ul>
         </div>
       </section>
-      <section class="col-md-3">
-        Статистика
+      <section class="section-achieves col-md-3">
+        Достижения
+        <div class="achieves-list">
+          <div class="achieves-list-item half">
+            <p class="achieves-list-item__title"></p>
+            <img>
+            <p class="achieves-list-item__alert"></p>
+          </div>
+          <div class="achieves-list-item full">
+            <p class="achieves-list-item__title"></p>
+            <img>
+            <p class="achieves-list-item__alert"></p>
+          </div>
+        </div>
       </section>
     </div>
   </div>
@@ -76,6 +88,42 @@
     },
     beforeMount() {
       this.tasks = this.course.tasks;
+    },
+    mounted() {
+      if (this.course.achieves) {
+        let halfContainer = document.querySelector('.achieves-list-item.half');
+        halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
+        halfContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.halfCourse.title;
+        halfContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.halfCourse.alert;
+        this.halfContainer = halfContainer;
+        
+        let fullContainer = document.querySelector('.achieves-list-item.full');
+        fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
+        fullContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.fullCourse.title;
+        fullContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.fullCourse.alert;
+        this.fullContainer = fullContainer;
+        this.alreadyAchieved = {
+          halfCourse: false,
+          fullCourse: false
+        }
+        for (let cp of this.userModel.coursesProgress) {
+          if (cp.courseId === this.$route.params.courseNumber) {
+            if (cp.achieves) {
+              if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
+              if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
+            }
+          }
+        }
+        console.log(this.alreadyAchieved.halfCourse)
+      }
+    },
+    head: {
+      base() {
+        return [{
+          // href: `/static/courses/${this.task.courseDirName}/${this.task.taskDirName}/`
+          href: `/static/courses/${this.course.courseId}/`
+        }]
+      }
     }
   }
 </script>
@@ -98,5 +146,18 @@
   .completed-text {
     font-size: 1rem;
     font-weight: 300;
+  }
+  .achieves-list .achieves-list-item {
+    display: flex;
+    margin-top: 30px;
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 0 10px 0 rebeccapurple;
+    border-radius: 4px;
+  }
+  .section-achieves {
+    text-align: center;
   }
 </style>

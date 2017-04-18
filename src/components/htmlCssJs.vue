@@ -229,7 +229,6 @@
             if (res || err === 'Already solved') {
               this.buttonNext.classList.add('btn-success');
               this.buttonCheck.classList.add('disabled');
-              this.goalsCompleted = Number.NEGATIVE_INFINITY;
             }
           })
         }

@@ -135,8 +135,6 @@
           if (this.course.achieves) {
             achieveNames = this.checkAchieve();
           }
-          console.log(achieveNames)
-          console.log('NE SOLVED')
           this.setSolvedTask({
             courseNumber: this.$route.params.courseNumber,
             taskNumber: Number(this.$route.params.taskNumber),
