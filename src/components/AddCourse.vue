@@ -1,25 +1,25 @@
 <template>
   <div id="addCourse" class="container">
     <ul v-on:click="handleNavToggle" class="nav nav-pills">
-      <li v-bind:class="{active: activeTabs.create}" data-type="create" role="presentation"><a href="#">Create new repository</a></li>
-      <li v-bind:class="{active: activeTabs.attach}" data-type="attach" role="presentation"><a href="#">Attach repository</a></li>
+      <li v-bind:class="{active: activeTabs.create}" data-type="create" role="presentation"><a href="#">Создать новый репозиторий</a></li>
+      <li v-bind:class="{active: activeTabs.attach}" data-type="attach" role="presentation"><a href="#">Прикрепить существющий</a></li>
     </ul>
     <template v-if="activeTabs.create">
       <form v-on:submit.prevent="submitCourse($event.target)">
         <div v-if="createError" class="alert alert-danger" role="alert">{{ createError }}</div>
-        <div v-if="createSuccess" class="alert alert-success" role="alert">Course successfully created!</div>
+        <div v-if="createSuccess" class="alert alert-success" role="alert">Курс успешно создан!</div>
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-              <label for="title">Course title</label>
-              <input name="title" class="form-control" id="title" placeholder="Enter course title">
+              <label for="title">Название</label>
+              <input name="title" class="form-control" id="title" placeholder="Введите название курса">
             </div>
             <div class="form-group">
-              <label for="description">Description</label>
+              <label for="description">Описание</label>
               <textarea name="description" class="form-control" rows="3" placeholder="Enter description"></textarea>
             </div>
             <div class="form-group">
-              <label class="control-label">VCS service</label>
+              <label class="control-label">VCS сервис</label>
               <div>
                 <label class="radio-inline"><input type="radio" name="service" id="bitbucket" value="bitbucket" checked>Bitbucket</label>
                 <label class="radio-inline"><input type="radio" name="service" id="github" value="github">Github</label>
@@ -28,12 +28,12 @@
           </div>
           <div class="col-md-6">
             <div class="form-group">
-              <label for="files">Files</label>
-              <p class="help-block">JS scripts, CSS styles and images, that will be loaded in every task</p>
+              <label for="files">Файлы</label>
+              <p class="help-block">Скрипты JS, стили CSS и изображения, которые будут загружены на страницу каждого задания</p>
               <div class="row">
                 <div class="col-md-3">
                   <label class="btn btn-default btn-file">
-                    Browse <input name="files" v-on:change="filesChanged(Array.from($event.target.files))" type="file" multiple id="files" style="display: none">
+                    Прикрепить <input name="files" v-on:change="filesChanged(Array.from($event.target.files))" type="file" multiple id="files" style="display: none">
                   </label>
                 </div>
                 <div class="col-md-9">
@@ -44,13 +44,13 @@
                       </li>
                     </transition>
                   </draggable>
-                  <p v-else="files" class="help-block">No files selected</p>
+                  <p v-else="files" class="help-block">Нет прикрепленных файлов</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default">Создать</button>
         </form>
     </template>
     <template v-if="activeTabs.attach">

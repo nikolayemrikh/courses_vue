@@ -33,13 +33,16 @@
       </section>
       <section class="section-achieves col-md-3">
         Достижения
+        <div v-if="!alreadyAchieved.halfCourse && !alreadyAchieved.fullCourse" class="no-achieves">
+          Нет достижений
+        </div>
         <div class="achieves-list">
-          <div class="achieves-list-item half">
+          <div v-bind:class="{'achieves-list-item_showed': alreadyAchieved.halfCourse}" class="achieves-list-item half">
             <p class="achieves-list-item__title"></p>
             <img>
             <p class="achieves-list-item__alert"></p>
           </div>
-          <div class="achieves-list-item full">
+          <div v-bind:class="{'achieves-list-item_showed': alreadyAchieved.fullCourse}" class="achieves-list-item full">
             <p class="achieves-list-item__title"></p>
             <img>
             <p class="achieves-list-item__alert"></p>
@@ -59,7 +62,11 @@
     name: 'tasks',
     data () {
       return {
-        tasks: []
+        tasks: [],
+        alreadyAchieved: {
+          halfCourse: false,
+          fullCourse: false
+        }
       }
     },
     computed: {
@@ -90,32 +97,31 @@
       this.tasks = this.course.tasks;
     },
     mounted() {
-      if (this.course.achieves) {
-        let halfContainer = document.querySelector('.achieves-list-item.half');
+      let halfContainer = document.querySelector('.achieves-list-item.half');
+      if (halfContainer) {
         halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
         halfContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.halfCourse.title;
         halfContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.halfCourse.alert;
         this.halfContainer = halfContainer;
-        
-        let fullContainer = document.querySelector('.achieves-list-item.full');
+      }
+      
+      let fullContainer = document.querySelector('.achieves-list-item.full');
+      if (fullContainer) {
         fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
         fullContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.fullCourse.title;
         fullContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.fullCourse.alert;
         this.fullContainer = fullContainer;
-        this.alreadyAchieved = {
-          halfCourse: false,
-          fullCourse: false
-        }
-        for (let cp of this.userModel.coursesProgress) {
-          if (cp.courseId === this.$route.params.courseNumber) {
-            if (cp.achieves) {
-              if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
-              if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
-            }
+      }
+
+      for (let cp of this.userModel.coursesProgress) {
+        if (cp.courseId === this.$route.params.courseNumber) {
+          if (cp.achieves) {
+            if (cp.achieves.fullCourse) this.alreadyAchieved.fullCourse = true;
+            if (cp.achieves.halfCourse) this.alreadyAchieved.halfCourse = true;
           }
         }
-        console.log(this.alreadyAchieved.halfCourse)
       }
+      console.log(this.alreadyAchieved.halfCourse)
     },
     head: {
       base() {
@@ -124,6 +130,19 @@
           href: `/static/courses/${this.course.courseId}/`
         }]
       }
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        console.log("TASKS")
+        for (let cp of vm.userModel.coursesProgress) {
+          if (cp.courseId === vm.$route.params.courseNumber) {
+            if (cp.achieves) {
+              if (cp.achieves.fullCourse) vm.alreadyAchieved.fullCourse = true;
+              if (cp.achieves.halfCourse) vm.alreadyAchieved.halfCourse = true;
+            }
+          }
+        }
+      })
     }
   }
 </script>
@@ -147,8 +166,11 @@
     font-size: 1rem;
     font-weight: 300;
   }
+  .achieves-list-item_showed {
+    display: flex!important;
+  }
   .achieves-list .achieves-list-item {
-    display: flex;
+    display: none;
     margin-top: 30px;
     padding: 10px;
     flex-direction: column;
@@ -159,5 +181,8 @@
   }
   .section-achieves {
     text-align: center;
+  }
+  .no-achieves {
+    display: none;
   }
 </style>

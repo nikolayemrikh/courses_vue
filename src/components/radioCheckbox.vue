@@ -33,9 +33,9 @@
                 </ul>
             </div>
             <div class="panel-footer">
-              <button type="submit" class="btn btn-default btn-check">Check</button>
+              <button type="submit" class="btn btn-default btn-check">Проверить</button>
               <div class="pull-right">
-                <router-link class="btn btn-default btn-next" v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/${Number(this.$route.params.taskNumber) + 1}`">Next</router-link>
+                <router-link class="btn btn-default btn-next" v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/${Number(this.$route.params.taskNumber) + 1}`">Далее</router-link>
               </div>
             </div>
           </div>
@@ -57,23 +57,26 @@
       }
     },
     mounted() {
-      this.buttonNext = document.querySelector('.btn-next');
-      this.buttonCheck = document.querySelector('.btn-check');
-      this.task = this.$parent.task;
-      this.course = this.$parent.course;
-      console.log(this.course, this.task)
-      switch (this.task.type) {
-        case 'radio':
-          this.radio = true;
-          break;
-        case 'checkbox':
-          this.checkbox = true;
-          break;
-      }
-      this.questions = this.task.initial.questions;
-      document.querySelector('.panel-theory').innerHTML = this.task.theory;
+      this.reload();
     },
     methods: {
+      reload() {
+        this.buttonNext = document.querySelector('.btn-next');
+        this.buttonCheck = document.querySelector('.btn-check');
+        this.task = this.$parent.task;
+        this.course = this.$parent.course;
+        console.log(this.course, this.task)
+        switch (this.task.type) {
+          case 'radio':
+            this.radio = true;
+            break;
+          case 'checkbox':
+            this.checkbox = true;
+            break;
+        }
+        this.questions = this.task.initial.questions;
+        document.querySelector('.panel-theory').innerHTML = this.task.theory;
+      },
       check(e) {
         let solved = false;
         switch (this.task.type) {

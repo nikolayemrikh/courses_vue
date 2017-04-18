@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <h3 class="login-text lead">Sign in local or through socials and start learning quickly!</h3>
+    <h3 class="login-text lead">Войдите локально или через один из сервисов, и начинайте учиться!</h3>
     <div class="login-section row">
       <section class="col-md-3 col-md-offset-3">
         <div v-bind:class="[loginError ? 'panel-danger' : 'panel-info']" class="login-panel panel panel-default">

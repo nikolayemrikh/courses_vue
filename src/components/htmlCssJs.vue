@@ -29,15 +29,15 @@
               </ol>
             </div>
             <div class="btn-group" role="group">
-              <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Theory</a>
-              <a v-on:click.prevent="checkGoals" v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Check</a>
+              <a v-on:click.prevent="openDialog()" class="btn btn-default btn-theory" href="#" role="button">Теория</a>
+              <a v-on:click.prevent="checkGoals" v-bind:class="{disabled: autocheck}" class="btn btn-default btn-check" href="#" role="button">Проверить</a>
             </div>
             <label class="checkbox-inline">
-              <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check" v-bind:checked="autocheck"> autocheck
+              <input v-on:click="autocheck = $event.target.checked" type="checkbox" id="auto-check" v-bind:checked="autocheck"> авто-проверка
             </label>
             <div class="btn-group pull-right" role="group">
-              <a v-on:click.prevent="showGoalsList" class="btn btn-default btn-show-goals" href="#" role="button">{{goalsDisplayed ? 'Show goals' : 'Hide goals'}}</a>
-              <router-link class="btn btn-default btn-next" v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/${Number(this.$route.params.taskNumber) + 1}`">Next</router-link>
+              <a v-on:click.prevent="showGoalsList" class="btn btn-default btn-show-goals" href="#" role="button">{{!goalsDisplayed ? 'Показать цели' : 'Скрыть цели'}}</a>
+              <router-link class="btn btn-default btn-next" v-bind:to="`/courses/${this.$route.params.courseNumber}/tasks/${Number(this.$route.params.taskNumber) + 1}`">Далее</router-link>
             </div>
           </div>
         </div>
@@ -72,34 +72,37 @@
       }
     },
     mounted() {
-      this.task = this.$parent.task;
-      this.course = this.$parent.course;
-      this.openDialog();
-      
-      this.buttonNext = document.querySelector('.btn-next');
-      this.buttonCheck = document.querySelector('.btn-check');
-      this.goalsCompleted = [];
-      console.log(this.task)
-      console.log(this.course)
-      this.iframe = document.querySelector('iframe');
-      this.doc = this.iframe.contentDocument || this.iframe.contentWindow.document;
-      
-      this.doc.body.setAttribute("style", "margin: 0;");
-      
-      this.styleFrameElement = null;
-      this.scriptFrameElement = null;
-      this.htmlFrameElement = this.doc.body;
-      
-      this.initializeEditors();
-      this.initializeIframe(() => {
-        this.linkEditorsToIframe();
-      });
-      
-      this.loadCheckerScript(this.task.checker);
-      this.taskList = document.querySelector('.task-goals-list');
-      this.initializeGoalsList(this.task.goals, this.taskList);
+      this.reload();
     },
     methods: {
+      reload() {
+        this.task = this.$parent.task;
+        this.course = this.$parent.course;
+        this.openDialog();
+        
+        this.buttonNext = document.querySelector('.btn-next');
+        this.buttonCheck = document.querySelector('.btn-check');
+        this.goalsCompleted = [];
+        console.log(this.task)
+        console.log(this.course)
+        this.iframe = document.querySelector('iframe');
+        this.doc = this.iframe.contentDocument || this.iframe.contentWindow.document;
+        
+        this.doc.body.setAttribute("style", "margin: 0;");
+        
+        this.styleFrameElement = null;
+        this.scriptFrameElement = null;
+        this.htmlFrameElement = this.doc.body;
+        
+        this.initializeEditors();
+        this.initializeIframe(() => {
+          this.linkEditorsToIframe();
+        });
+        
+        this.loadCheckerScript(this.task.checker);
+        this.taskList = document.querySelector('.task-goals-list');
+        this.initializeGoalsList(this.task.goals, this.taskList);
+      },
       initializeEditors() {
         this.editorHTML = ace.edit('editor-html');
         this.editorHTML.setTheme("ace/theme/textmate");

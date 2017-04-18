@@ -72,6 +72,7 @@
       })
     },
     mounted() {
+      this.oldTask = this.task;
       if (this.course.achieves) {
         let halfContainer = document.querySelector('.achieves-item.half');
         halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
@@ -194,6 +195,37 @@
             break;
         }
       }
+    },
+    beforeRouteUpdate(to, from, next) {
+      console.log(this.task)
+      if (!this.course.tasks || this.course.tasks.findIndex(task => {
+        console.log(task.taskId, to.params.taskNumber)
+        return task.taskId == to.params.taskNumber;
+      }) === -1) {
+        this.$router.push({name: "tasks", params: {courseNumber: this.course.courseId, taskNumber: null}})
+      }
+      if (this.oldTask.type === this.task.type) {
+        this.$children[0].reload();
+        this.oldTask = this.task;
+        next();
+        return;
+      }
+      switch (this.task.type) {
+        case 'jsProgramming':
+          this.currentView = 'jsProgramming';
+          break;
+        case 'htmlCssJs':
+          this.currentView = 'htmlCssJs';
+          break;
+        case 'radio':
+          this.currentView = 'radioCheckbox';
+          break;
+        case 'checkbox':
+          this.currentView = 'radioCheckbox';
+          break;
+      }
+      this.oldTask = this.task;
+      next();
     },
     beforeDestroy() {
       if (this.dialog) this.dialog.close();

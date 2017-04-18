@@ -5,17 +5,17 @@
       <p>Welcome to development section</p>
       <template v-if="this.model">
         <template v-if="!this.model.githubId && !this.model.bitbucketId">
-          <p>It looks like you haven't bind your github or bitbucket account to local account here</p>
-          <p>Please, follow one or more next links and start</p>
+          <p>Кажется, вы не выполнили вход через сервисы, в которых должны храниться ваши курсы</p>
+          <p>Пожалуйста, войдите через один и более сервисов:</p>
         </template>
         <template v-else>
-          <p>You can bind your local account to another service</p>
+          <p>Вы можете войти еще через один сервис:</p>
         </template>
         <a v-if="!this.model.githubId" href="/api/user/github" class="social-btn"><img class="social-image" src="~assets/github-logo.png"></a>
         <a v-if="!this.model.bitbucketId" href="/api/user/bitbucket" class="social-btn"><img class="social-image" src="~assets/bitbucket-logo.png"></a>
       </template>
       <template v-else="this.model">
-        You have to <router-link to="/login">sign in</router-link> to start developing courses
+        Вам необходимо <router-link to="/login">войти</router-link>, чтобы начать разработку курсов
       </template>
     </div>
   </div>

@@ -197,11 +197,12 @@ const store = new Vuex.Store({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.params.taskNumber && !store.state.models.task) {
+  if (to.params.taskNumber && (!store.state.models.task || store.state.models.task.taskNumber !== to.params.taskNumber)) {
     let args = {
       courseNumber: to.params.courseNumber,
       taskNumber: to.params.taskNumber
     }
+  console.log(args.taskNumber)
     store.dispatch('models/loadTask', args).then(task => {
       console.log(task)
       next();
@@ -211,7 +212,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.params.courseNumber && !store.state.models.course) {
+  if (to.params.courseNumber && (!store.state.models.course || store.state.models.course.courseNumber !== to.params.courseNumber)) {
     console.log(to)
     let args = {
       courseNumber: to.params.courseNumber
@@ -222,7 +223,9 @@ router.beforeEach((to, from, next) => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.params.courseNumber && store.state.models.course) {
+  console.log(to)
+  if (!to.params.taskNumber && !to.params.courseNumber && store.state.models.course) {
+    console.log('NO-COURSE')
     store.commit('models/setCourse', {
       course: null,
     });

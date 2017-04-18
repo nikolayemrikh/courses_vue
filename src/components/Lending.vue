@@ -9,11 +9,11 @@
           <ul>
             <template v-if="model">
                 <li><a v-on:click.prevent class="nav-link btn btn-link btn-link-yellow" href="#">{{ this.model.firstname + ' ' + this.model.lastname }}</a></li>
-                <li><a v-on:click.prevent="logOut" class="nav-link btn btn-link btn-link-yellow" shref="#">Log out</a></li>
+                <li><a v-on:click.prevent="logOut" class="nav-link btn btn-link btn-link-yellow" shref="#">Выход</a></li>
             </template>
             <template v-else="model">
-                <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Sign in</router-link></li>
-                <li><router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Register</router-link></li>
+                <li><router-link to="/login" class="nav-link btn btn-link btn-link-yellow">Вход</router-link></li>
+                <li><router-link to="/register" class="nav-link btn btn-link btn-link-yellow">Регистрация</router-link></li>
             </template>
           </ul>
         </div>
@@ -22,8 +22,8 @@
     <main>
       <div class="container">
         <p class="title">JS Courses</p>
-        <p class="description">Platform, where you can learn variety JS frameworks and libraries, <br> and develop your own courses</p>
-        <router-link to="/courses" class="btn btn-lg btn-yellow btn-start">Start learning</router-link>
+        <p class="description">Платформа для обучения веб-разработке, на которой вы можете научиться использовать различные JavaScript фреймворки и библиотеки, а так же многое другое</p>
+        <router-link to="/courses" class="btn btn-lg btn-yellow btn-start">Начать учиться!</router-link>
       </div>
     </main>
     <footer>

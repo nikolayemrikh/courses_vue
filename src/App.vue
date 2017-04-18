@@ -8,17 +8,17 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li v-bind:class="{ active: isCourses && !isDevelopment }"><router-link to="/courses">Courses list</router-link></li>
-              <li v-bind:class="{ active: isDevelopment }"><router-link to="/development">Development</router-link></li>
+              <li v-bind:class="{ active: isCourses && !isDevelopment }"><router-link to="/courses">Список курсов</router-link></li>
+              <li v-bind:class="{ active: isDevelopment }"><router-link to="/development">Разработка</router-link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <template v-if="userModel">
                 <li><a v-on:click.prevent href="#">{{ username }}</a></li>
-                <li><a v-on:click.prevent="logOut" href="#">Log out</a></li>
+                <li><a v-on:click.prevent="logOut" href="#">Выйти</a></li>
               </template>
               <template v-else="userModel">
-                <li v-if="this.$route.path != '/login'"><router-link to="/login">Sign in</router-link></li>
-                <li v-if="this.$route.path != '/register'"><router-link to="/register">Register</router-link></li>
+                <li v-if="this.$route.path != '/login'"><router-link to="/login">Вход</router-link></li>
+                <li v-if="this.$route.path != '/register'"><router-link to="/register">Регистрация</router-link></li>
               </template>
             </ul>
           </div>
@@ -27,12 +27,12 @@
     </header>
     <div v-bind:class="{'container-fluid': notLending}">
       <ol v-if="isCoursesOrTasks" class="breadcrumb">
-        <li v-if="this.isDevelopment"><router-link to="/development">Development</router-link></li>
+        <li v-if="this.isDevelopment"><router-link to="/development">Разработка</router-link></li>
         <template v-if="this.isDevelopment ? this.isGitOrBitBinded : true">
-          <li><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses`">{{ this.isDevelopment ? "Your courses" : "Courses" }}</router-link></li>
+          <li><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses`">{{ this.isDevelopment ? "Ваши курсы" : "Курсы" }}</router-link></li>
           <li v-if="this.course">{{ this.courseName }}</li>
-          <li v-if="this.$route.name === 'addCourse'">Add course</li>
-          <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Tasks</router-link></li>
+          <li v-if="this.$route.name === 'addCourse'">Добавить курс</li>
+          <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Задания</router-link></li>
           <li v-if="this.task">{{ this.taskName }}</li>
         </template>
       </ol>

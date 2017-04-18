@@ -13,11 +13,11 @@
                         <router-link class="btn-link" v-bind:to="{ name: 'tasks', params: { courseNumber: course.courseId } }">{{ course.title }}</router-link>
                         <template v-if="userModel">
                           <template v-if="course.tasks.length > 0">
-                            <span class="completed-text">progress: </span>
+                            <span class="completed-text">выполнено заданий: </span>
                             <span class="badge">{{ progress(course) }}</span>
                           </template>
                           <template v-if="haveChallenges(course)">
-                            <span class="completed-text">challenges: </span>
+                            <span class="completed-text">пройдено испытаний: </span>
                             <span class="badge">{{ challengesProgress(course) }}</span>
                           </template>
                         </template>
@@ -70,7 +70,7 @@
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
           return cp.courseId == currentCourse.courseId
         })
-
+        if (!courseProgress) return 0;
         let progressCounter = 0;
         let wholeChallengesCounter = 0;
 

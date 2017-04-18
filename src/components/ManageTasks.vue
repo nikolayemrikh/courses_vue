@@ -41,7 +41,7 @@
         </div>
       </section>
       <section class="col-md-3">
-        Статистика
+        
       </section>
     </div>
   </div>
