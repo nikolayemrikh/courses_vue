@@ -24,9 +24,9 @@
                     <div class="col-md-2">
                       <div class="row">
                         <template v-if="userModel">
-                          <button v-on:click.prevent="editTask(task)" type="button" class="btn btn-default">
+                          <router-link v-bind:to="{ name: 'editTask', params: { courseNumber: course.courseId, taskNumber: task.taskId } }" type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                          </button>
+                          </router-link>
                           <button v-on:click.prevent="deleteTask(task)" type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                           </button>

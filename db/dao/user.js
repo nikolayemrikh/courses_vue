@@ -99,9 +99,7 @@ module.exports = {
                   if (!localUserFromEmail) {
                     var user = new User(ghUserData);
                     user.save(done);
-                  }
-                  
-                  else {
+                  } else {
                     localUserFromEmail.githubUsername = ghProfile.username;
                     localUserFromEmail.githubToken = token;
                     localUserFromEmail.githubId = ghProfile.id;

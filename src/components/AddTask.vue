@@ -60,15 +60,15 @@
             <textarea name="goals" class="form-control" rows="3" placeholder="HTML целей"></textarea>
           </div>
           <div class="form-group">
-            <label for="check">Проверяющий JS</label>
-            <textarea name="check" class="form-control" rows="3" placeholder="Проверяющий JS"></textarea>
+            <label for="checker">Проверяющий JS</label>
+            <textarea name="checker" class="form-control" rows="3" placeholder="Проверяющий JS"></textarea>
           </div>
           <div class="form-group">
             <label class="control-label">Активная вкладка</label>
             <div class="radios-container">
-              <label class="radio-inline"><input type="radio" name="activeTab" value="htmlCssJs" checked>HTML</label>
-              <label class="radio-inline"><input type="radio" name="activeTab" value="radio">CSS</label>
-              <label class="radio-inline"><input type="radio" name="activeTab" value="checkbox">JS</label>
+              <label class="radio-inline"><input type="radio" name="activeTab" value="HTML" checked>HTML</label>
+              <label class="radio-inline"><input type="radio" name="activeTab" value="CSS">CSS</label>
+              <label class="radio-inline"><input type="radio" name="activeTab" value="JS">JS</label>
             </div>
           </div>
         </template>
@@ -159,24 +159,37 @@
       },
       submitTask(form) {
         this.resetFormStyles();
+        
         const meta = {
-          title: form.title.value,
-          description: form.description.value,
-          theory: form.theory.value,
+          title: form.title.value || '',
+          description: form.description.value || '',
+          theory: form.theory.value || '',
           isChallenge: form.challenge.checked,
           type: form.type.value,
-          initialHTML: form.initialHTML.value,
-          initialCSS: form.initialCSS.value,
-          initialJS: form.initialJS.value,
-          blockedHTML: form.blockedHTML.checked,
-          blockedCSS: form.blockedCSS.checked,
-          blockedJS: form.blockedJS.checked,
-          goals: form.goals.value,
-          check: form.check.value,
-          activeTab: form.activeTab.value,
           courseId: this.course.courseId
         };
         
+        let typedMeta = {};
+        switch (this.activeType) {
+          case 'htmlCssJs':
+            typedMeta.initialHTML = form.initialHTML.value || '';
+            typedMeta.initialCSS = form.initialCSS.value || '';
+            typedMeta.initialJS = form.initialJS.value || '';
+            typedMeta.blockedHTML = form.blockedHTML.checked;
+            typedMeta.blockedCSS = form.blockedCSS.checked;
+            typedMeta.blockedJS = form.blockedJS.checked;
+            typedMeta.goals = form.goals.value || '';
+            typedMeta.checker = form.checker.value || '';
+            typedMeta.activeTab = form.activeTab.value;
+            break;
+          case 'checkbox':
+            // typedMeta.correctAnswers = ;
+            break;
+          case 'radio':
+            // typedMeta.correctAnswer = ;
+            break;
+        }
+        Object.assign(meta, typedMeta);
         const req = request.post('/api/local/task').send(meta);
         
         req.then(res => {

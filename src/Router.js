@@ -11,10 +11,10 @@ import Main from './components/Main'
 import ManageCourses from './components/ManageCourses'
 import ManageTasks from './components/ManageTasks'
 import EditCourse from './components/EditCourse'
-import EditTask from './components/EditTask'
 import Development from './components/Development'
 import AddCourse from './components/AddCourse'
 import AddTask from './components/AddTask'
+import EditTask from './components/EditTask'
 
 export default new VueRouter({
   routes: [{
@@ -66,6 +66,11 @@ export default new VueRouter({
     path: '/development/courses/:courseNumber/addTask',
     name: 'addTask',
     component: AddTask,
+    meta: { requiresAuth: true, course: true }
+  }, {
+    path: '/development/courses/:courseNumber/editTask/:taskNumber?',
+    name: 'editTask',
+    component: EditTask,
     meta: { requiresAuth: true, course: true }
   }, {
     path: '/development/courses/:courseNumber?',

@@ -19,6 +19,7 @@ const initialHtmlFile = config.get('courses:initialHtmlFile');
 const initialCssFile = config.get('courses:initialCssFile');
 const initialJsFile = config.get('courses:initialJsFile');
 const initialAnswersFile = config.get('courses:initialAnswersFile');
+const initialQuestionsFile = config.get('courses:initialQuestionsFile');
 const metaFile = config.get('courses:metaFile');
 const solutionFile = config.get('courses:solutionFile');
 const theoryFile = config.get('courses:theoryFile');
@@ -145,16 +146,21 @@ module.exports.Course = class Course {
         username = userSession.bitbucketUsername;
         break;
     }
-    
     simpleGit(path.join(__dirname, '..', this.dirName))
       .init()
       .add('.')
       .commit("NE LMS COMMIT")
       .addRemote('origin', this.remoteUrl)
       // .pull()
+      // .raw([
+      //   'config',
+      //   'remote.origin.url',
+      //   remoteUrl
+      // ])
       .raw([
-        'config',
-        'remote.origin.url',
+        'remote',
+        'set-url',
+        'origin',
         remoteUrl
       ])
       .push(['-u', 'origin', 'master'], (err, res) => {
@@ -165,6 +171,37 @@ module.exports.Course = class Course {
         callback(null, res);
       });
       
+  }
+  commitAndPush(userSession) {
+    let remoteUrl,
+        username;
+    switch (this.service) {
+      case 'github':
+        remoteUrl = `https://${userSession.githubUsername}:${userSession.githubToken}@github.com/${userSession.githubUsername}/${urlify(this.title)}.git`
+        username = userSession.githubUsername;
+        break;
+      case 'bitbucket':
+        remoteUrl = `https://${userSession.bitbucketUsername}:${userSession.bitbucketToken}@bitbucket.org/${userSession.bitbucketUsername}/${urlify(this.title).toLowerCase()}.git`
+        username = userSession.bitbucketUsername;
+        break;
+    }
+    console.log(this)
+    simpleGit(this.dirName)
+      // .raw([
+      //   'config',
+      //   'remote.origin.url',
+      //   remoteUrl
+      // ])
+      .raw([
+        'remote',
+        'set-url',
+        'origin',
+        remoteUrl
+      ])
+      .pull()
+      .add('.')
+      .commit("NE LMS COMMIT")
+      .push(['-u', 'origin', 'master']);
   }
   updateMeta(props, callback) {
     let metaPath = path.join(this.dirName, metaFile);
@@ -269,23 +306,34 @@ module.exports.Course = class Course {
     let taskPath = path.join(dirName, biggestNumber + 1 + "-" + task.title);
     
     if (fs.existsSync(taskPath)) {
-      return;
+      throw new Error('Что-то пошло не так..');
     }
     
     fs.mkdirSync(taskPath);
     
     fs.mkdirSync(path.join(taskPath, initialFilesDir));
-    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialHtmlFile), task.initialHTML);
-    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialCssFile), task.initialCSS);
-    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialJsFile), task.initialJS);
-    
-    fs.writeFileSync(path.join(taskPath, goalsFile), task.goals);
-    fs.writeFileSync(path.join(taskPath, checkerFile), task.check);
-    fs.writeFileSync(path.join(taskPath, theoryFile), task.theory);
-    
+    switch (task.type) {
+      case 'htmlCssJs':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialHtmlFile), task.initialHTML);
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialCssFile), task.initialCSS);
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialJsFile), task.initialJS);
+        
+        fs.writeFileSync(path.join(taskPath, goalsFile), task.goals);
+        fs.writeFileSync(path.join(taskPath, checkerFile), task.checker);
+        fs.writeFileSync(path.join(taskPath, theoryFile), task.theory);
+        break;
+      case 'checkbox':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialQuestionsFile), task.questions);
+        break;
+      case 'radio':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialQuestionsFile), task.questions);
+        break;
+    }
+    console.log(task, 12354575)
     const meta = {
       type: task.type,
       title: task.title,
+      description: task.description,
       isChallenge: task.isChallenge
     };
     
@@ -296,6 +344,70 @@ module.exports.Course = class Course {
         typedMeta.blockedHTML = task.blockedHTML;
         typedMeta.blockedCSS = task.blockedCSS;
         typedMeta.blockedJS = task.blockedJS;
+        break;
+      case 'checkbox':
+        typedMeta.correctAnswers = task.correctAnswers;
+        break;
+      case 'radio':
+        typedMeta.correctAnswer = task.correctAnswer;
+        break;
+    }
+    
+    Object.assign(meta, typedMeta);
+    
+    fs.writeFileSync(path.join(taskPath, metaFile), JSON.stringify(meta, null, 4));
+  }
+  editTask(taskNumber, task) {
+    let dirName = this.dirName;
+    
+    let taskPath = path.join(dirName, taskNumber + "-" + task.title);
+    
+    if (!fs.existsSync(taskPath)) {
+      throw new Error('Такого задания не существует!');
+    }
+    
+    if (!fs.existsSync(path.join(taskPath, initialFilesDir))) {
+      fs.mkdirSync(path.join(taskPath, initialFilesDir));
+    }
+    switch (task.type) {
+      case 'htmlCssJs':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialHtmlFile), task.initialHTML);
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialCssFile), task.initialCSS);
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialJsFile), task.initialJS);
+        
+        fs.writeFileSync(path.join(taskPath, goalsFile), task.goals);
+        fs.writeFileSync(path.join(taskPath, checkerFile), task.checker);
+        fs.writeFileSync(path.join(taskPath, theoryFile), task.theory);
+        break;
+      case 'checkbox':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialQuestionsFile), task.questions);
+        break;
+      case 'radio':
+        fs.writeFileSync(path.join(taskPath, initialFilesDir, initialQuestionsFile), task.questions);
+        break;
+    }
+    
+    const meta = {
+      type: task.type,
+      title: task.title,
+      description: task.description,
+      isChallenge: task.isChallenge
+    };
+    
+    let typedMeta = {};
+    switch (task.type) {
+      case 'htmlCssJs':
+        typedMeta.activeTab = task.activeTab;
+        typedMeta.blockedHTML = task.blockedHTML;
+        typedMeta.blockedCSS = task.blockedCSS;
+        typedMeta.blockedJS = task.blockedJS;
+        break;
+      case 'checkbox':
+        typedMeta.correctAnswers = task.correctAnswers;
+        break;
+      case 'radio':
+        typedMeta.correctAnswer = task.correctAnswer;
+        break;
     }
     
     Object.assign(meta, typedMeta);

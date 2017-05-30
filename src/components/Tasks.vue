@@ -98,7 +98,7 @@
     },
     mounted() {
       let halfContainer = document.querySelector('.achieves-list-item.half');
-      if (halfContainer) {
+      if (halfContainer && this.course.achieves) {
         halfContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.halfCourse.imageSrc);
         halfContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.halfCourse.title;
         halfContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.halfCourse.alert;
@@ -106,7 +106,7 @@
       }
       
       let fullContainer = document.querySelector('.achieves-list-item.full');
-      if (fullContainer) {
+      if (fullContainer && this.course.achieves) {
         fullContainer.querySelector('img').setAttribute('src', this.course.filesDirName + '/' + this.course.achieves.fullCourse.imageSrc);
         fullContainer.querySelector('.achieves-list-item__title').innerText = this.course.achieves.fullCourse.title;
         fullContainer.querySelector('.achieves-list-item__alert').innerText = this.course.achieves.fullCourse.alert;

@@ -37,46 +37,27 @@ router.get('/:taskId', function(req, res, next) {
 // Create new task
 router.post('/', function(req, res, next) {
     let args = req.body;
-    // task.add(args, function(err, data) {
-    //     if (!err && data) {
-    //         console.log(err, data, "kek")
-    //             //res.status(200).end();
-    //         res.json(data);
-    //         //res.status(200).end();
-    //     }
-    //     else {
-    //         console.log(err, data)
-    //             //res.status(400).end();
-    //         res.status(400).end();
-    //     }
-    // });
     var course = utils.course.Course.createFromName(args.courseId);
     try {
         course.addTask(args);
+        course.commitAndPush(req.user);
         res.status(200).end();
     } catch (err) {
         res.status(400).send(err.message);
     }
 });
 // Update task
-router.put('/:_id', function(req, res, next) {
-  let args = {
-        _id: req.params._id,
-        data: req.body
-    };
-    task.update(args, function(err, data) {
-        if (!err && data) {
-            /*req.login(data, function(error) {
-                if (error) res.status(400).end();
-                else res.json(data);
-            });*/
-            res.json(data);
-        }
-        else {
-            //res.status(400).end();
-            res.status(400).send(err.message);
-        }
-    });
+router.put('/:taskNumber', function(req, res, next) {
+    let taskId = req.params.taskNumber;
+    console.log(taskId, req.body)
+    var course = utils.course.Course.createFromName(req.body.courseId);
+    try {
+        course.editTask(taskId, req.body);
+        course.commitAndPush(req.user);
+        res.status(200).end();
+    } catch (err) {
+        res.status(400).send(err.message);
+    }
 });
 // Remove task
 router.delete('/:taskId', function(req, res, next) {

@@ -175,17 +175,19 @@ module.exports = {
     let courseId = args.courseId;
     let filesDirPath = path.join(helpers.resolveDirName(repPath, courseId).path, filesDirName);
     let files = {};
-    let fileNames = fs.readdirSync(filesDirPath).filter(file => {
-      return file[0] != '.';
-    });
-    for (i in fileNames) {
-      let fileName = fileNames[i];
-      files[fileName] = fs.readFileSync(path.join(filesDirPath, fileName), {
-        encoding: 'utf8'
+    if (fs.existsSync(filesDirPath)) {
+      let fileNames = fs.readdirSync(filesDirPath);
+      fileNames.filter(file => {
+        return file[0] != '.';
       });
+      for (let i in fileNames) {
+        let fileName = fileNames[i];
+        files[fileName] = fs.readFileSync(path.join(filesDirPath, fileName), {
+          encoding: 'utf8'
+        });
+      }
     }
     callback(null, files);
-
   },
   getTask(args, callback) {
     let courseId = args.courseId;
@@ -199,9 +201,14 @@ module.exports = {
     let task = {};
     task.taskDirName = taskDirName;
     task.courseDirName = courseDirName;
-    let meta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
-      encoding: 'utf8'
-    }));
+    let meta;
+    try {
+      meta = JSON.parse(fs.readFileSync(path.join(fullTaskPath, metaFile), {
+        encoding: 'utf8'
+      }));
+    } catch (err) {
+      meta = {};
+    }
 
     Object.assign(task, meta)
 
@@ -228,10 +235,15 @@ module.exports = {
         encoding: 'utf8'
       });
 
-    if (initialFiles.includes(initialQuestionsFile))
-      task.initial.questions = JSON.parse(fs.readFileSync(path.join(fullTaskPath, initialFilesDir, initialQuestionsFile), {
-        encoding: 'utf8'
-      }));
+    if (initialFiles.includes(initialQuestionsFile)) {
+      try {
+        task.initial.questions = JSON.parse(fs.readFileSync(path.join(fullTaskPath, initialFilesDir, initialQuestionsFile), {
+          encoding: 'utf8'
+        }));
+      } catch (err) {
+        task.initial.questions = {};
+      }
+    }
 
     // Потом все остальные
     if (taskFiles.includes(solutionFile))
