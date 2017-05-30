@@ -14,6 +14,7 @@ import EditCourse from './components/EditCourse'
 import EditTask from './components/EditTask'
 import Development from './components/Development'
 import AddCourse from './components/AddCourse'
+import AddTask from './components/AddTask'
 
 export default new VueRouter({
   routes: [{
@@ -62,11 +63,16 @@ export default new VueRouter({
     component: AddCourse,
     meta: { requiresAuth: true }
   }, {
+    path: '/development/courses/:courseNumber/addTask',
+    name: 'addTask',
+    component: AddTask,
+    meta: { requiresAuth: true, course: true }
+  }, {
     path: '/development/courses/:courseNumber?',
     component: Tasks,
     beforeEnter: (to, from, next) => {
       next({
-        path: '/manage/courses/' + to.params.courseNumber + '/tasks'
+        path: '/development/courses/' + to.params.courseNumber + '/tasks'
       })
     },
     meta: { requiresAuth: true }

@@ -41,7 +41,7 @@
         </div>
       </section>
       <section class="col-md-3">
-        
+        <router-link v-bind:to="{ name: 'addTask', params: { courseNumber: course.courseId } }">Добавить задание</router-link>
       </section>
     </div>
   </div>

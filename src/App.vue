@@ -33,6 +33,7 @@
           <li v-if="this.course">{{ this.courseName }}</li>
           <li v-if="this.$route.name === 'addCourse'">Добавить курс</li>
           <li v-if="this.course"><router-link v-bind:to="`${this.isDevelopment ? '/development' : ''}/courses/${this.$route.params.courseNumber}/tasks/`">Задания</router-link></li>
+          <li v-if="this.$route.name === 'addTask'">Добавить задание</li>
           <li v-if="this.task">{{ this.taskName }}</li>
         </template>
       </ol>

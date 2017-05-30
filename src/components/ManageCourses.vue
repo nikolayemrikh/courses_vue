@@ -30,9 +30,9 @@
                     <div class="col-md-2">
                       <div class="row">
                         <template v-if="userModel">
-                          <!--<button v-on:click.prevent="editCourse(course)" type="button" class="btn btn-default">-->
-                          <!--  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>-->
-                          <!--</button>-->
+                          <button v-on:click.prevent="editCourse(course)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                          </button>
                           <button v-on:click.prevent="deleteCourse(course)" type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                           </button>
@@ -82,6 +82,9 @@
       ...mapActions('models', [
         'removeCourse'
       ]),
+      editCourse(course) {
+        
+      },
       progress(currentCourse) {
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
 //          return cp.course == currentCourse._id // Заменил в модели юзера course на courseId

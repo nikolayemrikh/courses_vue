@@ -50,7 +50,6 @@ router.post('/', upload.any(), function (req, res, next) {
     meta: req.body.meta ? JSON.parse(req.body.meta) : null,
     url: req.body.url ? req.body.url : null
   };
-  let user = new User();
   if (args.meta) {
     let course = new utils.course.Course(args.meta, req.files);
     course.save((err, stat) => {

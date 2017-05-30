@@ -36,23 +36,27 @@ router.get('/:taskId', function(req, res, next) {
 });
 // Create new task
 router.post('/', function(req, res, next) {
-    let args = {
-        courseId: req.params.courseId,
-        data: req.body
-    };
-    task.add(args, function(err, data) {
-        if (!err && data) {
-            console.log(err, data, "kek")
-                //res.status(200).end();
-            res.json(data);
-            //res.status(200).end();
-        }
-        else {
-            console.log(err, data)
-                //res.status(400).end();
-            res.status(400).end();
-        }
-    });
+    let args = req.body;
+    // task.add(args, function(err, data) {
+    //     if (!err && data) {
+    //         console.log(err, data, "kek")
+    //             //res.status(200).end();
+    //         res.json(data);
+    //         //res.status(200).end();
+    //     }
+    //     else {
+    //         console.log(err, data)
+    //             //res.status(400).end();
+    //         res.status(400).end();
+    //     }
+    // });
+    var course = utils.course.Course.createFromName(args.courseId);
+    try {
+        course.addTask(args);
+        res.status(200).end();
+    } catch (err) {
+        res.status(400).send(err.message);
+    }
 });
 // Update task
 router.put('/:_id', function(req, res, next) {

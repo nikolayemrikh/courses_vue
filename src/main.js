@@ -222,8 +222,8 @@ router.beforeEach((to, from, next) => {
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to)
-  if (!to.params.taskNumber && !to.params.courseNumber && store.state.models.course) {
+  console.log(to.meta.course)
+  if (!to.params.taskNumber && !to.params.courseNumber && store.state.models.course && !to.meta.course) {
     console.log('NO-COURSE')
     store.commit('models/setCourse', {
       course: null,

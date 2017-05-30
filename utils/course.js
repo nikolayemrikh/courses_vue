@@ -242,6 +242,66 @@ module.exports.Course = class Course {
     Object.assign(course, meta);
     return course;
   }
+  addTask(task) {
+    let dirName = this.dirName;
+    
+    let dirFiles = fs.readdirSync(dirName);
+    let biggestNumber = 0;
+    if (dirFiles.length) {
+      let dirDirs = dirFiles.filter(file => {
+        return fs.lstatSync(path.join(dirName, file)).isDirectory() &&
+          file.match(dirNameTemplate)
+      });
+      let alreadyExists = dirDirs.some(dirName => {
+        return dirName.replace(dirName.match(dirNameTemplate)[0] + '-', '') === task.title;
+      }); 
+      if (alreadyExists) {
+        throw new Error('Задание с таким названием уже существует');
+      }
+      if (dirDirs.length) {
+        dirDirs = dirDirs.sort((a, b) => {
+          return a.match(dirNameTemplate)[0] - b.match(dirNameTemplate)[0]
+        });
+        biggestNumber = Number(dirDirs.pop().match(dirNameTemplate)[0]);
+      }
+    }
+    
+    let taskPath = path.join(dirName, biggestNumber + 1 + "-" + task.title);
+    
+    if (fs.existsSync(taskPath)) {
+      return;
+    }
+    
+    fs.mkdirSync(taskPath);
+    
+    fs.mkdirSync(path.join(taskPath, initialFilesDir));
+    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialHtmlFile), task.initialHTML);
+    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialCssFile), task.initialCSS);
+    fs.writeFileSync(path.join(taskPath, initialFilesDir, initialJsFile), task.initialJS);
+    
+    fs.writeFileSync(path.join(taskPath, goalsFile), task.goals);
+    fs.writeFileSync(path.join(taskPath, checkerFile), task.check);
+    fs.writeFileSync(path.join(taskPath, theoryFile), task.theory);
+    
+    const meta = {
+      type: task.type,
+      title: task.title,
+      isChallenge: task.isChallenge
+    };
+    
+    let typedMeta = {};
+    switch (task.type) {
+      case 'htmlCssJs':
+        typedMeta.activeTab = task.activeTab;
+        typedMeta.blockedHTML = task.blockedHTML;
+        typedMeta.blockedCSS = task.blockedCSS;
+        typedMeta.blockedJS = task.blockedJS;
+    }
+    
+    Object.assign(meta, typedMeta);
+    
+    fs.writeFileSync(path.join(taskPath, metaFile), JSON.stringify(meta, null, 4));
+  }
   remove(userSession, cb) {
     this.removeDir();
     this.removeRepo(userSession, cb);

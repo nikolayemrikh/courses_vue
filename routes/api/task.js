@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router({
     mergeParams: true
 });
-var task = require('../../db/dao/task');
 // List all task in course
 router.get('/', function(req, res) {
     console.log(req.params.courseId, "test1")
@@ -35,10 +34,7 @@ router.get('/:taskId', function(req, res, next) {
 });
 // Create new task
 router.post('/', function(req, res, next) {
-    var args = {
-        courseId: req.params.courseId,
-        data: req.body
-    };
+    var args = req.body;
     task.add(args, function(err, data) {
         if (!err && data) {
             console.log(err, data, "kek")
