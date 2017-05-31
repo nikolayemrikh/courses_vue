@@ -20,14 +20,14 @@
           <label class="control-label">Испытание</label>
           <input name="challenge" type="checkbox" v-bind:checked="proxiedTask.isChallenge">
         </div>
-        <div class="form-group">
-          <label class="control-label">Тип задания</label>
-          <div class="radios-container" v-on:change="handleTypeToggle">
-            <label class="radio-inline"><input type="radio" name="type" value="htmlCssJs" v-bind:checked="proxiedTask.type === 'htmlCssJs'">HTML, CSS, JS</label>
-            <label class="radio-inline"><input type="radio" name="type" value="radio" v-bind:checked="proxiedTask.type === 'radio'">Radio</label>
-            <label class="radio-inline"><input type="radio" name="type" value="checkbox" v-bind:checked="proxiedTask.type === 'checkbox'">Checkbox</label>
-          </div>
-        </div>
+        <!--<div class="form-group">-->
+        <!--  <label class="control-label">Тип задания</label>-->
+        <!--  <div class="radios-container" v-on:change="handleTypeToggle">-->
+        <!--    <label class="radio-inline"><input type="radio" name="type" value="htmlCssJs" v-bind:checked="proxiedTask.type === 'htmlCssJs'">HTML, CSS, JS</label>-->
+        <!--    <label class="radio-inline"><input type="radio" name="type" value="radio" v-bind:checked="proxiedTask.type === 'radio'">Radio</label>-->
+        <!--    <label class="radio-inline"><input type="radio" name="type" value="checkbox" v-bind:checked="proxiedTask.type === 'checkbox'">Checkbox</label>-->
+        <!--  </div>-->
+        <!--</div>-->
         <hr>
         <template v-if="proxiedTask.type === 'htmlCssJs'">
           <div class="form-group">

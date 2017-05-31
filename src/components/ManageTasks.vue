@@ -80,7 +80,19 @@
         console.log(task)
       },
       deleteTask(task) {
-        console.log(task)
+        const args = {
+          courseId: this.$route.params.courseNumber,
+          taskNumber: task.taskId
+        }
+        console.log(this.$route.params, task)
+        const req = request.post('/api/local/task/remove').send(args);
+        
+        req.then(res => {
+          let index = this.tasks.findIndex(el => {
+            return el.taskId === task.taskId
+          });
+          this.tasks.splice(index, 1);
+        });
       }
     },
     beforeMount() {

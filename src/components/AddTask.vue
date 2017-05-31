@@ -72,6 +72,46 @@
             </div>
           </div>
         </template>
+        <template v-if="activeType === 'radio'">
+          <fieldset>
+            <legend>Введите варианты ответов и укажите верный</legend>
+            <div class="form-group">
+              <div class="row">
+                <template v-for="item in items">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="radioQuestions">
+                      <input class="form-control" placeholder="Введите вариант ответа">
+                    </label>
+                  </div>
+                </template>
+              </div>
+            </div>
+            <button v-on:click.prevent="addInput()" type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </fieldset>
+        </template>
+        <template v-if="activeType === 'checkbox'">
+          <fieldset>
+            <legend>Введите варианты ответов и укажите верный/верные</legend>
+            <div class="form-group">
+              <div class="row">
+                <template v-for="item in items">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox">
+                      <input class="form-control" placeholder="Введите вариант ответа">
+                    </label>
+                  </div>
+                </template>
+              </div>
+            </div>
+            <button v-on:click.prevent="addInput()" type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </fieldset>
+        </template>
       </div>
       <button type="submit" class="btn btn-default">Создать</button>
     </form>
@@ -99,7 +139,8 @@
         createError: null,
         activeType: 'htmlCssJs',
         attachError: null,
-        attachSuccess: null
+        attachSuccess: null,
+        items: [1, 1]
       }
     },
     computed: {
@@ -142,20 +183,8 @@
           return file;
         });
       },
-      attachCourse(form) {
-        console.log(form.url)
-        let obj = {
-          url: form.url.value
-        }
-        const req = request
-          .post('/api/local/course')
-          .send(obj);
-        req.then(res => {
-          this.attachSuccess = true;
-          form.reset();
-        }).catch(err => {
-          this.attachError = err.response.text;
-        })
+      addInput() {
+        this.items.push(1);
       },
       submitTask(form) {
         this.resetFormStyles();
@@ -183,10 +212,17 @@
             typedMeta.activeTab = form.activeTab.value;
             break;
           case 'checkbox':
-            // typedMeta.correctAnswers = ;
+            // typedMeta.correctAnswers = form.radioQuestions.value;
             break;
           case 'radio':
-            // typedMeta.correctAnswer = ;
+            // typedMeta.correctAnswer = form.radioQuestions.value;
+            
+            // let fieldset = form.radioQuestions[0].closest('fieldset');
+            // let questions = Array.from(fieldset.querySelectorAll('input[type="text"]')).map(el => el.value);
+            // typedMeta.questions = {};
+            // for (let i in questions) {
+            //   typedMeta.questions[i] = questions[i];
+            // }
             break;
         }
         Object.assign(meta, typedMeta);

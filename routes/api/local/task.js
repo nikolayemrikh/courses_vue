@@ -59,20 +59,35 @@ router.put('/:taskNumber', function(req, res, next) {
         res.status(400).send(err.message);
     }
 });
-// Remove task
-router.delete('/:taskId', function(req, res, next) {
-  let args = {
-        courseId: req.params.courseId,
-        taskId: req.params.taskId
-    };
-    console.log(args)
-    task.delete(args, function(err, data) {
-        if (!err && data) {
-            res.json(data);
-        }
-        else {
-            res.status(400).end();
-        }
-    });
+
+router.post('/remove', function(req, res, next) {
+    console.log(req.body)
+    let taskNumber = req.body.taskNumber;
+    var course = utils.course.Course.createFromName(req.body.courseId);
+    try {
+        course.removeTask(taskNumber);
+        console.log('kek')
+        course.commitAndPush(req.user);
+        res.status(200).end();
+    } catch (err) {
+        res.status(400).send(err.message);
+    }
 });
+
+// Remove task
+// router.delete('/:taskId', function(req, res, next) {
+//   let args = {
+//         courseId: req.params.courseId,
+//         taskId: req.params.taskId
+//     };
+//     console.log(args)
+//     task.delete(args, function(err, data) {
+//         if (!err && data) {
+//             res.json(data);
+//         }
+//         else {
+//             res.status(400).end();
+//         }
+//     });
+// });
 module.exports = router;

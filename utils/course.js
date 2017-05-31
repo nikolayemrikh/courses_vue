@@ -414,6 +414,23 @@ module.exports.Course = class Course {
     
     fs.writeFileSync(path.join(taskPath, metaFile), JSON.stringify(meta, null, 4));
   }
+  removeTask(taskNumber) {
+    // let taskDir = path.join(this.dirName, taskNumber);
+    console.log('TEST')
+    let dirFiles = fs.readdirSync(this.dirName);
+    console.log('TEST1', dirFiles)
+    if (dirFiles.length) {
+      console.log('inner')
+      let dir = dirFiles.find(file => {
+        return fs.lstatSync(path.join(this.dirName, file)).isDirectory() &&
+          file.match(dirNameTemplate) == taskNumber;
+      });
+      console.log(dir)
+      let taskDirPath = path.join(this.dirName, dir);
+      console.log(taskDirPath)
+      this.deleteFolderRecursive(taskDirPath);
+    }
+  }
   remove(userSession, cb) {
     this.removeDir();
     this.removeRepo(userSession, cb);
