@@ -39,7 +39,7 @@ const user = {
       return state.model && (state.model.githubId || state.model.bitbucketId)
     },
     isAdmin(state) {
-      return state.model.role === 3;
+      return state.model && state.model.role === 3;
     }
   },
   actions: {
