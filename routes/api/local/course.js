@@ -90,9 +90,14 @@ router.put('/:_id', function (req, res, next) {
 // Remove course
 router.delete('/:courseName', function (req, res, next) {
   let courseName = req.params.courseName;
+  let isAdmin = false;
+  if (router.isAuth && router.isAdministrator) {
+      isAdmin = true;
+  }
+
   if (courseName) {
     let course = utils.course.Course.createFromName(courseName);
-    course.remove(req.user, (err, removed) => {
+    course.remove(req.user, isAdmin, (err, removed) => {
       if (err) return res.status(400).send(err.message);
       res.status(200).end();
     });

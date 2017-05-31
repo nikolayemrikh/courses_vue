@@ -27,6 +27,15 @@
                     <div class="col-md-2">
 
                     </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <template v-if="isAdmin">
+                          <button v-on:click.prevent="adminDeleteCourse(course)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                          </button>
+                        </template>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -43,7 +52,7 @@
 
 <script>
   import request from 'superagent'
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters, mapActions } from 'vuex'
   export default {
     name: 'courses',
     data () {
@@ -54,9 +63,24 @@
     computed: {
       ...mapState('user', {
         userModel: 'model'
-      })
+      }),
+      ...mapGetters('user', ['isAdmin'])
     },
     methods: {
+      ...mapActions('models', [
+        'removeCourse'
+      ]),
+      adminDeleteCourse(currentCourse) {
+        let courseId = currentCourse.courseId;
+        this.removeCourse({
+          courseNumber: courseId
+        }).then(res => {
+          let index = this.courses.findIndex(el => {
+            return el.courseId === courseId
+          });
+          this.courses.splice(index, 1);
+        }).catch(err => console.error(err));
+      },
       progress(currentCourse) {
         let courseProgress = this.userModel.coursesProgress.find((cp) => {
 //          return cp.course == currentCourse._id // Заменил в модели юзера course на courseId
@@ -97,6 +121,7 @@
       }
     },
     beforeMount() {
+      console.log(this.isAdmin)
 //      request.get('/api/course').then((res) => {
       request.get('/api/local/course').then((res) => {
         this.courses = res.body.slice()

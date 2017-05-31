@@ -24,6 +24,15 @@
                         </template>
                       </div>
                     </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <template v-if="isAdmin">
+                          <button v-on:click.prevent="adminDeleteTask(task)" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                          </button>
+                        </template>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -55,9 +64,7 @@
 
 <script>
   import request from 'superagent'
-  import { mapState } from 'vuex'
-  import { mapActions } from 'vuex'
-  import { mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   export default {
     name: 'tasks',
     data () {
@@ -76,9 +83,25 @@
       ...mapState('models', [
         'course',
         'task'
-      ])
+      ]),
+      ...mapGetters('user', ['isAdmin'])
     },
     methods: {
+      adminDeleteTask(task) {
+        const args = {
+          courseId: this.$route.params.courseNumber,
+          taskNumber: task.taskId
+        }
+        console.log(this.$route.params, task)
+        const req = request.post('/api/local/task/remove').send(args);
+        
+        req.then(res => {
+          let index = this.tasks.findIndex(el => {
+            return el.taskId === task.taskId
+          });
+          this.tasks.splice(index, 1);
+        });
+      },
       completed(currentTask) {
         return this.userModel.coursesProgress.find((cp) => {
           if (cp.courseId !== this.$route.params.courseNumber || !cp.completedTasks.length) return;

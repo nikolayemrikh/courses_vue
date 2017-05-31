@@ -65,9 +65,14 @@ router.post('/remove', function(req, res, next) {
     let taskNumber = req.body.taskNumber;
     var course = utils.course.Course.createFromName(req.body.courseId);
     try {
+        let isAdmin = false;
+        if (router.isAuth && router.isAdministrator) {
+            isAdmin = true;
+        }
         course.removeTask(taskNumber);
-        console.log('kek')
-        course.commitAndPush(req.user);
+        if (isAdmin) {
+            course.commitAndPush(req.user);
+        }
         res.status(200).end();
     } catch (err) {
         res.status(400).send(err.message);
