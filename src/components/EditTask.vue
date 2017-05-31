@@ -164,7 +164,7 @@
           description: form.description.value,
           theory: form.theory.value,
           isChallenge: form.challenge.checked,
-          type: form.type.value,
+          type: this.task.type,
           courseId: this.course.courseId
         };
         
